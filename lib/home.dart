@@ -39,6 +39,7 @@ class _HomeSfw extends State<HomeSfw> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: createToolbar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -517,6 +518,7 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
+
   Widget buildFooter() {
     return Container(
       width: double.infinity,
@@ -530,7 +532,6 @@ class _HomeSfw extends State<HomeSfw> {
       ),
     );
   }
-
 
 
 }

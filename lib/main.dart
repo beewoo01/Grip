@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: createToolbar(),
+      //appBar: createToolbar(),
       body: widgets[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  AppBar createToolbar() {
+  /*AppBar createToolbar() {
     return AppBar(
         title: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ],
     ));
-  }
+  }*/
 
   void _onItemTapped(int index) {
     setState(() {
