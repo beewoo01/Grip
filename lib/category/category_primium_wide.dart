@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class CategoryListBody extends StatelessWidget {
+class CategoryWideBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(useMaterial3: true),
-      home: CategoryListBodySfw(),
+      home: CategoryWideBodySfw(),
     );
   }
 }
 
-class CategoryListBodySfw extends StatefulWidget {
+class CategoryWideBodySfw extends StatefulWidget {
   @override
-  State createState() => _CategoryListBodySfw();
+  State createState() => _CategoryWideBodySfw();
 }
 
-class _CategoryListBodySfw extends State<CategoryListBodySfw> {
+class _CategoryWideBodySfw extends State<CategoryWideBodySfw> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +58,7 @@ class _CategoryListBodySfw extends State<CategoryListBodySfw> {
         return Padding(
             padding: EdgeInsets.all(10),
             child: Container(
-              width: 220,
+              width: 300,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                   color: Colors.pink,
@@ -87,7 +87,7 @@ class _CategoryListBodySfw extends State<CategoryListBodySfw> {
                               child: Container(
                                 width: double.infinity,
                                 child: Text(
-                                  '000웨딩',
+                                  '000영상',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),

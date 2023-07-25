@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grip/home.dart';
 import 'package:grip/category.dart';
-import 'package:grip/community.dart';
+import 'package:grip/community/community.dart';
 import 'package:grip/myinfo.dart';
-import 'package:grip/promotion.dart';
+import 'package:grip/promotion/promotion.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,7 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: createToolbar(),
       body: widgets[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
