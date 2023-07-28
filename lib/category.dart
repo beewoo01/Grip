@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 import 'category_watch.dart';
 
-class Category extends StatelessWidget {
+class Category extends StatefulWidget {
   const Category({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const CategorySfw(),
-    );
-  }
+  State createState() => CategoryState();
 }
 
-class CategorySfw extends StatefulWidget {
-  const CategorySfw({super.key});
-
-  @override
-  State createState() => _CategorySfw();
-}
-
-class _CategorySfw extends State<CategorySfw> {
+class CategoryState extends State<Category> {
   List<String> snapList = [
     '웨딩작가',
     '스냅작가',
@@ -52,41 +41,31 @@ class _CategorySfw extends State<CategorySfw> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text(
-            '모든 카테고리',
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 30, bottom: 10),
-                  child: buildBox('스냅촬영', true, snapList),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: buildBox('영상촬영', false, videoList),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: buildBox('모델', false, modelList),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: buildBox('공간대여', false, spaceList),
-                )
-              ],
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 30, bottom: 10),
+              child: buildBox('스냅촬영', true, snapList),
             ),
-          ),
-        ));
+            Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              child: buildBox('영상촬영', false, videoList),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              child: buildBox('모델', false, modelList),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              child: buildBox('공간대여', false, spaceList),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildBox(String title, bool isShowAllWatchButton, List<String> list) {

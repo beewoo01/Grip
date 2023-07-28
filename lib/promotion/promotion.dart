@@ -2,25 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:grip/promotion/promotion_detail.dart';
 
-class Promotion extends StatelessWidget {
+class Promotion extends StatefulWidget {
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: PromotionSfw(),
-    );
-  }
+  State createState() => PromotionState();
 }
 
-class PromotionSfw extends StatefulWidget {
-  @override
-  State createState() => _PromotionSfw();
-}
-
-class _PromotionSfw extends State<PromotionSfw> {
+class PromotionState extends State<Promotion> {
   PageController _pageController = PageController();
   int promotionListLength = 2;
-
+  List pages = [];
   List<Widget> generatePages() {
     return List.generate(
         6,
@@ -48,7 +39,7 @@ class _PromotionSfw extends State<PromotionSfw> {
             ));
   }
 
-  List pages = [];
+
 
 
   @override
@@ -59,70 +50,67 @@ class _PromotionSfw extends State<PromotionSfw> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: createToolbar('프로모션'),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-                child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  child: buildPageView(),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-                  child: Divider(
-                    thickness: 2,
-                    height: 1,
-                    color: Colors.grey,
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 200,
+                    child: buildPageView(),
                   ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 15),
+                    child: Divider(
+                      thickness: 2,
+                      height: 1,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              )),
+        ),
+        SliverList(
+            delegate:
+            SliverChildBuilderDelegate((BuildContext context, int index) {
+              return Padding(
+                padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: Container(
+                  child: buildContainer(),
                 ),
-              ],
-            )),
-          ),
-          SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-            return Padding(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Container(
-                child: buildContainer(),
-              ),
-            );
-          }, childCount: promotionListLength)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    promotionListLength = promotionListLength + 4;
-                  });
-                },
-                child: Text(
-                  'Read More',
-                  style: TextStyle(
-                      color: Colors.black,
-                      decoration: TextDecoration.underline),
-                ),
+              );
+            }, childCount: promotionListLength)),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+            child: TextButton(
+              onPressed: () {
+                setState(() {
+                  promotionListLength = promotionListLength + 4;
+                });
+              },
+              child: Text(
+                'Read More',
+                style: TextStyle(
+                    color: Colors.black,
+                    decoration: TextDecoration.underline),
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 20),
-              child: Container(
-                width: double.infinity,
-                height: 250,
-                child: buildHorizontalListView(),
-              ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10, top: 20),
+            child: Container(
+              width: double.infinity,
+              height: 250,
+              child: buildHorizontalListView(),
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 

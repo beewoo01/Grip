@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:grip/util/util.dart';
-import 'package:grip/main.dart';
-import 'package:grip/sample.dart';
 
-class CommunityResister extends StatefulWidget {
-  const CommunityResister({Key? key}) : super(key: key);
+class CommunityWrite extends StatefulWidget {
+  const CommunityWrite({super.key});
 
   @override
-  State createState() => _CommunityResisterSfw();
-
+  State createState() => CommunityWriteState();
 }
 
-class _CommunityResisterSfw extends State<CommunityResister> {
+
+class CommunityWriteState extends State<CommunityWrite> {
+
   List<int> photoList = [];
   List<String> typeDropdownList = ['사진리뷰', '문의하기'];
   List<String> photoDetailTypeDropdownList = ['상품 이용 내역 리스트업', '카테고리 리스트업'];
@@ -19,152 +18,68 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   String selectedTypeDropDown = '사진리뷰';
   String selectedDetailDropDown = '상품 이용 내역 리스트업';
 
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SingleChildScrollView(
-        child: Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                buildAppbar(),
-                Divider(
-                  thickness: 1,
-                  height: 1,
-                  color: Colors.black,
+    return Material(child: Container(
+      child: Column(
+        children: [
+          //buildAppbar(),
+          Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.black,
+          ),
+          Padding(
+            padding:
+            EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
+            child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
+          ),
+          Padding(
+              padding: EdgeInsets.only(
+                  left: 10, right: 10, top: 5, bottom: 10),
+              child: Container(
+                height: 80,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 5),
+                      child: buildOpenCameraContainer(),
+                    ),
+                    Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: buildPhotoList(),
+                        ))
+                  ],
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
-                  child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 10, right: 10, top: 5, bottom: 10),
-                    child: Container(
-                      height: 80,
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: buildOpenCameraContainer(),
-                          ),
-                          Expanded(
-                              child: Padding(
-                            padding: EdgeInsets.only(right: 5),
-                            child: buildPhotoList(),
-                          ))
-                        ],
-                      ),
-                    )),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  child: buildDropdownButton(
-                      (200), selectedTypeDropDown, typeDropdownList, 0),
-                ),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  child: buildDropdownButton(double.infinity,
-                      selectedDetailDropDown, photoDetailTypeDropdownList, 1),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: 10, right: 10, top: 20, bottom: 10),
-                    child: buildLongTextField()),
-                Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: buildResisterButton(),
-                )
-              ],
-            )),
+              )),
+          Container(
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+            child: buildDropdownButton(
+                (200), selectedTypeDropDown, typeDropdownList, 0),
+          ),
+          Container(
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+            child: buildDropdownButton(double.infinity,
+                selectedDetailDropDown, photoDetailTypeDropdownList,
+                1),
+          ),
+          Padding(
+              padding: EdgeInsets.only(
+                  left: 10, right: 10, top: 20, bottom: 10),
+              child: buildLongTextField()),
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: buildResisterButton(),
+          )
+        ],
       ),
-    );
-
-    /*WillPopScope(
-        onWillPop: () async {
-          print('onWillPop');
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: buildAppbar(),
-          body: ,
-        )
-    );*/
+    ),);
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          print('onWillPop');
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: buildAppbar(),
-          body: SingleChildScrollView(
-            child: Container(
-                child: Column(
-                  children: [
-                    Divider(
-                      thickness: 1,
-                      height: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
-                      child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 5, bottom: 10),
-                        child: Container(
-                          height: 80,
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 5),
-                                child: buildOpenCameraContainer(),
-                              ),
-                              Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 5),
-                                    child: buildPhotoList(),
-                                  ))
-                            ],
-                          ),
-                        )),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      child: buildDropdownButton(
-                          (200), selectedTypeDropDown, typeDropdownList, 0),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      child: buildDropdownButton(double.infinity,
-                          selectedDetailDropDown, photoDetailTypeDropdownList,
-                          1),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 20, bottom: 10),
-                        child: buildLongTextField()),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20),
-                      child: buildResisterButton(),
-                    )
-                  ],
-                )),
-          ),
-        )
-    );
-  }*/
 
   Widget buildResisterButton() {
     return TextButton(
@@ -212,8 +127,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     );
   }
 
-  Widget buildDropdownButton(
-      double width, String value, List<String> list, int dropBoxStatus) {
+  Widget buildDropdownButton(double width, String value, List<String> list,
+      int dropBoxStatus) {
     return Padding(
       padding: EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Container(
@@ -371,7 +286,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(radius),
                 borderSide:
-                    BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
+                BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
             hintText: hint,
             isDense: true,
             contentPadding: EdgeInsets.all(padding)),
@@ -387,39 +302,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 blurRadius: 1,
                 offset: Offset(0, 2))
           ]),
-    );
-  }
-
-  Widget buildAppbar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.white,
-      title: Text(
-        '커뮤니티 글쓰기',
-        style: TextStyle(
-            color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-      centerTitle: true,
-      actions: [
-        IconButton(
-            onPressed: () {
-              print('IconButton onPressed');
-              Navigator.pop(context);
-
-              //print('IconButton onPressed');
-              //Navigator.pop(context);
-
-              /*Navigator.of(context).rou;
-              var navigatorState = Navigator.of(context);
-              final routes = navigatorState.routes;*/
-              //Navigator.of(context).pop();
-              //Navigator(context).pop();
-            },
-            icon: Icon(
-              Icons.close,
-              color: Colors.black,
-            ))
-      ],
     );
   }
 }

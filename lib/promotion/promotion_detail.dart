@@ -117,7 +117,9 @@ class _PromotionDetailSfw extends State<PromotionDetailSfw> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.chevron_left)),
+            IconButton(onPressed: () {
+              Navigator.pop(context);
+            }, icon: Icon(Icons.chevron_left)),
             Text(
               title,
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:grip/home.dart';
 import 'package:grip/category.dart';
 import 'package:grip/community/community.dart';
-import 'package:grip/myinfo.dart';
+import 'package:grip/myinfo/myinfo.dart';
 import 'package:grip/promotion/promotion.dart';
+import 'package:grip/sample.dart';
+import 'package:grip/util/bottom_navigation.dart';
+import 'package:grip/util/tap_item.dart';
+import 'package:grip/myinfo/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,8 +16,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  //static int _selectedIndex = 2;
   @override
   Widget build(BuildContext context) {
+    print('build');
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -35,106 +41,119 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  int _selectedIndex = 2;
-  final PageController _pageController = PageController();
-  int _currentPageIndex = 0;
+  var _currentTab = TabItem.HOME;
 
-  void _incrementCounter() {
+  void _selectTab(TabItem tabItem) {
     setState(() {
-      _counter++;
+      _currentTab = tabItem;
     });
   }
 
-  final List<String> images = [
-    'https://picsum.photos/200/300',
-    'https://picsum.photos/200',
-    'https://picsum.photos/id/237/200/300',
-    'https://picsum.photos/id/237/200/300',
-    'https://picsum.photos/id/237/200/300',
-  ];
+  void moveAnotherView(TabItem tabItem) {
+    print('moveAnotherView');
+    print('moveAnotherView ${tabItem.name}');
+    setState(() {
+      _currentTab = tabItem;
+    });
+  }
 
-  final colorCodes = [400, 100, 300, 200, 100];
-  final categoryData = ['웨딩촬영', '바프퐐영', '모델', '공간대여'];
-
-  final List<Widget> widgets = <Widget> [
-    Category(),
-    Promotion(),
-    Home(),
-    Community(),
-    MyInfo()
-  ];
+  Widget buildBody() {
+    switch (_currentTab) {
+      case TabItem.CATEGORY:
+        return Category();
+      case TabItem.PROMOTION:
+        return Promotion();
+      case TabItem.HOME:
+        return Home();
+      case TabItem.COMMUNITY:
+        return Community();
+      case TabItem.MyINFO:
+        return MyInfo(moveAnotherView);
+      default:
+        print('hello~');
+        return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> widgets = <Widget>[
+      Category(),
+      Promotion(),
+      Home(),
+      Community(),
+      MyInfo(moveAnotherView),
+      Login(),
+      //Login(),
+    ];
+
     return Scaffold(
-      body: widgets[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.abc,
-                color: Colors.black,
-              ),
-              label: '카테고리'),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.abc,
-                color: Colors.black,
-              ),
-              label: '프로모션'),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.abc,
-                color: Colors.black,
-              ),
-              label: '홈'),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.abc,
-                color: Colors.black,
-              ),
-              label: '커뮤니티'),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.abc,
-                color: Colors.black,
-              ),
-              label: '내정보'),
-        ],
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        unselectedFontSize: 8,
-        selectedFontSize: 8,
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.black,
-      ),
-    );
+        appBar: buildAppBar(),
+        //body: widgets[_currentTab.index],
+        body: buildBody(),
+        bottomNavigationBar: BottomNavigation(
+          currentTab: _currentTab,
+          onSelectTab: _selectTab,
+        ));
   }
 
-  /*AppBar createToolbar() {
+  AppBar buildAppBar() {
     return AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        bottom: PreferredSize(
+          child: Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.black,
+          ),
+          preferredSize: Size.fromHeight(4.0),
+        ),
         title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('GRIP'),
-        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              '000님',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-            ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+            Expanded(
+                flex: 7,
+                child: Text(
+                  getAppBarTitle(_currentTab.tap),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                )),
+            Expanded(
+                flex: 3,
+                child: Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '000님',
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w600),
+                        ),
+                        flex: 1,
+                      ),
+                      Expanded(
+                        child: IconButton(
+                          icon: Icon(Icons.settings),
+                          onPressed: () {
+                            //Navigator.pop(context);
+                            //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
+                          },
+                        ),
+                        flex: 1,
+                      )
+                    ],
+                  ),
+                ))
           ],
-        )
-      ],
-    ));
-  }*/
+        ));
+  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  String getAppBarTitle(String tap) {
+    if (_currentTab.tap == '홈') {
+      return 'GRIP';
+    } else if (_currentTab.tap == '카테고리') {
+      return '모든 카테고리';
+    }
+    return tap;
   }
 }

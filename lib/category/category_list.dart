@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
 
-class CategoryList extends StatelessWidget {
+class CategoryList extends StatefulWidget {
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: CategoryListSfw(),
-    );
-  }
+  State createState() => CategoryState();
 }
 
-class CategoryListSfw extends StatefulWidget {
-  @override
-  State createState() => _CategoryListSfw();
-}
-
-class _CategoryListSfw extends State<CategoryListSfw> {
+class CategoryState extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

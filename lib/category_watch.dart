@@ -3,32 +3,17 @@ import 'package:grip/category/category_primium_list.dart';
 import 'package:grip/category/category_primium_wide.dart';
 import 'package:grip/category/category_list.dart';
 
-class CategoryWatch extends StatelessWidget {
+class CategoryWatch extends StatefulWidget {
   final String title;
   final List<String> categoryList;
 
   const CategoryWatch(this.title, this.categoryList);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: CategoryWatchSfw(title, categoryList),
-    );
-  }
+  State createState() => CategoryWatchState();
 }
 
-class CategoryWatchSfw extends StatefulWidget {
-  final String title;
-  final List<String> categoryList;
-
-  const CategoryWatchSfw(this.title, this.categoryList);
-
-  @override
-  State createState() => _CategoryWatchSfw();
-}
-
-class _CategoryWatchSfw extends State<CategoryWatchSfw> {
+class CategoryWatchState extends State<CategoryWatch> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -131,10 +116,10 @@ class _CategoryWatchSfw extends State<CategoryWatchSfw> {
                             Expanded(
                                 flex: 8,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 5, right: 5, top: 5),
+                                  padding: EdgeInsets.only(
+                                      left: 5, right: 5, top: 5),
                                   child: Container(
                                     color: Colors.grey,
-
                                   ),
                                 )),
                             Expanded(
@@ -167,19 +152,27 @@ class _CategoryWatchSfw extends State<CategoryWatchSfw> {
 
   AppBar createToolbar(String title) {
     return AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.chevron_left)),
-            Text(
-              title,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-            ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-          ],
-        ));
+      elevation: 0,
+      backgroundColor: Colors.white,
+      leading: IconButton(onPressed: () {
+        Navigator.pop(context);
+      }, icon: Icon(Icons.chevron_left)),
+      centerTitle: true,
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+      ),
+      actions: [
+        IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+      ],
+      bottom: PreferredSize(
+        child: Container(
+          color: Colors.black,
+          height: 1.0,
+        ),
+        preferredSize: Size.fromHeight(4.0),
+      ),
+    );
   }
 
   Widget buildHorizontalCategory(List<String> list) {

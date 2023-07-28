@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:grip/community/community_register.dart';
+import 'package:grip/community/community_write.dart';
 
-class Community extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const CommunitySfw(),
-    );
-  }
-}
-
-class CommunitySfw extends StatefulWidget {
-  const CommunitySfw({super.key});
+class Community extends StatefulWidget {
+  const Community({Key? key}) : super(key: key);
 
   @override
-  State createState() => _CommunitySfw();
+  State createState() => CommunitySfw();
+
 }
 
-class _CommunitySfw extends State<CommunitySfw> {
+
+class CommunitySfw extends State<Community> {
   bool isPhotoReview = true;
   Color photoBackgroundColor = Colors.black;
   Color photoTextColor = Colors.white;
@@ -25,49 +19,85 @@ class _CommunitySfw extends State<CommunitySfw> {
   Color questionTextColor = Colors.black;
 
   @override
+  void initState() {
+    super.initState();
+    print('_CommunitySfw initState');
+  }
+
+  @override
+  void deactivate() {
+    print('Community deactivate');
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print('Community dispose');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print('_CommunitySfw');
-    return Scaffold(
-      appBar: buildAppBar(),
-      backgroundColor: Colors.white,
-      floatingActionButton: buildFloatingActionButton(),
-      body: Container(
-        child: Column(
-          children: [
-            buildDivider(3, 2),
-            Container(
-              width: double.infinity,
-              height: 100,
-              child: buildPhotoAndQuestion(),
-            ),
-            Container(
-              child: buildMiddleCategory(),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-              child: buildDivider(1.5, 1),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 10, top: 10, right: 10),
-              child: buildBottomCategory(),
-            ),
+    return Container(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              child: Column(
+                children: [
+                  //buildAppBar(),
+                  buildDivider(2, 1),
+                  Container(
+                    width: double.infinity,
+                    height: 100,
+                    child: buildPhotoAndQuestion(),
+                  ),
+                  Container(
+                    child: buildMiddleCategory(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 15),
+                    child: buildDivider(1.5, 1),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, top: 10, right: 10),
+                    child: buildBottomCategory(),
+                  ),
 
-            Expanded(
-              child: buildCommunityList(),
-            )
-            //buildCommunityList()
-          ],
-        ),
+                  Expanded(
+                    child: buildCommunityList(),
+                  )
+                  //buildCommunityList()
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 10, right: 10),
+              child: buildFloatingActionButton(context),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildFloatingActionButton() {
+  Widget buildFloatingActionButton(BuildContext context) {
     return CircleAvatar(
-      radius: 30,
-      backgroundColor: Colors.black,
-      child: IconButton(color: Colors.white,onPressed: (){}, icon: Icon(Icons.ac_unit)),
-    );
+        radius: 30,
+        backgroundColor: Colors.black,
+        child: IconButton(
+            color: Colors.white,
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => CommunityResister()));
+                  //MaterialPageRoute(builder: (_) => CommunityWrite()));
+            },
+            icon: Icon(Icons.ac_unit)));
   }
 
   Widget buildCommunityList() {
@@ -200,7 +230,10 @@ class _CommunitySfw extends State<CommunitySfw> {
           children: [
             Text(
               text,
-              style: TextStyle(fontSize: 12, color: textColor),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: textColor,
+                  fontWeight: FontWeight.normal),
             ),
             Padding(
               padding: EdgeInsets.only(left: 3),
@@ -289,7 +322,10 @@ class _CommunitySfw extends State<CommunitySfw> {
                       EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
                   child: Text(
                     name,
-                    style: TextStyle(fontSize: 12, color: Colors.black),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal),
                   ),
                 )),
           )
@@ -318,19 +354,27 @@ class _CommunitySfw extends State<CommunitySfw> {
     return Container();
   }
 
-  AppBar buildAppBar() {
+  /*AppBar buildAppBar() {
     return AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              '커뮤니티',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-            ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+            Expanded(
+                flex: 3,
+                child: Text(
+                  '커뮤니티',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                )),
+            Expanded(flex: 6, child: Container()),
+            Expanded(
+                flex: 1,
+                child: IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {},
+                ))
           ],
         ));
-  }
+  }*/
 }

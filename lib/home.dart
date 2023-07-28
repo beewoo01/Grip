@@ -6,15 +6,13 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const HomeSfw()
-    );
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const HomeSfw());
   }
 }
-
 
 class HomeSfw extends StatefulWidget {
   const HomeSfw({super.key});
@@ -22,9 +20,7 @@ class HomeSfw extends StatefulWidget {
   State<HomeSfw> createState() => _HomeSfw();
 }
 
-
 class _HomeSfw extends State<HomeSfw> {
-
   final List<String> images = [
     'https://picsum.photos/200/300',
     'https://picsum.photos/200',
@@ -39,7 +35,7 @@ class _HomeSfw extends State<HomeSfw> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: createToolbar(),
+      //appBar: createToolbar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -177,27 +173,26 @@ class _HomeSfw extends State<HomeSfw> {
         ),
       ),
     );
-
   }
 
-  AppBar createToolbar() {
+  /*AppBar createToolbar() {
     return AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('GRIP'),
+        Row(
           children: [
-            const Text('GRIP'),
-            Row(
-              children: [
-                const Text(
-                  '000님',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-              ],
-            )
+            const Text(
+              '000님',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+            ),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
           ],
-        ));
-  }
+        )
+      ],
+    ));
+  }*/
 
   Widget buildPageView() {
     return Container(
@@ -217,7 +212,7 @@ class _HomeSfw extends State<HomeSfw> {
                       width: double.infinity,
                       height: 400,
                       color: Colors.black,
-                      child: Image.network(
+                      child:  Image.network(
                         images[index],
                         fit: BoxFit.fitWidth,
                       ),
@@ -273,7 +268,7 @@ class _HomeSfw extends State<HomeSfw> {
               height: 50,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset('images/noimage.png'),
+                child: Image.asset('assets/images/noimage.png'),
               ),
             ),
             Padding(padding: EdgeInsets.only(top: 10)),
@@ -295,7 +290,7 @@ class _HomeSfw extends State<HomeSfw> {
     return Container(
       width: 50,
       height: 50,
-      child: Image.asset('images/noimage.png'),
+      child: Image.asset('assets/images/noimage.png'),
     );
   }
 
@@ -518,7 +513,6 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
-
   Widget buildFooter() {
     return Container(
       width: double.infinity,
@@ -532,6 +526,4 @@ class _HomeSfw extends State<HomeSfw> {
       ),
     );
   }
-
-
 }
