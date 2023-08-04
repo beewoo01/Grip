@@ -80,8 +80,13 @@ class ReservationState extends State<Reservation> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: buildTextField('추가문의', '내용을 입력해주세요'),
+                child: buildQuestion(),
               ),
+              
+              
+              Padding(padding: EdgeInsets.only(bottom: 100))
+
+
             ],
           ),
         ));
@@ -122,6 +127,35 @@ class ReservationState extends State<Reservation> {
     );
   }
 
+  Widget buildQuestion(){
+    return Container(
+      width: double.infinity,
+      height: 250,
+      decoration: BoxDecoration(
+          color: HexColor.fromHex("#EBEBEB"),
+          border: Border.all(color: HexColor.fromHex("#EBEBEB"), width: 0.0),
+          borderRadius: BorderRadius.circular(18.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(0, 2))
+          ]),
+      child: const TextField(
+        keyboardType: TextInputType.multiline,
+        maxLines: 8,
+        maxLength: 8 * 22,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            filled: true,
+            fillColor: Colors.transparent,
+            isDense: true,
+            hintText: '내용을 입력해주세요.'),
+      ),
+    );
+  }
+
   Widget buildFilmContainer(
       String title, String text, String value, List<String> items) {
     return SizedBox(
@@ -147,7 +181,7 @@ class ReservationState extends State<Reservation> {
                 child: DropdownButton(
                   underline: const SizedBox(),
                   isExpanded: true,
-                  value: value,
+                  value: '07:00 ~ 08:00',
                   items: items.map((String item) {
                     return DropdownMenuItem<String>(
                       value: item,
@@ -163,20 +197,7 @@ class ReservationState extends State<Reservation> {
                     }*/
                     });
                   },
-                )
-                /*Container(
-                  decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(3)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Text(
-                      text,
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  )),*/
-                ),
+                )),
           )
         ],
       ),
