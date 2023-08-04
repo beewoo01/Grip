@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.873" height="15.913" viewBox="0 0 22.873 15.913">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="22.873" height="15.913" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="반복_그리드_4" data-name="반복 그리드 4" clip-path="url(#clip-path)">
+    <g id="그룹_5507" data-name="그룹 5507" transform="translate(-1077.491 -3785.507)">
+      <path id="패스_10981" data-name="패스 10981" d="M1092.933,3791.219a3.516,3.516,0,1,0,3.514,3.515A3.517,3.517,0,0,0,1092.933,3791.219Z" fill="#616566" style="mix-blend-mode: color-burn;isolation: isolate"/>
+      <path id="패스_10982" data-name="패스 10982" d="M1098.505,3787.894h-19.157a1.859,1.859,0,0,0-1.857,1.858v9.817a1.854,1.854,0,0,0,1.857,1.851h19.157a1.853,1.853,0,0,0,1.859-1.851v-9.817A1.857,1.857,0,0,0,1098.505,3787.894Zm-13.448,3.55a.587.587,0,0,1-.592.588h-3.985a.59.59,0,0,1-.588-.588v-1.082a.592.592,0,0,1,.588-.592h3.985a.589.589,0,0,1,.592.592Zm7.876,8.331a5.042,5.042,0,1,1,5.039-5.041A5.042,5.042,0,0,1,1092.933,3799.775Z" fill="#616566" style="mix-blend-mode: color-burn;isolation: isolate"/>
+      <path id="패스_10983" data-name="패스 10983" d="M1083.009,3785.507h-.329a1.494,1.494,0,0,0-1.495,1.495h3.322A1.493,1.493,0,0,0,1083.009,3785.507Z" fill="#616566" style="mix-blend-mode: color-burn;isolation: isolate"/>
+    </g>
+  </g>
+</svg>

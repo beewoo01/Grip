@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/util/util.dart';
 
 class CommunityWrite extends StatefulWidget {
@@ -21,62 +22,60 @@ class CommunityWriteState extends State<CommunityWrite> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(child: Container(
-      child: Column(
-        children: [
-          //buildAppbar(),
-          Divider(
-            thickness: 1,
-            height: 1,
-            color: Colors.black,
-          ),
-          Padding(
-            padding:
-            EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
-            child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
-          ),
-          Padding(
-              padding: EdgeInsets.only(
-                  left: 10, right: 10, top: 5, bottom: 10),
-              child: Container(
-                height: 80,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 5),
-                      child: buildOpenCameraContainer(),
-                    ),
-                    Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 5),
-                          child: buildPhotoList(),
-                        ))
-                  ],
-                ),
-              )),
-          Container(
-            width: double.infinity,
-            alignment: Alignment.centerLeft,
-            child: buildDropdownButton(
-                (200), selectedTypeDropDown, typeDropdownList, 0),
-          ),
-          Container(
-            width: double.infinity,
-            alignment: Alignment.centerLeft,
-            child: buildDropdownButton(double.infinity,
-                selectedDetailDropDown, photoDetailTypeDropdownList,
-                1),
-          ),
-          Padding(
-              padding: EdgeInsets.only(
-                  left: 10, right: 10, top: 20, bottom: 10),
-              child: buildLongTextField()),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: buildResisterButton(),
-          )
-        ],
-      ),
+    return Material(child: Column(
+      children: [
+        //buildAppbar(),
+        const Divider(
+          thickness: 1,
+          height: 1,
+          color: Colors.black,
+        ),
+        Padding(
+          padding:
+          const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
+          child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
+        ),
+        Padding(
+            padding: const EdgeInsets.only(
+                left: 10, right: 10, top: 5, bottom: 10),
+            child: SizedBox(
+              height: 80,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: buildOpenCameraContainer(),
+                  ),
+                  Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: buildPhotoList(),
+                      ))
+                ],
+              ),
+            )),
+        Container(
+          width: double.infinity,
+          alignment: Alignment.centerLeft,
+          child: buildDropdownButton(
+              (200), selectedTypeDropDown, typeDropdownList, 0),
+        ),
+        Container(
+          width: double.infinity,
+          alignment: Alignment.centerLeft,
+          child: buildDropdownButton(double.infinity,
+              selectedDetailDropDown, photoDetailTypeDropdownList,
+              1),
+        ),
+        Padding(
+            padding: const EdgeInsets.only(
+                left: 10, right: 10, top: 20, bottom: 10),
+            child: buildLongTextField()),
+        Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: buildResisterButton(),
+        )
+      ],
     ),);
   }
 
@@ -84,17 +83,17 @@ class CommunityWriteState extends State<CommunityWrite> {
   Widget buildResisterButton() {
     return TextButton(
       onPressed: () {},
-      child: Padding(
+      style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+          backgroundColor: MaterialStateProperty.all(Colors.black)),
+      child: const Padding(
         padding: EdgeInsets.only(left: 10, right: 10),
         child: Text(
           '게시글 등록',
           style: TextStyle(color: Colors.white),
         ),
       ),
-      style: ButtonStyle(
-          shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-          backgroundColor: MaterialStateProperty.all(Colors.black)),
     );
   }
 
@@ -111,9 +110,9 @@ class CommunityWriteState extends State<CommunityWrite> {
                 color: Colors.black.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 1,
-                offset: Offset(0, 2))
+                offset: const Offset(0, 2))
           ]),
-      child: TextField(
+      child: const TextField(
         keyboardType: TextInputType.multiline,
         maxLines: 8,
         maxLength: 8 * 22,
@@ -130,7 +129,7 @@ class CommunityWriteState extends State<CommunityWrite> {
   Widget buildDropdownButton(double width, String value, List<String> list,
       int dropBoxStatus) {
     return Padding(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Container(
         width: width,
         decoration: BoxDecoration(
@@ -142,18 +141,18 @@ class CommunityWriteState extends State<CommunityWrite> {
                   color: Colors.black.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 1,
-                  offset: Offset(0, 2))
+                  offset: const Offset(0, 2))
             ]),
         child: Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10),
           child: DropdownButton(
-            underline: SizedBox(),
+            underline: const SizedBox(),
             isExpanded: true,
             value: value,
             items: list.map((String item) {
               return DropdownMenuItem<String>(
-                child: Text('$item'),
                 value: item,
+                child: Text('$item'),
               );
             }).toList(),
             onChanged: (dynamic value) {
@@ -179,7 +178,7 @@ class CommunityWriteState extends State<CommunityWrite> {
             itemCount: photoList.length,
             itemBuilder: (BuildContext context, int position) {
               return Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
+                padding: const EdgeInsets.only(left: 3, right: 3),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -187,7 +186,7 @@ class CommunityWriteState extends State<CommunityWrite> {
                     });
                   },
                   child: Padding(
-                    padding: EdgeInsets.only(top: 0, bottom: 0),
+                    padding: const EdgeInsets.only(top: 0, bottom: 0),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -198,14 +197,14 @@ class CommunityWriteState extends State<CommunityWrite> {
                           child: Container(
                             width: 15,
                             height: 15,
-                            child: Padding(
-                                padding: EdgeInsets.all(3),
-                                child: Image.asset(
-                                    'assets/images/close_icon.png')),
                             decoration: BoxDecoration(
                                 color: Colors.black,
                                 borderRadius: BorderRadius.circular(3.0),
                                 border: Border.all(width: 0.0)),
+                            child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Image.asset(
+                                    'assets/images/close_icon.png')),
                           ),
                         ),
                       ],
@@ -229,7 +228,7 @@ class CommunityWriteState extends State<CommunityWrite> {
                 color: Colors.black.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 1,
-                offset: Offset(0, 2))
+                offset: const Offset(0, 2))
           ]),
     );
   }
@@ -257,7 +256,7 @@ class CommunityWriteState extends State<CommunityWrite> {
                   color: Colors.black.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 1,
-                  offset: Offset(0, 2))
+                  offset: const Offset(0, 2))
             ]),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -265,11 +264,11 @@ class CommunityWriteState extends State<CommunityWrite> {
           children: [
             Transform.scale(
               scale: 0.8,
-              child: Icon(Icons.settings),
+              child: SvgPicture.asset('assets/images/category.svg'),
             ),
             Text(
               '${photoList.length}/10',
-              style: TextStyle(fontSize: 10),
+              style: const TextStyle(fontSize: 10),
             )
           ],
         ),
@@ -279,6 +278,17 @@ class CommunityWriteState extends State<CommunityWrite> {
 
   Widget buildTextField(double padding, double radius, String hint) {
     return Container(
+      decoration: BoxDecoration(
+          color: HexColor.fromHex("#EBEBEB"),
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(0, 2))
+          ]),
       child: TextField(
         decoration: InputDecoration(
             filled: true,
@@ -291,17 +301,6 @@ class CommunityWriteState extends State<CommunityWrite> {
             isDense: true,
             contentPadding: EdgeInsets.all(padding)),
       ),
-      decoration: BoxDecoration(
-          color: HexColor.fromHex("#EBEBEB"),
-          borderRadius: BorderRadius.circular(15.0),
-          border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(0, 2))
-          ]),
     );
   }
 }

@@ -1,16 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:grip/main.dart';
+//final homeKey = GlobalKey<NavigatorState>();
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const HomeSfw());
+    return Theme(
+        data: ThemeData(),
+        child: Navigator(
+          key: homeKey,
+          initialRoute: '/',
+          onGenerateRoute: (RouteSettings settings) {
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case '/':
+                builder = (BuildContext _) => const HomeSfw();
+                break;
+              /*case FeedDetail.route:
+            builder = (BuildContext _) {
+              final id = (settings.arguments as Map)['id'];
+              return FeedDetail(
+                feedId: id,
+              );
+            };
+            break;*/
+              default:
+                builder = (BuildContext _) => const HomeSfw();
+            }
+            return MaterialPageRoute(builder: builder, settings: settings);
+          },
+        ));
   }
 }
 
@@ -35,12 +57,12 @@ class _HomeSfw extends State<HomeSfw> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: createToolbar(),
+      appBar: buildAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
             buildPageView(),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 30),
             ),
             Container(
@@ -50,7 +72,7 @@ class _HomeSfw extends State<HomeSfw> {
                   children: [
                     Container(
                       width: double.infinity,
-                      child: Text(
+                      child: const Text(
                         'GRIP 프리미엄 Pro',
                         style: TextStyle(
                             color: Colors.white,
@@ -58,18 +80,18 @@ class _HomeSfw extends State<HomeSfw> {
                             fontSize: 18),
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 10)),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
                     Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Container(
                           width: double.infinity,
                           height: 250,
                           child: buildPremiumList()),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 10)),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
                   ],
                 )),
-            Padding(padding: EdgeInsets.only(top: 20)),
+            const Padding(padding: EdgeInsets.only(top: 20)),
             Container(
               width: double.infinity,
               height: 100,
@@ -82,15 +104,15 @@ class _HomeSfw extends State<HomeSfw> {
               child: buildPromotionBanner(),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildListContainer('웨딩 사진 촬영'),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildListContainer('최근 핫한 공간!!'),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildChipListAndContentList(
                   '이달의 인기 스냅촬영',
                   [
@@ -112,7 +134,7 @@ class _HomeSfw extends State<HomeSfw> {
                   300.0),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildChipListAndContentList(
                   '이달의 인기 영상촬영',
                   [
@@ -134,7 +156,7 @@ class _HomeSfw extends State<HomeSfw> {
                   200.0),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildChipListAndContentList(
                   '우리가 찾는 모델',
                   ['뷰티모델', '시니어모델', '일반인', 'MTOM', 'SG워너비', 'V.O.S', '먼데이키즈'],
@@ -148,7 +170,7 @@ class _HomeSfw extends State<HomeSfw> {
                   200.0),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildChipListAndContentList(
                   '이달의 인기 공간',
                   ['스튜디오', '대형공간', '상영관', '영화관', '무대', '노래방', '술집'],
@@ -162,11 +184,11 @@ class _HomeSfw extends State<HomeSfw> {
                   200.0),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildPhotoReview(),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 70),
               child: buildFooter(),
             ),
           ],
@@ -175,24 +197,54 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
-  /*AppBar createToolbar() {
+  AppBar buildAppBar() {
     return AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.black,
+          ),
+        ),
         title: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('GRIP'),
-        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              '000님',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-            ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+            const Expanded(
+                flex: 7,
+                child: Text(
+                  'GRIP',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
+                )),
+            Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                    const Expanded(
+                      flex: 1,
+                      child: Text(
+                        '000님',
+                        style: TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        icon: SvgPicture.asset('assets/images/category.svg'),
+                        onPressed: () {
+                          //Navigator.pop(context);
+                          //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
+                        },
+                      ),
+                    )
+                  ],
+                ))
           ],
-        )
-      ],
-    ));
-  }*/
+        ));
+  }
 
   Widget buildPageView() {
     return Container(
@@ -212,7 +264,7 @@ class _HomeSfw extends State<HomeSfw> {
                       width: double.infinity,
                       height: 400,
                       color: Colors.black,
-                      child:  Image.network(
+                      child: Image.network(
                         images[index],
                         fit: BoxFit.fitWidth,
                       ),
@@ -223,8 +275,8 @@ class _HomeSfw extends State<HomeSfw> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.chevron_left)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.chevron_right))
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left)),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right))
                 ],
               ),
             )
@@ -260,6 +312,7 @@ class _HomeSfw extends State<HomeSfw> {
         childAspectRatio: 1,
       ),
       itemCount: 4,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         return Column(
           children: [
@@ -271,10 +324,10 @@ class _HomeSfw extends State<HomeSfw> {
                 child: Image.asset('assets/images/noimage.png'),
               ),
             ),
-            Padding(padding: EdgeInsets.only(top: 10)),
+            const Padding(padding: EdgeInsets.only(top: 10)),
             Container(
               child: Padding(
-                padding: EdgeInsets.only(left: 5, right: 5),
+                padding: const EdgeInsets.only(left: 5, right: 5),
                 child: Text(categoryData[index]),
               ),
               decoration: BoxDecoration(
@@ -295,7 +348,7 @@ class _HomeSfw extends State<HomeSfw> {
   }
 
   Widget buildPromotionBanner() {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
@@ -318,9 +371,9 @@ class _HomeSfw extends State<HomeSfw> {
           children: [
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
+            IconButton(onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
           ],
         ),
         Container(
@@ -360,10 +413,10 @@ class _HomeSfw extends State<HomeSfw> {
           alignment: Alignment.centerLeft,
           child: Text(
             title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: 10)),
+        const Padding(padding: EdgeInsets.only(top: 10)),
         Container(
           width: double.infinity,
           height: 30,
@@ -372,9 +425,9 @@ class _HomeSfw extends State<HomeSfw> {
               return Center(
                 child: Container(
                   child: Padding(
-                    padding: EdgeInsets.only(left: 5, right: 5),
+                    padding: const EdgeInsets.only(left: 5, right: 5),
                     child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Text(
                         chipList[index],
                       ),
@@ -395,14 +448,14 @@ class _HomeSfw extends State<HomeSfw> {
             scrollDirection: Axis.horizontal,
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: 20)),
+        const Padding(padding: EdgeInsets.only(top: 20)),
         Container(
           width: double.infinity,
           height: contentHeight,
           child: ListView.separated(
             itemBuilder: (context, index) {
               return Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Column(
                     children: [
                       Container(
@@ -433,11 +486,11 @@ class _HomeSfw extends State<HomeSfw> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               '사진리뷰',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add_circle_outline))
+            IconButton(onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
           ],
         ),
         Container(
@@ -454,7 +507,7 @@ class _HomeSfw extends State<HomeSfw> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Container(
                             width: double.infinity - 5,
                             height: 150,
@@ -462,7 +515,7 @@ class _HomeSfw extends State<HomeSfw> {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(4),
                           child: Row(
                             children: [
                               Container(
@@ -475,7 +528,7 @@ class _HomeSfw extends State<HomeSfw> {
                                   ),
                                 ),
                               ),
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.all(4),
                                 child: Text(
                                   '닉네임',
@@ -485,7 +538,7 @@ class _HomeSfw extends State<HomeSfw> {
                             ],
                           ),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.all(4),
                           child: Text(
                             '안드로이드 안드로이드 안드로이드 안드로이드 안드로이드',
@@ -518,7 +571,7 @@ class _HomeSfw extends State<HomeSfw> {
       width: double.infinity,
       height: 150,
       color: Colors.grey,
-      child: Center(
+      child: const Center(
         child: Text(
           'footer',
           style: TextStyle(fontWeight: FontWeight.bold),

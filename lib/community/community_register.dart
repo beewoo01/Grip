@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/util/util.dart';
 import 'package:grip/main.dart';
 import 'package:grip/sample.dart';
@@ -8,6 +9,7 @@ class CommunityResister extends StatefulWidget {
 
   @override
   State createState() => _CommunityResisterSfw();
+  static const String route = '/community/write';
 
 }
 
@@ -28,30 +30,30 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             child: Column(
               children: [
                 buildAppbar(),
-                Divider(
+                const Divider(
                   thickness: 1,
                   height: 1,
                   color: Colors.black,
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
+                      const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
                   child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                         left: 10, right: 10, top: 5, bottom: 10),
-                    child: Container(
+                    child: SizedBox(
                       height: 80,
                       child: Row(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(right: 5),
+                            padding: const EdgeInsets.only(right: 5),
                             child: buildOpenCameraContainer(),
                           ),
                           Expanded(
                               child: Padding(
-                            padding: EdgeInsets.only(right: 5),
+                            padding: const EdgeInsets.only(right: 5),
                             child: buildPhotoList(),
                           ))
                         ],
@@ -70,116 +72,33 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                       selectedDetailDropDown, photoDetailTypeDropdownList, 1),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                         left: 10, right: 10, top: 20, bottom: 10),
                     child: buildLongTextField()),
                 Padding(
-                  padding: EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 20),
                   child: buildResisterButton(),
                 )
               ],
             )),
       ),
     );
-
-    /*WillPopScope(
-        onWillPop: () async {
-          print('onWillPop');
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: buildAppbar(),
-          body: ,
-        )
-    );*/
   }
-
-  /*@override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          print('onWillPop');
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: buildAppbar(),
-          body: SingleChildScrollView(
-            child: Container(
-                child: Column(
-                  children: [
-                    Divider(
-                      thickness: 1,
-                      height: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
-                      child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 5, bottom: 10),
-                        child: Container(
-                          height: 80,
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(right: 5),
-                                child: buildOpenCameraContainer(),
-                              ),
-                              Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 5),
-                                    child: buildPhotoList(),
-                                  ))
-                            ],
-                          ),
-                        )),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      child: buildDropdownButton(
-                          (200), selectedTypeDropDown, typeDropdownList, 0),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      child: buildDropdownButton(double.infinity,
-                          selectedDetailDropDown, photoDetailTypeDropdownList,
-                          1),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 20, bottom: 10),
-                        child: buildLongTextField()),
-                    Padding(
-                      padding: EdgeInsets.only(top: 20),
-                      child: buildResisterButton(),
-                    )
-                  ],
-                )),
-          ),
-        )
-    );
-  }*/
 
   Widget buildResisterButton() {
     return TextButton(
       onPressed: () {},
-      child: Padding(
+      style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+          backgroundColor: MaterialStateProperty.all(Colors.black)),
+      child: const Padding(
         padding: EdgeInsets.only(left: 10, right: 10),
         child: Text(
           '게시글 등록',
           style: TextStyle(color: Colors.white),
         ),
       ),
-      style: ButtonStyle(
-          shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-          backgroundColor: MaterialStateProperty.all(Colors.black)),
     );
   }
 
@@ -196,9 +115,9 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 color: Colors.black.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 1,
-                offset: Offset(0, 2))
+                offset: const Offset(0, 2))
           ]),
-      child: TextField(
+      child: const TextField(
         keyboardType: TextInputType.multiline,
         maxLines: 8,
         maxLength: 8 * 22,
@@ -215,7 +134,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   Widget buildDropdownButton(
       double width, String value, List<String> list, int dropBoxStatus) {
     return Padding(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Container(
         width: width,
         decoration: BoxDecoration(
@@ -227,18 +146,18 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                   color: Colors.black.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 1,
-                  offset: Offset(0, 2))
+                  offset: const Offset(0, 2))
             ]),
         child: Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10),
           child: DropdownButton(
-            underline: SizedBox(),
+            underline: const SizedBox(),
             isExpanded: true,
             value: value,
             items: list.map((String item) {
               return DropdownMenuItem<String>(
-                child: Text('$item'),
                 value: item,
+                child: Text(item),
               );
             }).toList(),
             onChanged: (dynamic value) {
@@ -264,7 +183,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             itemCount: photoList.length,
             itemBuilder: (BuildContext context, int position) {
               return Padding(
-                padding: EdgeInsets.only(left: 3, right: 3),
+                padding: const EdgeInsets.only(left: 3, right: 3),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -272,7 +191,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                     });
                   },
                   child: Padding(
-                    padding: EdgeInsets.only(top: 0, bottom: 0),
+                    padding: const EdgeInsets.only(top: 0, bottom: 0),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -283,14 +202,14 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                           child: Container(
                             width: 15,
                             height: 15,
-                            child: Padding(
-                                padding: EdgeInsets.all(3),
-                                child: Image.asset(
-                                    'assets/images/close_icon.png')),
                             decoration: BoxDecoration(
                                 color: Colors.black,
                                 borderRadius: BorderRadius.circular(3.0),
                                 border: Border.all(width: 0.0)),
+                            child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Image.asset(
+                                    'assets/images/close_icon.png')),
                           ),
                         ),
                       ],
@@ -314,7 +233,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 color: Colors.black.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 1,
-                offset: Offset(0, 2))
+                offset: const Offset(0, 2))
           ]),
     );
   }
@@ -342,7 +261,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                   color: Colors.black.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 1,
-                  offset: Offset(0, 2))
+                  offset: const Offset(0, 2))
             ]),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -350,11 +269,11 @@ class _CommunityResisterSfw extends State<CommunityResister> {
           children: [
             Transform.scale(
               scale: 0.8,
-              child: Icon(Icons.settings),
+              child: SvgPicture.asset('assets/images/camera.svg'),
             ),
             Text(
               '${photoList.length}/10',
-              style: TextStyle(fontSize: 10),
+              style: const TextStyle(fontSize: 10),
             )
           ],
         ),
@@ -364,6 +283,17 @@ class _CommunityResisterSfw extends State<CommunityResister> {
 
   Widget buildTextField(double padding, double radius, String hint) {
     return Container(
+      decoration: BoxDecoration(
+          color: HexColor.fromHex("#EBEBEB"),
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 1,
+                offset: const Offset(0, 2))
+          ]),
       child: TextField(
         decoration: InputDecoration(
             filled: true,
@@ -376,17 +306,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             isDense: true,
             contentPadding: EdgeInsets.all(padding)),
       ),
-      decoration: BoxDecoration(
-          color: HexColor.fromHex("#EBEBEB"),
-          borderRadius: BorderRadius.circular(15.0),
-          border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(0, 2))
-          ]),
     );
   }
 
@@ -394,7 +313,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     return AppBar(
       elevation: 0,
       backgroundColor: Colors.white,
-      title: Text(
+      title: const Text(
         '커뮤니티 글쓰기',
         style: TextStyle(
             color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
@@ -415,7 +334,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
               //Navigator.of(context).pop();
               //Navigator(context).pop();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.close,
               color: Colors.black,
             ))

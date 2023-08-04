@@ -1,14 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:grip/category/reservation.dart';
+import 'package:grip/category/space_rental_detail.dart';
 import 'category_watch.dart';
+import 'package:grip/main.dart';
 
-class Category extends StatefulWidget {
+class Category extends StatelessWidget {
   const Category({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+        data: ThemeData(),
+        child: Navigator(
+          key: categoryKey,
+          initialRoute: '/',
+          onGenerateRoute: (RouteSettings settings) {
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case '/':
+                builder = (BuildContext _) => const CategoryStf();
+                break;
+
+              case CategoryWatch.route:
+                builder = (BuildContext _) {
+                  print('title');
+                  final title = (settings.arguments as Map)['title'];
+                  print(title);
+                  final list = (settings.arguments as Map)['list'];
+
+                  return CategoryWatch(title : title, categoryList : list);
+                };
+                break;
+
+              case SpaceRentalDetail.route :
+                builder = (BuildContext _) {
+                  return const SpaceRentalDetail();
+                };
+                break;
+
+              case Reservation.route :
+                builder = (BuildContext _) {
+                  return const Reservation();
+                };
+                break;
+
+              default:
+                builder = (BuildContext _) => const CategoryStf();
+            }
+
+            return MaterialPageRoute(builder: builder, settings: settings);
+          },
+        ));
+  }
+}
+
+class CategoryStf extends StatefulWidget {
+  const CategoryStf({super.key});
 
   @override
   State createState() => CategoryState();
 }
 
-class CategoryState extends State<Category> {
+class CategoryState extends State<CategoryStf> {
   List<String> snapList = [
     '웨딩작가',
     '스냅작가',
@@ -41,25 +94,26 @@ class CategoryState extends State<Category> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        color: Colors.white,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: buildAppBar(),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 30, bottom: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: buildBox('스냅촬영', true, snapList),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: buildBox('영상촬영', false, videoList),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: buildBox('모델', false, modelList),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: buildBox('공간대여', false, spaceList),
             )
           ],
@@ -68,33 +122,43 @@ class CategoryState extends State<Category> {
     );
   }
 
+  AppBar buildAppBar() {
+    return AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          '모든 카테고리',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ));
+  }
+
   Widget buildBox(String title, bool isShowAllWatchButton, List<String> list) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border:
-              Border.all(width: 1, color: Color.fromARGB(255, 235, 235, 235)),
-          color: Color.fromARGB(255, 235, 235, 235)),
+          border: Border.all(
+              width: 1, color: const Color.fromARGB(255, 235, 235, 235)),
+          color: const Color.fromARGB(255, 235, 235, 235)),
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
+            padding:
+                const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 15),
                 ),
                 TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  CategoryWatch(title, list)));
+                      navigate(context, CategoryWatch.route,
+                          isRootNavigator: false,
+                          arguments: {'title': title, 'list': list});
                     },
-                    child: Text(
+                    child: const Text(
                       '전체보기',
                       style: TextStyle(color: Colors.black),
                     ))
@@ -105,23 +169,24 @@ class CategoryState extends State<Category> {
             if (list.length % 3 == 0) ...[
               for (int i = 0; i < (list.length / 3); i++) ...[
                 Padding(
-                  padding:
-                      EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 10),
+                  padding: const EdgeInsets.only(
+                      top: 5, left: 20, right: 20, bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       for (int j = i * 3; j < (i * 3 + 3); j++) ...[
                         if (j < list.length) ...[
                           Container(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              child: Text(list[j]),
-                            ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                   width: 1,
-                                  color: Color.fromARGB(255, 235, 235, 235)),
+                                  color:
+                                      const Color.fromARGB(255, 235, 235, 235)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Text(list[j]),
                             ),
                           )
                         ]
@@ -133,24 +198,25 @@ class CategoryState extends State<Category> {
             ] else ...[
               for (int i = 0; i < (list.length / 3) + 1; i++) ...[
                 Padding(
-                  padding:
-                      EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 10),
+                  padding: const EdgeInsets.only(
+                      top: 5, left: 20, right: 20, bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       for (int j = i * 3; j < (i * 3 + 3); j++) ...[
                         if (j < list.length) ...[
                           Container(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 5, right: 5),
-                              child: Text(list[j]),
-                            ),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                     width: 1,
-                                    color: Color.fromARGB(255, 235, 235, 235)),
+                                    color: const Color.fromARGB(
+                                        255, 235, 235, 235)),
                                 color: Colors.black),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Text(list[j]),
+                            ),
                           )
                           //Text('This is not /3')
                         ]
@@ -160,7 +226,7 @@ class CategoryState extends State<Category> {
                 ),
               ]
             ],
-            Padding(padding: EdgeInsets.only(bottom: 20)),
+            const Padding(padding: EdgeInsets.only(bottom: 20)),
           ]),
         ],
       ),

@@ -1,15 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/community/community_register.dart';
 import 'package:grip/community/community_write.dart';
+import 'package:grip/main.dart';
+
+class CommunityMenu extends StatelessWidget {
+  const CommunityMenu({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+        data: ThemeData(),
+        child: Navigator(
+          key: communityKey,
+          initialRoute: '/',
+          onGenerateRoute: (RouteSettings settings) {
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case '/':
+                builder = (BuildContext _) => const Community();
+                break;
+
+              case CommunityResister.route :
+                print('case CommunityResister.route');
+                builder = (BuildContext _) => const CommunityResister();
+                break;
+
+              default:
+                builder = (BuildContext _) => const Community();
+            }
+
+            return MaterialPageRoute(builder: builder, settings: settings);
+          },
+        ));
+  }
+}
 
 class Community extends StatefulWidget {
   const Community({Key? key}) : super(key: key);
 
   @override
   State createState() => CommunitySfw();
-
 }
-
 
 class CommunitySfw extends State<Community> {
   bool isPhotoReview = true;
@@ -19,71 +51,105 @@ class CommunitySfw extends State<Community> {
   Color questionTextColor = Colors.black;
 
   @override
-  void initState() {
-    super.initState();
-    print('_CommunitySfw initState');
-  }
-
-  @override
-  void deactivate() {
-    print('Community deactivate');
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    print('Community dispose');
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     print('_CommunitySfw');
-    return Container(
-      child: Stack(
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: Stack(
         children: [
           Align(
             alignment: Alignment.center,
-            child: Container(
-              child: Column(
-                children: [
-                  //buildAppBar(),
-                  buildDivider(2, 1),
-                  Container(
-                    width: double.infinity,
-                    height: 100,
-                    child: buildPhotoAndQuestion(),
-                  ),
-                  Container(
-                    child: buildMiddleCategory(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-                    child: buildDivider(1.5, 1),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10, top: 10, right: 10),
-                    child: buildBottomCategory(),
-                  ),
+            child: Column(
+              children: [
+                //buildAppBar(),
+                buildDivider(2, 1),
+                SizedBox(
+                  width: double.infinity,
+                  height: 100,
+                  child: buildPhotoAndQuestion(),
+                ),
+                Container(
+                  child: buildMiddleCategory(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                  child: buildDivider(1.5, 1),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+                  child: buildBottomCategory(),
+                ),
 
-                  Expanded(
-                    child: buildCommunityList(),
-                  )
-                  //buildCommunityList()
-                ],
-              ),
+                Expanded(
+                  child: buildCommunityList(),
+                ),
+
+                const Padding(padding: EdgeInsets.only(bottom: 60))
+                //buildCommunityList()
+              ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 10, right: 10),
-              child: buildFloatingActionButton(context),
-            ),
-          ),
+          Positioned(
+              bottom: 80,
+              right: 15,
+              child: buildFloatingActionButton(context)),
         ],
       ),
     );
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.black,
+          ),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Expanded(
+                flex: 7,
+                child: Text(
+                  '커뮤니티',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
+                )),
+            Expanded(
+                flex: 3,
+                child: Row(
+                  children: [
+                    const Expanded(
+                      flex: 1,
+                      child: Text(
+                        '000님',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        icon: SvgPicture.asset('assets/images/category.svg'),
+                        onPressed: () {
+                          //Navigator.pop(context);
+                          //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
+                        },
+                      ),
+                    )
+                  ],
+                ))
+          ],
+        ));
   }
 
   Widget buildFloatingActionButton(BuildContext context) {
@@ -93,11 +159,11 @@ class CommunitySfw extends State<Community> {
         child: IconButton(
             color: Colors.white,
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CommunityResister()));
-                  //MaterialPageRoute(builder: (_) => CommunityWrite()));
+              navigate(context, CommunityResister.route, isRootNavigator: false, arguments: {});
+              /*Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const CommunityResister()));*/
             },
-            icon: Icon(Icons.ac_unit)));
+            icon: const Icon(Icons.ac_unit)));
   }
 
   Widget buildCommunityList() {
@@ -111,8 +177,8 @@ class CommunitySfw extends State<Community> {
         itemCount: 10,
         itemBuilder: (BuildContext context, int position) {
           return Padding(
-            padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-            child: Container(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+            child: SizedBox(
                 width: double.infinity,
                 height: 100,
                 child: Column(
@@ -121,25 +187,26 @@ class CommunitySfw extends State<Community> {
                       child: Row(
                         children: [
                           Flexible(
+                            flex: 7,
                             child: Container(
                                 width: double.infinity,
                                 alignment: Alignment.topLeft,
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 5),
+                                  padding: const EdgeInsets.only(left: 5),
                                   child: Container(
                                     width: double.infinity,
                                     alignment: Alignment.topLeft,
                                     child: Column(
                                       children: [
                                         buildListText(
-                                            '${category} * ${detailCategory}',
+                                            '$category * $detailCategory',
                                             10,
                                             FontWeight.bold,
                                             1),
                                         buildListText(
                                             '$writer', 14, FontWeight.bold, 1),
                                         Padding(
-                                          padding: EdgeInsets.only(top: 1),
+                                          padding: const EdgeInsets.only(top: 1),
                                           child: buildListText(reviewContents,
                                               10, FontWeight.normal, 3),
                                         )
@@ -147,23 +214,20 @@ class CommunitySfw extends State<Community> {
                                     ),
                                   ),
                                 )),
-                            flex: 7,
                           ),
                           Flexible(
-                            child: Container(
-                              child: Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Container(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: Colors.grey,
-                                  ),
+                            flex: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
-                            flex: 3,
                           ),
                         ],
                       ),
@@ -199,7 +263,7 @@ class CommunitySfw extends State<Community> {
           GestureDetector(
             onTap: () {},
             child: Padding(
-              padding: EdgeInsets.only(right: 5),
+              padding: const EdgeInsets.only(right: 5),
               child: buildBottomCategoryItem(
                   Colors.black, Colors.white, Colors.black, '카테고리'),
             ),
@@ -207,7 +271,7 @@ class CommunitySfw extends State<Community> {
           GestureDetector(
             onTap: () {},
             child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
+              padding: const EdgeInsets.only(left: 5, right: 5),
               child: buildBottomCategoryItem(
                   Colors.black, Colors.black, Colors.white, '세부 카테고리'),
             ),
@@ -225,7 +289,7 @@ class CommunitySfw extends State<Community> {
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(color: borderColor, width: 1)),
       child: Padding(
-        padding: EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
+        padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
         child: Row(
           children: [
             Text(
@@ -236,7 +300,7 @@ class CommunitySfw extends State<Community> {
                   fontWeight: FontWeight.normal),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 3),
+              padding: const EdgeInsets.only(left: 3),
               child: Icon(
                 Icons.check_circle_outline,
                 size: 13.0,
@@ -259,7 +323,7 @@ class CommunitySfw extends State<Community> {
 
   Widget buildPhotoAndQuestion() {
     return Padding(
-      padding: EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: 10),
       child: Row(
         children: [
           TextButton(
@@ -302,14 +366,14 @@ class CommunitySfw extends State<Community> {
       child: Column(
         children: [
           Padding(
-              padding: EdgeInsets.only(left: 5, right: 5, bottom: 5),
+              padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
               child: Container(
                 width: 50,
                 height: 50,
                 color: Colors.grey,
               )),
           Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Container(
                 width: double.infinity,
                 alignment: Alignment.center,
@@ -319,10 +383,10 @@ class CommunitySfw extends State<Community> {
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
+                      const EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
                   child: Text(
                     name,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 12,
                         color: Colors.black,
                         fontWeight: FontWeight.normal),
@@ -354,7 +418,7 @@ class CommunitySfw extends State<Community> {
     return Container();
   }
 
-  /*AppBar buildAppBar() {
+/*AppBar buildAppBar() {
     return AppBar(
         elevation: 0,
         backgroundColor: Colors.white,

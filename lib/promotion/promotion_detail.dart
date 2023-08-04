@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class PromotionDetail extends StatelessWidget {
+/*class PromotionDetail extends StatelessWidget {
   final int index;
 
-  PromotionDetail(this.index);
+  const PromotionDetail({required Key key, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,18 +13,19 @@ class PromotionDetail extends StatelessWidget {
       home: PromotionDetailSfw(this.index),
     );
   }
-}
+}*/
 
-class PromotionDetailSfw extends StatefulWidget {
+class PromotionDetail extends StatefulWidget {
   final int index;
 
-  PromotionDetailSfw(this.index);
+  const PromotionDetail({Key? key, required this.index}) : super(key: key);
+  static const String route = '/promotion/detail';
 
   @override
   State createState() => _PromotionDetailSfw();
 }
 
-class _PromotionDetailSfw extends State<PromotionDetailSfw> {
+class _PromotionDetailSfw extends State<PromotionDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,29 +35,29 @@ class _PromotionDetailSfw extends State<PromotionDetailSfw> {
           child: Center(
         child: Column(
           children: [
-            Divider(
+            const Divider(
               thickness: 2,
               height: 2,
               color: Colors.black,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 10),
               child: Container(
                 width: double.infinity,
                 height: 50,
                 alignment: Alignment.centerLeft,
-                child: Text(
+                child: const Text(
                   '프로모션 > 상세페이지',
                   style: TextStyle(fontSize: 12),
                 ),
               ),
             ),
-            Divider(
+            const Divider(
               thickness: 2,
               height: 1,
               color: Colors.black,
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 10),
               child: Text(
                 '제목을 입력하세요',
@@ -63,7 +65,7 @@ class _PromotionDetailSfw extends State<PromotionDetailSfw> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20),
               child: Text(
                 textAlign: TextAlign.center,
@@ -76,19 +78,19 @@ class _PromotionDetailSfw extends State<PromotionDetailSfw> {
               height: 150,
               color: Colors.grey,
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 20),
               child: Text(
                 '당첨자 발표',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
-            Text(
+            const Text(
               '해당 이벤트에 참여해주신 모든 분께 감사드립니다.\n당첨되신 분께는 개별 안내드릴 예정입니다.',
               textAlign: TextAlign.center,
               style: TextStyle(),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 10),
               child: Text(
                 '5월 개인 프로필 퐐영 50% 할인 (1명)\n000094s@naver.com (0*0님)',
@@ -97,7 +99,7 @@ class _PromotionDetailSfw extends State<PromotionDetailSfw> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               child: Container(
                 width: double.infinity,
                 height: 150,
@@ -119,12 +121,12 @@ class _PromotionDetailSfw extends State<PromotionDetailSfw> {
           children: [
             IconButton(onPressed: () {
               Navigator.pop(context);
-            }, icon: Icon(Icons.chevron_left)),
+            }, icon: const Icon(Icons.chevron_left)),
             Text(
               title,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+            IconButton(onPressed: () {}, icon: SvgPicture.asset('assets/images/category.svg')),
           ],
         ));
   }

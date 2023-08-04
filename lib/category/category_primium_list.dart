@@ -26,20 +26,20 @@ class _CategoryListBodySfw extends State<CategoryListBodySfw> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 10, left: 10),
+              padding: const EdgeInsets.only(top: 10, left: 10),
               child: Container(
-                child: Text(
+                alignment: Alignment.centerLeft,
+                child: const Text(
                   'GRIP 프리미엄 pro',
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
-                alignment: Alignment.centerLeft,
               ),
             ),
             Container(
-              padding: EdgeInsets.only(top: 10),
+              padding: const EdgeInsets.only(top: 10),
               width: double.infinity,
               height: 300,
               child: buildList(),
@@ -56,7 +56,7 @@ class _CategoryListBodySfw extends State<CategoryListBodySfw> {
       itemCount: 10,
       itemBuilder: (BuildContext context, int position) {
         return Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Container(
               width: 220,
               clipBehavior: Clip.hardEdge,
@@ -83,20 +83,20 @@ class _CategoryListBodySfw extends State<CategoryListBodySfw> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(left: 10),
                               child: Container(
                                 width: double.infinity,
-                                child: Text(
+                                child: const Text(
                                   '000웨딩',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(left: 10),
                               child: Container(
                                 width: double.infinity,
-                                child: Text(
+                                child: const Text(
                                   '상품 설명 제목입니다.',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
