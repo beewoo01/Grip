@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:grip/api/ApiService.dart';
 import 'package:grip/main.dart';
 import 'package:grip/myinfo/find_account.dart';
 import 'package:grip/util/util.dart';
@@ -54,7 +55,9 @@ class LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  ApiService().login('test@test.com', '1234');
+                },
                 style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     shape: const RoundedRectangleBorder(

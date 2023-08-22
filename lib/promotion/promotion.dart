@@ -9,37 +9,39 @@ class Promotion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(data: ThemeData(), child: Navigator(
-      key: promotionKey,
-      initialRoute: '/',
-      onGenerateRoute: (RouteSettings settings) {
-        WidgetBuilder builder;
-        switch(settings.name) {
-          case '/' :
-            builder = (BuildContext _) => const PromotionSfw();
-            break;
+    return Theme(
+        data: ThemeData(),
+        child: Navigator(
+          key: promotionKey,
+          initialRoute: '/',
+          onGenerateRoute: (RouteSettings settings) {
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case '/':
+                builder = (BuildContext _) => const PromotionSfw();
+                break;
 
-          case PromotionDetail.route :
-            builder = (BuildContext _) {
-              final index = (settings.arguments as Map)['index'];
-              return PromotionDetail(index: index);
-            };
-            break;
+              case PromotionDetail.route:
+                builder = (BuildContext _) {
+                  final index = (settings.arguments as Map)['index'];
+                  return PromotionDetail(index: index);
+                };
+                break;
 
-          default :
-            builder = (BuildContext _) => const PromotionSfw();
-        }
-        return MaterialPageRoute(builder: builder, settings: settings);
-      },
-    ));
+              default:
+                builder = (BuildContext _) => const PromotionSfw();
+            }
+            return MaterialPageRoute(builder: builder, settings: settings);
+          },
+        ));
   }
 }
 
 class PromotionSfw extends StatefulWidget {
   const PromotionSfw({super.key});
+
   @override
   State createState() => PromotionState();
-
 }
 
 class PromotionState extends State<PromotionSfw> {
@@ -52,7 +54,8 @@ class PromotionState extends State<PromotionSfw> {
         6,
         (index) => GestureDetector(
               onTap: () {
-                navigate(context, PromotionDetail.route, isRootNavigator: false, arguments: {'index' : index});
+                navigate(context, PromotionDetail.route,
+                    isRootNavigator: false, arguments: {'index': index});
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -62,11 +65,24 @@ class PromotionState extends State<PromotionSfw> {
                 margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 child: SizedBox(
                   height: 280,
-                  child: Center(
-                      child: Text(
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.grey.shade300,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          'assets/images/writer/작가$index.jpg',
+                          fit: BoxFit.fill,
+                        ),
+                      )
+
+                      /*Text(
                     "Page $index",
                     style: const TextStyle(color: Colors.indigo),
-                  )),
+                  )*/
+                      ),
                 ),
               ),
             ));
@@ -105,14 +121,14 @@ class PromotionState extends State<PromotionSfw> {
           ),
           SliverList(
               delegate:
-              SliverChildBuilderDelegate((BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                  child: Container(
-                    child: buildContainer(),
-                  ),
-                );
-              }, childCount: promotionListLength)),
+                  SliverChildBuilderDelegate((BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+              child: Container(
+                child: buildContainer(index),
+              ),
+            );
+          }, childCount: promotionListLength)),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -125,14 +141,16 @@ class PromotionState extends State<PromotionSfw> {
                 child: const Text(
                   'Read More',
                   style: TextStyle(
-                      color: Colors.black, decoration: TextDecoration.underline),
+                      color: Colors.black,
+                      decoration: TextDecoration.underline),
                 ),
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 50),
+              padding: const EdgeInsets.only(
+                  left: 10, right: 10, top: 20, bottom: 50),
               child: SizedBox(
                 width: double.infinity,
                 height: 250,
@@ -140,17 +158,15 @@ class PromotionState extends State<PromotionSfw> {
               ),
             ),
           ),
-
         ],
       ),
-    )
-
-      ;
+    );
   }
 
   Widget buildHorizontalListView() {
     return ListView.builder(
         scrollDirection: Axis.horizontal,
+        itemCount: 10,
         itemBuilder: (BuildContext context, int position) {
           return Padding(
             padding: const EdgeInsets.all(5),
@@ -162,7 +178,11 @@ class PromotionState extends State<PromotionSfw> {
                   Container(
                     width: 150,
                     height: 150,
-                    color: Colors.grey,
+                    color: Colors.red,
+                    child: Image.asset(
+                      'assets/images/writer/작가$position.jpg',
+                      fit: BoxFit.fill,
+                    ),
                   ),
                   const Text('000 작가',
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -181,13 +201,17 @@ class PromotionState extends State<PromotionSfw> {
         });
   }
 
-  Widget buildContainer() {
+  Widget buildContainer(int index) {
     return Column(
       children: [
         Container(
           color: Colors.grey,
           width: double.infinity,
           height: 200,
+          child: Image.asset(
+            'assets/images/writer/작가$index.jpg',
+            fit: BoxFit.fill,
+          ),
         ),
         const Padding(padding: EdgeInsets.only(top: 5)),
         const Text(
@@ -242,7 +266,6 @@ class PromotionState extends State<PromotionSfw> {
       ],
     );
   }
-
 
   AppBar buildAppBar() {
     return AppBar(

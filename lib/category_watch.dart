@@ -40,7 +40,7 @@ class CategoryWatchState extends State<CategoryWatch> {
                 child: buildHorizontalCategory(widget.categoryList),
               ),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: SizedBox(
                 width: double.infinity,
                 height: 370,
@@ -117,6 +117,7 @@ class CategoryWatchState extends State<CategoryWatch> {
                                 width: double.infinity,
                                 height: 200,
                                 color: Colors.grey,
+                                child: Image.asset('assets/images/movie/$index.jpg', fit: BoxFit.fill,),
                               ),
                             ),
                             const Padding(

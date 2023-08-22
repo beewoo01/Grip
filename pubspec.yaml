@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   smooth_page_indicator: ^1.0.0+2
   flutter_svg: 2.0.7
+  http: 1.1.0
+  # add this line to your dependencies
+  fluttertoast: ^8.2.2
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +64,13 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/weding/
+    - assets/images/bodyprofile/
+    - assets/images/model/
+    - assets/images/snap/
+    - assets/images/studio/
+    - assets/images/writer/
+    - assets/images/movie/
 
   # To add assets to your application, add an assets section, like this:
 #   assets:

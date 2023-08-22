@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/home.dart';
 import 'package:grip/category.dart';
 import 'package:grip/community/community.dart';
+import 'package:grip/myinfo/account_repository.dart';
 import 'package:grip/myinfo/myinfo.dart';
 import 'package:grip/promotion/promotion.dart';
 import 'package:grip/sample.dart';
@@ -12,9 +13,16 @@ import 'package:grip/util/bottom_navigation.dart';
 import 'package:grip/util/menu_item.dart';
 import 'package:grip/util/tap_item.dart';
 import 'package:grip/myinfo/login.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => AccountRepository()),
+    ],
+      child: const MyApp(),
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -30,9 +38,9 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: NavBarHandler()
-        //const MyHomePage(title: 'Flutter Demo Home Page'),
-        );
+        home: const NavBarHandler()
+      //const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
   }
 }
 

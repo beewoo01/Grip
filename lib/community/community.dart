@@ -21,7 +21,7 @@ class CommunityMenu extends StatelessWidget {
                 builder = (BuildContext _) => const Community();
                 break;
 
-              case CommunityResister.route :
+              case CommunityResister.route:
                 print('case CommunityResister.route');
                 builder = (BuildContext _) => const CommunityResister();
                 break;
@@ -90,9 +90,7 @@ class CommunitySfw extends State<Community> {
             ),
           ),
           Positioned(
-              bottom: 80,
-              right: 15,
-              child: buildFloatingActionButton(context)),
+              bottom: 80, right: 15, child: buildFloatingActionButton(context)),
         ],
       ),
     );
@@ -159,7 +157,8 @@ class CommunitySfw extends State<Community> {
         child: IconButton(
             color: Colors.white,
             onPressed: () {
-              navigate(context, CommunityResister.route, isRootNavigator: false, arguments: {});
+              navigate(context, CommunityResister.route,
+                  isRootNavigator: false, arguments: {});
               /*Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const CommunityResister()));*/
             },
@@ -167,6 +166,20 @@ class CommunitySfw extends State<Community> {
   }
 
   Widget buildCommunityList() {
+    final List<String> images = [
+      'https://picsum.photos/200/300',
+      'https://picsum.photos/200',
+      'https://picsum.photos/id/31/3264/4912',
+      'https://picsum.photos/id/32/4032/3024',
+      'https://picsum.photos/id/33/5000/3333',
+      'https://picsum.photos/id/34/3872/2592',
+      'https://picsum.photos/id/35/2758/3622',
+      'https://picsum.photos/id/36/4179/2790',
+      'https://picsum.photos/id/37/2000/133',
+      'https://picsum.photos/id/38/1280/960',
+      'https://picsum.photos/id/39/3456/2304',
+    ];
+
     String category = '스냅촬영';
     String detailCategory = '웨딩작가';
     String writer = '000작가';
@@ -204,9 +217,10 @@ class CommunitySfw extends State<Community> {
                                             FontWeight.bold,
                                             1),
                                         buildListText(
-                                            '$writer', 14, FontWeight.bold, 1),
+                                            writer, 14, FontWeight.bold, 1),
                                         Padding(
-                                          padding: const EdgeInsets.only(top: 1),
+                                          padding:
+                                              const EdgeInsets.only(top: 1),
                                           child: buildListText(reviewContents,
                                               10, FontWeight.normal, 3),
                                         )
@@ -225,6 +239,13 @@ class CommunitySfw extends State<Community> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: Colors.grey,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    images[position],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
@@ -352,15 +373,15 @@ class CommunitySfw extends State<Community> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(child: buildMiddleCategoryBox(0, '스냅촬영')),
-        Expanded(child: buildMiddleCategoryBox(1, '영상촬영')),
-        Expanded(child: buildMiddleCategoryBox(2, '모델')),
-        Expanded(child: buildMiddleCategoryBox(3, '공간대여')),
+        Expanded(child: buildMiddleCategoryBox(0, '스냅촬영', 'snap/0.jpg')),
+        Expanded(child: buildMiddleCategoryBox(1, '영상촬영', 'movie/0.jpg')),
+        Expanded(child: buildMiddleCategoryBox(2, '모델', 'model/0.jpg')),
+        Expanded(child: buildMiddleCategoryBox(3, '공간대여', 'studio/0.jpg')),
       ],
     );
   }
 
-  Widget buildMiddleCategoryBox(int position, String name) {
+  Widget buildMiddleCategoryBox(int position, String name, String path) {
     return GestureDetector(
       onTap: () {},
       child: Column(
@@ -370,7 +391,17 @@ class CommunitySfw extends State<Community> {
               child: Container(
                 width: 50,
                 height: 50,
-                color: Colors.grey,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.grey,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    'assets/images/$path',
+                    fit: BoxFit.fill,
+                  ),
+                ),
               )),
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
@@ -382,8 +413,8 @@ class CommunitySfw extends State<Community> {
                   color: Colors.grey,
                 ),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 5, right: 5, top: 3, bottom: 3),
+                  padding: const EdgeInsets.only(
+                      left: 5, right: 5, top: 3, bottom: 3),
                   child: Text(
                     name,
                     style: const TextStyle(

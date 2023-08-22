@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:grip/myinfo/account_repository.dart';
 import 'package:grip/util/util.dart';
+import 'package:provider/provider.dart';
 
 class Reservation extends StatefulWidget {
   const Reservation({super.key});
@@ -10,8 +12,12 @@ class Reservation extends StatefulWidget {
 }
 
 class ReservationState extends State<Reservation> {
+
+
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: buildAppBar(),
@@ -82,11 +88,26 @@ class ReservationState extends State<Reservation> {
                 padding: const EdgeInsets.only(top: 10),
                 child: buildQuestion(),
               ),
-              
-              
-              Padding(padding: EdgeInsets.only(bottom: 100))
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: OutlinedButton(
+                  onPressed: () {
+                    //navigate(context, Reservation.route, isRootNavigator: false);
 
-
+                  },
+                  style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      side: const BorderSide(color: Colors.black, width: 0.8)),
+                  child: const Text(
+                    '예약하기',
+                    style: TextStyle(color: Colors.black, fontSize: 20),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(bottom: 100))
             ],
           ),
         ));
@@ -127,33 +148,46 @@ class ReservationState extends State<Reservation> {
     );
   }
 
-  Widget buildQuestion(){
+  Widget buildQuestion() {
     return Container(
-      width: double.infinity,
-      height: 250,
-      decoration: BoxDecoration(
-          color: HexColor.fromHex("#EBEBEB"),
-          border: Border.all(color: HexColor.fromHex("#EBEBEB"), width: 0.0),
-          borderRadius: BorderRadius.circular(18.0),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, 2))
-          ]),
-      child: const TextField(
-        keyboardType: TextInputType.multiline,
-        maxLines: 8,
-        maxLength: 8 * 22,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            filled: true,
-            fillColor: Colors.transparent,
-            isDense: true,
-            hintText: '내용을 입력해주세요.'),
-      ),
-    );
+        width: double.infinity,
+        height: 200,
+        decoration: BoxDecoration(
+            color: HexColor.fromHex("#EBEBEB"),
+            border: Border.all(color: HexColor.fromHex("#EBEBEB"), width: 0.0),
+            borderRadius: BorderRadius.circular(18.0),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 1,
+                  offset: const Offset(0, 2))
+            ]),
+        child: const Column(
+          children: [
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10, left: 10),
+                  child: Text(
+                    '추가문의',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                )),
+            TextField(
+              keyboardType: TextInputType.multiline,
+              maxLines: 8,
+              maxLength: 8 * 22,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  isDense: true,
+                  hintText: '내용을 입력해주세요.'),
+              style: TextStyle(fontSize: 12),
+            ),
+          ],
+        ));
   }
 
   Widget buildFilmContainer(

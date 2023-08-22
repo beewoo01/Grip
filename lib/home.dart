@@ -70,9 +70,9 @@ class _HomeSfw extends State<HomeSfw> {
                 color: Colors.black,
                 child: Column(
                   children: [
-                    Container(
+                    const SizedBox(
                       width: double.infinity,
-                      child: const Text(
+                      child: Text(
                         'GRIP 프리미엄 Pro',
                         style: TextStyle(
                             color: Colors.white,
@@ -83,7 +83,7 @@ class _HomeSfw extends State<HomeSfw> {
                     const Padding(padding: EdgeInsets.only(top: 10)),
                     Padding(
                       padding: const EdgeInsets.all(5),
-                      child: Container(
+                      child: SizedBox(
                           width: double.infinity,
                           height: 250,
                           child: buildPremiumList()),
@@ -92,7 +92,7 @@ class _HomeSfw extends State<HomeSfw> {
                   ],
                 )),
             const Padding(padding: EdgeInsets.only(top: 20)),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 100,
               child: buildCategoryGrid(),
@@ -105,11 +105,11 @@ class _HomeSfw extends State<HomeSfw> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              child: buildListContainer('웨딩 사진 촬영'),
+              child: buildListContainer('웨딩 사진 촬영', 'weding'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              child: buildListContainer('최근 핫한 공간!!'),
+              child: buildListContainer('최근 핫한 공간!!', 'studio'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -131,7 +131,8 @@ class _HomeSfw extends State<HomeSfw> {
                     'image4',
                   ],
                   200.0,
-                  300.0),
+                  300.0,
+                  'snap'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -153,7 +154,8 @@ class _HomeSfw extends State<HomeSfw> {
                     'image4',
                   ],
                   250.0,
-                  200.0),
+                  200.0,
+                  'bodyprofile'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -167,7 +169,8 @@ class _HomeSfw extends State<HomeSfw> {
                     'image4',
                   ],
                   250.0,
-                  200.0),
+                  200.0,
+                  'model'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -181,14 +184,16 @@ class _HomeSfw extends State<HomeSfw> {
                     'image4',
                   ],
                   250.0,
-                  200.0),
+                  200.0,
+                  'studio'),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
               child: buildPhotoReview(),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 70),
+              padding: const EdgeInsets.only(
+                  top: 10, left: 10, right: 10, bottom: 70),
               child: buildFooter(),
             ),
           ],
@@ -216,7 +221,10 @@ class _HomeSfw extends State<HomeSfw> {
                 flex: 7,
                 child: Text(
                   'GRIP',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
                 )),
             Expanded(
                 flex: 3,
@@ -227,7 +235,9 @@ class _HomeSfw extends State<HomeSfw> {
                       child: Text(
                         '000님',
                         style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w600, color: Colors.black),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
                       ),
                     ),
                     Expanded(
@@ -253,7 +263,7 @@ class _HomeSfw extends State<HomeSfw> {
         color: Colors.grey,
         child: Stack(
           children: [
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 400,
               child: PageView.builder(
@@ -275,8 +285,10 @@ class _HomeSfw extends State<HomeSfw> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_left)),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.chevron_right))
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.chevron_left)),
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.chevron_right))
                 ],
               ),
             )
@@ -290,7 +302,13 @@ class _HomeSfw extends State<HomeSfw> {
         return Container(
           width: 200,
           height: 250,
-          color: Colors.amber[colorCodes[index]],
+          color: Colors.grey,
+          child: Image.asset(
+            'assets/images/weding/$index.jpg',
+            fit: BoxFit.fill,
+          ),
+
+          //color: Colors.amber[colorCodes[index]],
         );
       },
       separatorBuilder: (context, index) => Container(
@@ -316,22 +334,25 @@ class _HomeSfw extends State<HomeSfw> {
       itemBuilder: (BuildContext context, int index) {
         return Column(
           children: [
-            Container(
+            SizedBox(
               width: 50,
               height: 50,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset('assets/images/noimage.png'),
+                child: Image.asset(
+                  'assets/images/weding/$index.jpg',
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
             const Padding(padding: EdgeInsets.only(top: 10)),
             Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20), color: Colors.grey),
               child: Padding(
                 padding: const EdgeInsets.only(left: 5, right: 5),
                 child: Text(categoryData[index]),
               ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20), color: Colors.grey),
             )
           ],
         );
@@ -340,7 +361,7 @@ class _HomeSfw extends State<HomeSfw> {
   }
 
   Widget buildCategory() {
-    return Container(
+    return SizedBox(
       width: 50,
       height: 50,
       child: Image.asset('assets/images/noimage.png'),
@@ -363,7 +384,7 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
-  Widget buildListContainer(String title) {
+  Widget buildListContainer(String title, String folder) {
     return Column(
       children: [
         Row(
@@ -373,10 +394,11 @@ class _HomeSfw extends State<HomeSfw> {
               title,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
+            IconButton(
+                onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
           ],
         ),
-        Container(
+        SizedBox(
           width: double.infinity,
           height: 350,
           child: ListView.separated(
@@ -386,7 +408,12 @@ class _HomeSfw extends State<HomeSfw> {
                   Container(
                     width: 250,
                     height: 320,
-                    color: Colors.amber[colorCodes[index]],
+                    color: Colors.grey,
+                    child: Image.asset(
+                      'assets/images/$folder/$index.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                    //color: Colors.amber[colorCodes[index]],
                   ),
                   Text(title)
                 ],
@@ -405,8 +432,13 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
-  Widget buildChipListAndContentList(String title, List chipList,
-      List contentList, double contentWidth, double contentHeight) {
+  Widget buildChipListAndContentList(
+      String title,
+      List chipList,
+      List contentList,
+      double contentWidth,
+      double contentHeight,
+      String folder) {
     return Column(
       children: [
         Align(
@@ -417,13 +449,16 @@ class _HomeSfw extends State<HomeSfw> {
           ),
         ),
         const Padding(padding: EdgeInsets.only(top: 10)),
-        Container(
+        SizedBox(
           width: double.infinity,
           height: 30,
           child: ListView.separated(
             itemBuilder: (context, index) {
               return Center(
                 child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.grey),
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5, right: 5),
                     child: Padding(
@@ -433,9 +468,6 @@ class _HomeSfw extends State<HomeSfw> {
                       ),
                     ),
                   ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey),
                 ),
               );
             },
@@ -449,7 +481,7 @@ class _HomeSfw extends State<HomeSfw> {
           ),
         ),
         const Padding(padding: EdgeInsets.only(top: 20)),
-        Container(
+        SizedBox(
           width: double.infinity,
           height: contentHeight,
           child: ListView.separated(
@@ -461,7 +493,11 @@ class _HomeSfw extends State<HomeSfw> {
                       Container(
                         width: contentWidth,
                         height: contentHeight - 30,
-                        color: Colors.blue,
+                        color: Colors.grey,
+                        child: Image.asset(
+                          'assets/images/$folder/$index.jpg',
+                          fit: BoxFit.fill,
+                        ),
                       ),
                       Text('item ${contentList[index]}')
                     ],
@@ -490,73 +526,91 @@ class _HomeSfw extends State<HomeSfw> {
               '사진리뷰',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
+            IconButton(
+                onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
           ],
         ),
-        Container(
+        SizedBox(
           width: double.infinity,
-          height: 230,
+          height: 250,
           child: ListView.separated(
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  Container(
-                    width: 150,
-                    height: 230,
-                    color: Colors.amber[colorCodes[index]],
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Container(
-                            width: double.infinity - 5,
-                            height: 150,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                child: ClipOval(
-                                  child: Image.network(
-                                    images[index],
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                  Padding(
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 10, bottom: 10),
+                      child: Container(
+                        width: 150,
+                        height: 230,
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black,
+                                  offset: Offset(1, 1),
+                                  blurRadius: 0.1,
+                                  spreadRadius: 0.1),
+                            ]),
+                        /*decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(
+                          color: Colors.black,
+                          offset: Offset(1, 1),
+                          blurRadius: 0.1,
+                          spreadRadius: 0.0)
+                    ]),*/
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Container(
+                                width: double.infinity - 5,
+                                height: 150,
+                                color: Colors.grey,
                               ),
-                              const Padding(
-                                padding: EdgeInsets.all(4),
-                                child: Text(
-                                  '닉네임',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                              )
-                            ],
-                          ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 30,
+                                    height: 30,
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        images[index],
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.all(4),
+                                    child: Text(
+                                      '닉네임',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: Text(
+                                '안드로이드 안드로이드 안드로이드 안드로이드 안드로이드',
+                                style: TextStyle(fontSize: 10),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            )
+                          ],
                         ),
-                        const Padding(
-                          padding: EdgeInsets.all(4),
-                          child: Text(
-                            '안드로이드 안드로이드 안드로이드 안드로이드 안드로이드',
-                            style: TextStyle(fontSize: 10),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+                      )),
                 ],
               );
             },
             separatorBuilder: (context, index) => Container(
               height: 10,
               width: 10,
-              color: Colors.white,
             ),
             itemCount: colorCodes.length,
             scrollDirection: Axis.horizontal,
