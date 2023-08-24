@@ -32,8 +32,7 @@ class JoinState extends State<Join> {
     //AccountRepository accountRepository = context.watch<AccountRepository>();
 
 
-    AccountRepository accountRepository = Provider.of<AccountRepository>(
-        context);
+    AccountRepository accountRepository = Provider.of<AccountRepository>(context);
 
 
     //Provider.of<AccountRepository>(context, listen: true);

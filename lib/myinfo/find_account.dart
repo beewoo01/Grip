@@ -59,6 +59,7 @@ class FindAccountState extends State<FindAccount> {
                                   color: HexColor.fromHex('#EBEBEB')),
                               child: const TextField(
                                 textAlign: TextAlign.center,
+                                showCursor: false,
                                 decoration:
                                     InputDecoration(border: InputBorder.none),
                               ),
@@ -168,7 +169,7 @@ class FindAccountState extends State<FindAccount> {
 
   Widget buildTextField(String name, String hint) {
     return Container(
-      height: 60,
+      height: 65,
       decoration: BoxDecoration(
           color: HexColor.fromHex('#EBEBEB'),
           borderRadius: BorderRadius.circular(12)),

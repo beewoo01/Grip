@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:grip/category/reservation.dart';
 import 'package:grip/category/space_rental_detail.dart';
+import 'package:provider/provider.dart';
+import 'category/category_viewmodel.dart';
 import 'category_watch.dart';
 import 'package:grip/main.dart';
+
+import 'model/pair.dart';
 
 class Category extends StatelessWidget {
   const Category({super.key});
@@ -23,22 +28,25 @@ class Category extends StatelessWidget {
 
               case CategoryWatch.route:
                 builder = (BuildContext _) {
-                  print('title');
+                  final idx = (settings.arguments as Map)['idx'];
                   final title = (settings.arguments as Map)['title'];
-                  print(title);
                   final list = (settings.arguments as Map)['list'];
 
-                  return CategoryWatch(title : title, categoryList : list);
+                  return CategoryWatch(
+                    categoryIdx: idx,
+                    categoryName: title,
+                    categoryList: list,
+                  );
                 };
                 break;
 
-              case SpaceRentalDetail.route :
+              case SpaceRentalDetail.route:
                 builder = (BuildContext _) {
                   return const SpaceRentalDetail();
                 };
                 break;
 
-              case Reservation.route :
+              case Reservation.route:
                 builder = (BuildContext _) {
                   return const Reservation();
                 };
@@ -62,38 +70,55 @@ class CategoryStf extends StatefulWidget {
 }
 
 class CategoryState extends State<CategoryStf> {
-  List<String> snapList = [
-    '웨딩작가',
-    '스냅작가',
-    '바디프로필',
-    '유아프로필',
-    '애견프로필',
-    '건축&인테리어',
-    // '셀프사진관',
-  ];
 
-  List<String> videoList = [
-    '광고,홍보영상',
-    '제품영상',
-    '온라인 중계',
-    '행사영상',
-    '유튜브 영상',
-    '애니메이션'
-  ];
-
-  List<String> modelList = ['뷰티', '시니어 패션', '일반인', '손', 'mc . 공연', 'CF광고'];
-
-  List<String> spaceList = [
-    '카페/식당',
-    '주택/아파트',
-    '자연광스튜디오',
-    '호리존스튜디오',
-    '복합문화 공간',
-    '갤러리'
-  ];
+  CategoryViewModel categoryViewModel = CategoryViewModel();
 
   @override
   Widget build(BuildContext context) {
+    //categoryViewModel.selectCategory();
+
+    return FutureBuilder(
+        future: categoryViewModel.selectCategory(),
+        builder: (context, snapShot) {
+          if (snapShot.hasData) {
+            print('snapShot.hasData');
+            return buildAppScaffold();
+          } else if (snapShot.hasError) {
+            print('snapShot.hasError');
+            return buildNoDataAppScaffold();
+          } else {
+            print('snapShot. else ');
+          }
+
+          return buildNoDataAppScaffold();
+        });
+  }
+
+  Scaffold buildAppScaffold() {
+    Map<int, String>? map = categoryViewModel.categoryMap;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: buildAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            for (var i in map!.keys)
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                //child: buildBox(map[i]!, true, snapList),
+                //child: buildBox(map[i]!, true, modelList),
+
+                child: buildBox(
+                    i, map[i]!, true, categoryViewModel.subCategoryMap![i]!),
+              )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Scaffold buildNoDataAppScaffold() {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildAppBar(),
@@ -102,19 +127,19 @@ class CategoryState extends State<CategoryStf> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox('스냅촬영', true, snapList),
+              child: buildBox(1, '스냅촬영', true, []),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox('영상촬영', false, videoList),
+              child: buildBox(2, '영상촬영', false, []),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox('모델', false, modelList),
+              child: buildBox(3, '모델', false, []),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox('공간대여', false, spaceList),
+              child: buildBox(4, '공간대여', false, []),
             )
           ],
         ),
@@ -132,7 +157,8 @@ class CategoryState extends State<CategoryStf> {
         ));
   }
 
-  Widget buildBox(String title, bool isShowAllWatchButton, List<String> list) {
+  Widget buildBox(
+      int idx, String title, bool isShowAllWatchButton, List<Pair<int, String>> list) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -156,7 +182,7 @@ class CategoryState extends State<CategoryStf> {
                     onPressed: () {
                       navigate(context, CategoryWatch.route,
                           isRootNavigator: false,
-                          arguments: {'title': title, 'list': list});
+                          arguments: {'idx': idx,'title': title, 'list': list});
                     },
                     child: const Text(
                       '전체보기',
@@ -178,15 +204,20 @@ class CategoryState extends State<CategoryStf> {
                         if (j < list.length) ...[
                           Container(
                             decoration: BoxDecoration(
+                              color: Colors.transparent,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                  width: 1,
-                                  color:
-                                      const Color.fromARGB(255, 235, 235, 235)),
+                                width: 1,
+                                color: Colors.transparent,
+                                //color: const Color.fromARGB(255, 235, 235, 235)
+                              ),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Text(list[j]),
+                              child: Text(
+                                list[j].secend,
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           )
                         ]
@@ -212,10 +243,13 @@ class CategoryState extends State<CategoryStf> {
                                     width: 1,
                                     color: const Color.fromARGB(
                                         255, 235, 235, 235)),
-                                color: Colors.black),
+                                color: Colors.transparent),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Text(list[j]),
+                              child: Text(
+                                list[j].secend,
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           )
                           //Text('This is not /3')

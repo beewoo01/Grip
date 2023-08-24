@@ -14,11 +14,13 @@ import 'package:grip/util/menu_item.dart';
 import 'package:grip/util/tap_item.dart';
 import 'package:grip/myinfo/login.dart';
 import 'package:provider/provider.dart';
+import 'category/category_viewmodel.dart';
 
 void main() {
   runApp(
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => AccountRepository()),
+      //ChangeNotifierProvider(create: (_) => CategoryViewModel()),
     ],
       child: const MyApp(),
     )

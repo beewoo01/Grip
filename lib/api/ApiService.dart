@@ -4,6 +4,9 @@ import 'dart:ffi';
 
 import 'package:http/http.dart' as http;
 
+import '../model/content_model.dart';
+import '../model/sub_category_model.dart';
+
 class ApiService {
   String BASE_URL = "http://192.168.0.137:8080/project/";
 
@@ -95,5 +98,28 @@ class ApiService {
 
     return null;
 
+  }
+
+
+  Future<List<SubCategoryModel>?> selectCategory() async {
+    Uri uri = Uri.parse('${BASE_URL}selectCategory');
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson.map((json) => SubCategoryModel.fromJson(json)).toList();
+    }
+    return null;
+  }
+
+  Future<List<ContentModel>?> selectContent(int categoryIdx) async {
+    Map<String, String> param = {'category_idx' : categoryIdx.toString()};
+    Uri uri = Uri.parse('${BASE_URL}selectContent').replace(queryParameters: param);
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson.map((json) => ContentModel.fromJson(json)).toList();
+    }
+
+    return null;
   }
 }
