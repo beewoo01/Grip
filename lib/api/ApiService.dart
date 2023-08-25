@@ -5,6 +5,7 @@ import 'dart:ffi';
 import 'package:http/http.dart' as http;
 
 import '../model/content_model.dart';
+import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
 
 class ApiService {
@@ -111,13 +112,24 @@ class ApiService {
     return null;
   }
 
-  Future<List<ContentModel>?> selectContent(int categoryIdx) async {
-    Map<String, String> param = {'category_idx' : categoryIdx.toString()};
+  Future<List<ContentModel>?> selectContent(int subCategoryIdx) async {
+    Map<String, String> param = {'sub_category_idx' : subCategoryIdx.toString()};
     Uri uri = Uri.parse('${BASE_URL}selectContent').replace(queryParameters: param);
     final response = await http.get(uri);
     if(response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       return responseJson.map((json) => ContentModel.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+  Future<List<ReviewModel>?> selectReview() async {
+    Uri uri = Uri.parse('${BASE_URL}selectReview');
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson.map((json) => ReviewModel.fromJson(json)).toList();
     }
 
     return null;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/community/community_register.dart';
+import 'package:grip/community/community_viewmodel.dart';
 import 'package:grip/community/community_write.dart';
 import 'package:grip/main.dart';
 
@@ -50,9 +51,28 @@ class CommunitySfw extends State<Community> {
   Color questionBackgroundColor = Colors.transparent;
   Color questionTextColor = Colors.black;
 
+  CommunityViewModel viewModel = CommunityViewModel();
+
   @override
   Widget build(BuildContext context) {
     print('_CommunitySfw');
+    return FutureBuilder(
+        future: viewModel.selectReview(), builder: (context, snapShot) {
+          if (snapShot.hasData) {
+            return buildAppScaffold();
+          } else if(snapShot.hasError) {
+            return buildEmptyList();
+          } else {
+            return buildEmptyList();
+          }
+    });
+  }
+
+  Scaffold buildEmptyList() {
+    return Scaffold(appBar: buildAppBar(), body: const Center(child: Text(''),),);
+  }
+
+  Scaffold buildAppScaffold() {
     return Scaffold(
       appBar: buildAppBar(),
       body: Stack(
@@ -166,28 +186,10 @@ class CommunitySfw extends State<Community> {
   }
 
   Widget buildCommunityList() {
-    final List<String> images = [
-      'https://picsum.photos/200/300',
-      'https://picsum.photos/200',
-      'https://picsum.photos/id/31/3264/4912',
-      'https://picsum.photos/id/32/4032/3024',
-      'https://picsum.photos/id/33/5000/3333',
-      'https://picsum.photos/id/34/3872/2592',
-      'https://picsum.photos/id/35/2758/3622',
-      'https://picsum.photos/id/36/4179/2790',
-      'https://picsum.photos/id/37/2000/133',
-      'https://picsum.photos/id/38/1280/960',
-      'https://picsum.photos/id/39/3456/2304',
-    ];
 
-    String category = '스냅촬영';
-    String detailCategory = '웨딩작가';
-    String writer = '000작가';
-    String reviewContents =
-        '리뷰 내용 입니다. 리뷰 내용입니다. 리뷰 내용입니다. 리뷰 내용 입니다. 리뷰 내용입니다. 리뷰 내용입니다. 리뷰 내용 입니다. 리뷰 내용입니다. 리뷰 내용입니다. ';
     return ListView.builder(
         scrollDirection: Axis.vertical,
-        itemCount: 10,
+        itemCount: viewModel.reviewList?.length,
         itemBuilder: (BuildContext context, int position) {
           return Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -212,16 +214,16 @@ class CommunitySfw extends State<Community> {
                                     child: Column(
                                       children: [
                                         buildListText(
-                                            '$category * $detailCategory',
+                                            '${viewModel.reviewList![position].category_name} * ${viewModel.reviewList![position].sub_category_name}',
                                             10,
                                             FontWeight.bold,
                                             1),
                                         buildListText(
-                                            writer, 14, FontWeight.bold, 1),
+                                            viewModel.reviewList![position].review_title, 14, FontWeight.bold, 1),
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 1),
-                                          child: buildListText(reviewContents,
+                                          child: buildListText(viewModel.reviewList![position].review_description,
                                               10, FontWeight.normal, 3),
                                         )
                                       ],
@@ -243,7 +245,7 @@ class CommunitySfw extends State<Community> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.network(
-                                    images[position],
+                                    'https://picsum.photos/${viewModel.reviewList![position].review_img_url}',
                                     fit: BoxFit.cover,
                                   ),
                                 ),

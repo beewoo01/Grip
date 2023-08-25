@@ -29,11 +29,13 @@ class Category extends StatelessWidget {
               case CategoryWatch.route:
                 builder = (BuildContext _) {
                   final idx = (settings.arguments as Map)['idx'];
+                  final subIdx = (settings.arguments as Map)['subIdx'];
                   final title = (settings.arguments as Map)['title'];
                   final list = (settings.arguments as Map)['list'];
 
                   return CategoryWatch(
                     categoryIdx: idx,
+                    subCategoryIdx: subIdx,
                     categoryName: title,
                     categoryList: list,
                   );
@@ -96,7 +98,7 @@ class CategoryState extends State<CategoryStf> {
 
   Scaffold buildAppScaffold() {
     Map<int, String>? map = categoryViewModel.categoryMap;
-
+    //int a = categoryViewModel.subCategoryMap![0]!.first.first;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildAppBar(),
@@ -106,9 +108,6 @@ class CategoryState extends State<CategoryStf> {
             for (var i in map!.keys)
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
-                //child: buildBox(map[i]!, true, snapList),
-                //child: buildBox(map[i]!, true, modelList),
-
                 child: buildBox(
                     i, map[i]!, true, categoryViewModel.subCategoryMap![i]!),
               )
@@ -159,6 +158,7 @@ class CategoryState extends State<CategoryStf> {
 
   Widget buildBox(
       int idx, String title, bool isShowAllWatchButton, List<Pair<int, String>> list) {
+
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -180,9 +180,11 @@ class CategoryState extends State<CategoryStf> {
                 ),
                 TextButton(
                     onPressed: () {
+                      print('subIdx');
+                      print(list.first.first);
                       navigate(context, CategoryWatch.route,
                           isRootNavigator: false,
-                          arguments: {'idx': idx,'title': title, 'list': list});
+                          arguments: {'idx': idx, 'subIdx' : list.first.first ,'title': title, 'list': list});
                     },
                     child: const Text(
                       '전체보기',

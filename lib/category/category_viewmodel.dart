@@ -37,11 +37,12 @@ class CategoryViewModel {
     }
   }
 
-  Future<List<ContentModel>?> selectContent(int categoryIdx) async {
+  Future<List<ContentModel>?> selectContent(int subCategoryIdx) async {
     print(' selectContent');
+    print(' categoryIdx is $subCategoryIdx');
     premiumContentList = [];
     contentList = [];
-    List<ContentModel>? list = await apiService.selectContent(categoryIdx);
+    List<ContentModel>? list = await apiService.selectContent(subCategoryIdx);
     print('selectContent $list');
     contentList = list;
     if (list != null) {

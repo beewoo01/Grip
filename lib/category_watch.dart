@@ -11,48 +11,54 @@ import 'category/category_viewmodel.dart';
 
 class CategoryWatch extends StatefulWidget {
   final int categoryIdx;
+  final int subCategoryIdx;
   final String categoryName;
   final List<Pair<int, String>> categoryList;
 
-  const CategoryWatch({Key? key,
-    required this.categoryIdx,
-    required this.categoryName,
-    required this.categoryList})
+  const CategoryWatch(
+      {Key? key,
+      required this.categoryIdx,
+      required this.subCategoryIdx,
+      required this.categoryName,
+      required this.categoryList})
       : super(key: key);
 
   static const String route = '/category/watch/detail';
 
   @override
-  State createState() =>
-      CategoryWatchState(categoryIdx: categoryIdx, categoryName: categoryName);
+  State createState() => CategoryWatchState(
+      categoryIdx: categoryIdx,
+      subCategoryIdx: subCategoryIdx,
+      categoryName: categoryName);
 }
 
 class CategoryWatchState extends State<CategoryWatch> {
-  final ScrollController _scrollController = ScrollController();
   CategoryViewModel viewModel = CategoryViewModel();
   int categoryIdx;
+  int subCategoryIdx;
   String categoryName;
   int selectedPosition = 0;
 
-  CategoryWatchState({required this.categoryIdx, required this.categoryName});
+  CategoryWatchState(
+      {required this.categoryIdx,
+      required this.subCategoryIdx,
+      required this.categoryName});
 
   @override
   Widget build(BuildContext context) {
+    print('CategoryWatchState $subCategoryIdx');
     return FutureBuilder(
-        future: viewModel.selectContent(categoryIdx), builder: (context, snapShot) {
-      if (snapShot.hasData) {
-        print('CategoryWatchState snapShot.hasData');
-        return buildAppScaffold(categoryIdx);
-      } else if (snapShot.hasError) {
-        print('snapShot.hasError');
-        print('${snapShot.error}');
-
-        return buildNoDataAppScaffold('데이터 조회 중 에러가 발생했습니다.');
-      } else {
-        print('snapShot. else');
-        return buildNoDataAppScaffold('');
-      }
-    });
+        future: viewModel.selectContent(subCategoryIdx),
+        builder: (context, snapShot) {
+          if (snapShot.hasData) {
+            return buildAppScaffold(categoryIdx);
+          } else if (snapShot.hasError) {
+            print('${snapShot.error}');
+            return buildNoDataAppScaffold('데이터 조회 중 에러가 발생했습니다.');
+          } else {
+            return buildNoDataAppScaffold('');
+          }
+        });
   }
 
   Scaffold buildNoDataAppScaffold(String massage) {
@@ -61,7 +67,9 @@ class CategoryWatchState extends State<CategoryWatch> {
       appBar: createToolbar(widget.categoryName),
       body: Center(
         child: Text(
-          massage, style: const TextStyle(color: Colors.black),),
+          massage,
+          style: const TextStyle(color: Colors.black),
+        ),
       ),
     );
   }
@@ -86,51 +94,27 @@ class CategoryWatchState extends State<CategoryWatch> {
               child: SizedBox(
                 width: double.infinity,
                 height: 370,
-                child: CategoryWideBody(viewModel: viewModel,),
+                child: CategoryWideBody(
+                  viewModel: viewModel,
+                ),
               ),
             ),
-
             Container(
               child: isOdd ? buildCategoryGrid() : buildCategoryList(),
             )
-            //buildSampleCategoryList()
           ],
         ),
       ),
     );
   }
 
-  SliverList buildSampleCategoryList() {
-    return SliverList(
-        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-          return SizedBox(
-            width: 300,
-            height: 200,
-            child: Stack(
-              children: [
-                Positioned(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 200,
-                          color: Colors.grey,
-                        )
-                      ],
-                    ))
-              ],
-            ),
-          );
-        }));
-  }
-
   SliverList buildCategoryList() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
+        (BuildContext context, int index) {
           return Padding(
             padding:
-            const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
             child: GestureDetector(
               onTap: () {
                 navigate(context, SpaceRentalDetail.route,
@@ -140,7 +124,7 @@ class CategoryWatchState extends State<CategoryWatch> {
                 width: 300,
                 height: 270,
                 decoration:
-                const BoxDecoration(color: Colors.white, boxShadow: [
+                    const BoxDecoration(color: Colors.white, boxShadow: [
                   BoxShadow(
                       color: Colors.black,
                       offset: Offset(1, 1),
@@ -170,9 +154,11 @@ class CategoryWatchState extends State<CategoryWatch> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 10),
                               child: Center(
-                                child: Text(viewModel.contentList![index].content_title),
+                                child: Text(viewModel
+                                    .contentList![index].content_title),
                               ),
                             )
                           ],
@@ -200,63 +186,70 @@ class CategoryWatchState extends State<CategoryWatch> {
         delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
           return Padding(
             padding:
-            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-            child: Container(
-              color: Colors.white,
-              child: Stack(
-                children: [
-                  Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 0.1,
-                                  spreadRadius: 0.0)
-                            ]),
-                        child: Column(
-                          children: [
-                            Expanded(
-                                flex: 8,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, right: 5, top: 5),
+                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            child: GestureDetector(
+              onTap: () {
+                navigate(context, SpaceRentalDetail.route,
+                    isRootNavigator: false, arguments: {});
+              },
+              child: Container(
+                color: Colors.white,
+                child: Stack(
+                  children: [
+                    Positioned(
+                        top: 0,
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 0.1,
+                                    spreadRadius: 0.0)
+                              ]),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  flex: 8,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5, right: 5, top: 5),
+                                    child: Container(
+                                      color: Colors.grey,
+                                    ),
+                                  )),
+                              Expanded(
+                                  flex: 2,
                                   child: Container(
-                                    color: Colors.grey,
-                                  ),
-                                )),
-                            Expanded(
-                                flex: 2,
-                                child: Container(
-                                  width: double.infinity,
-                                  color: Colors.white,
-                                  child: Center(
-                                    child: Text(viewModel.contentList![index].content_title),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                  Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: SvgPicture.asset('assets/images/category.svg'),
-                      ))
-                ],
+                                    width: double.infinity,
+                                    color: Colors.white,
+                                    child: Center(
+                                      child: Text(viewModel
+                                          .contentList![index].content_title),
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        )),
+                    Positioned(
+                        top: 0,
+                        right: 0,
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: SvgPicture.asset('assets/images/category.svg'),
+                        ))
+                  ],
+                ),
               ),
             ),
           );
         }, childCount: viewModel.contentList!.length),
         gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2));
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2));
   }
 
   AppBar createToolbar(String title) {
@@ -292,35 +285,39 @@ class CategoryWatchState extends State<CategoryWatch> {
     );
   }
 
-
   Widget buildHorizontalCategory(List<Pair<int, String>> list) {
-
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              alignment: Alignment.center,
-              child: TextButton(onPressed: () {
-                setState(() {
-                  selectedPosition = index;
-                  viewModel.selectContent(list[index].first);
-                  categoryIdx = list[index].first;
-                  print('list[index].first');
-                  print(list[index].first);
-                });
-                //onCategoryButtonClicked(false);
-              },
-                  style: TextButton.styleFrom(
-                      backgroundColor: selectedPosition == index ? Colors.black :Colors.transparent),
-                  child: Text(
-                    list[index].secend,
-                    style:  TextStyle(color: selectedPosition == index ? Colors.white : Colors.black),
-                  )))
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Container(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedPosition = index;
+                          viewModel.selectContent(list[index].first);
+                          subCategoryIdx = list[index].first;
+                          print('list[index].first');
+                          print(list[index].first);
+                        });
+                        //onCategoryButtonClicked(false);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: selectedPosition == index
+                              ? Colors.black
+                              : Colors.transparent),
+                      child: Text(
+                        list[index].secend,
+                        style: TextStyle(
+                            color: selectedPosition == index
+                                ? Colors.white
+                                : Colors.black),
+                      )))
               //Text(list[index]),
-            );
+              );
         });
   }
 }
