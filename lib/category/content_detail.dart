@@ -3,63 +3,90 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/main.dart';
 import 'package:grip/util/util.dart';
 
+import '../community/community_viewmodel.dart';
 import 'reservation.dart';
 
-class SpaceRentalDetail extends StatefulWidget {
-  const SpaceRentalDetail({super.key});
+class ContentDetail extends StatefulWidget {
+  final String? path;
+  final int? contentIdx;
+
+  const ContentDetail(
+      {super.key, required this.path, required this.contentIdx});
 
   static const String route = '/promotion/detail';
 
   @override
-  State<StatefulWidget> createState() => SpaceRentalDetailState();
+  State<StatefulWidget> createState() =>
+      ContentDetailState(path: path, contentIdx: contentIdx);
 }
 
-class SpaceRentalDetailState extends State<SpaceRentalDetail> {
+class ContentDetailState extends State<ContentDetail> {
+  final String? path;
+  final int? contentIdx;
+
+  ContentDetailState({required this.path, required this.contentIdx});
+
   final PageController _pageController = PageController(initialPage: 0);
   final PageController _pageController2 =
       PageController(viewportFraction: 0.5, keepPage: true);
   int pageViewLength = 2;
   List pages = [];
 
+  CommunityViewModel viewModel = CommunityViewModel();
+
   @override
   void initState() {
     super.initState();
+    print('initState');
+    viewModel.selectContentImage(2);
     pages = generatePages();
   }
 
   @override
   Widget build(BuildContext context) {
-    final pages2 = List.generate(
-        6,
-        (index) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.grey.shade300,
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              child: SizedBox(
-                height: 100,
-                child: Center(
-                    child: Text(
-                  "Page $index",
-                  style: const TextStyle(color: Colors.indigo),
-                )),
-              ),
-            ));
 
+    return FutureBuilder(
+        future: viewModel.selectContentDetail(contentIdx!),
+        builder: (context, snapShot) {
+          if (snapShot.hasData) {
+            return buildScaffold();
+          } else if (snapShot.hasError) {
+            print('${snapShot.hasError}');
+            return buildNoDataAppScaffold('데이터 조회중 에러가 발생했습니다.');
+          } else {
+            return buildNoDataAppScaffold('조회된 데이터가 없습니다.');
+          }
+        });
+  }
+
+  Scaffold buildNoDataAppScaffold(String massage) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: buildAppBar(),
+      body: Center(
+        child: Text(
+          massage,
+          style: const TextStyle(color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  Scaffold buildScaffold() {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: buildAppBar(),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: EdgeInsets.only(top: 12, bottom: 12, left: 10),
+                  padding: const EdgeInsets.only(top: 12, bottom: 12, left: 10),
                   child: Text(
-                    '카테고리 > 공간대여 > 000스튜디오',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    '카테고리 > $path',
+                    style: const TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -76,7 +103,7 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                   child: ListView.builder(
                     physics: const PageScrollPhysics(), // PageScrollPhysics 사용
                     scrollDirection: Axis.horizontal,
-                    itemCount: 10,
+                    itemCount: viewModel.contentImageList.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
@@ -85,11 +112,7 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                           height: 80,
                           color: index % 2 == 0 ? Colors.blue : Colors.green,
                           alignment: Alignment.center,
-                          child: Text(
-                            'Page $index',
-                            style: const TextStyle(
-                                fontSize: 20, color: Colors.white),
-                          ),
+                          child: Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}'),
                         ),
                       );
                     },
@@ -109,9 +132,9 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                         padding: const EdgeInsets.only(left: 10),
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: const Text(
-                            '000스튜디오',
-                            style: TextStyle(
+                          child: Text(
+                            '${viewModel.contentDetailModel?.content_title}',
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20),
@@ -123,18 +146,18 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                         padding: const EdgeInsets.only(left: 10, top: 5),
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: const Row(
+                          child: Row(
                             children: [
-                              ImageIcon(
+                              const ImageIcon(
                                 AssetImage('assets/images/noimage.png'),
                                 color: Color(0xFF3A5A98),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(left: 5),
+                                padding: const EdgeInsets.only(left: 5),
                                 child: Text(
-                                  '제주특별자치도 제주시 00로 123',
+                                  '${viewModel.contentDetailModel?.content_address}',
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black, fontSize: 15),
                                 ),
                               )
@@ -149,9 +172,10 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                           decoration: BoxDecoration(
                               color: HexColor.fromHex('#BEBEBE'),
                               borderRadius: BorderRadius.circular(20)),
-                          child: const Align(
+                          child: Align(
                             alignment: Alignment.center,
-                            child: Text('기타 상세 내용'),
+                            child: Text(
+                                '${viewModel.contentDetailModel?.content_description}'),
                           ),
                         ),
                       ),
@@ -188,7 +212,8 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                           width: 150,
                           child: OutlinedButton(
                             onPressed: () {
-                              navigate(context, Reservation.route, isRootNavigator: false);
+                              navigate(context, Reservation.route,
+                                  isRootNavigator: false);
                             },
                             style: OutlinedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 50),
@@ -230,13 +255,14 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
                         child: Center(
                           child: Text(
-                            '브랜드 소개에 관한\n내용을 작성해 주세요',
+                            '${viewModel.contentDetailModel?.content_description}',
+                            //'브랜드 소개에 관한\n내용을 작성해 주세요',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 15),
+                            style: const TextStyle(fontSize: 15),
                           ),
                         ),
                       ),
@@ -291,9 +317,10 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                                   ),
                                   padding: const EdgeInsets.only(
                                       left: 10, right: 10, top: 5, bottom: 5),
-                                  child: const Text(
-                                    '00시 00구 00동 0000',
-                                    style: TextStyle(
+                                  child: Text(
+                                    '${viewModel.contentDetailModel?.content_address}',
+                                    //'00시 00구 00동 0000',
+                                    style: const TextStyle(
                                         fontSize: 13, color: Colors.black),
                                   ),
                                 ),
@@ -307,7 +334,8 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 20),
                                 child: buildDivider(),
                               )
                             ],
@@ -338,17 +366,24 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
         padding: const EdgeInsets.only(left: 20, top: 10),
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                '상품에 대한 내용을 작성해 주세요',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
+              child: SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  child: Text(
+                    '${viewModel.contentDetailModel?.struct_description}',
+                    //'상품에 대한 내용을 작성해 주세요',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               ),
             ),
-            const Padding(
+
+            /*const Padding(
               padding: EdgeInsets.only(top: 30),
               child: Text(
                 '텍스트 공간',
@@ -385,7 +420,7 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                   ),
                 ],
               ),
-            )
+            )*/
           ],
         ),
       ),
@@ -393,8 +428,9 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
   }
 
   List<Widget> generatePages() {
+    print('generatePages');
     return List.generate(
-        6,
+        viewModel.contentImageList.length,
         (index) => GestureDetector(
               onTap: () {
                 //navigate(context, PromotionDetail.route, isRootNavigator: false, arguments: {'index' : index});
@@ -409,7 +445,7 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
                   height: 200,
                   child: Center(
                       child: Text(
-                    "Pag1bree $index",
+                    "Pag1bree ${viewModel.contentImageList[index].content_img_url}",
                     style: const TextStyle(color: Colors.indigo),
                   )),
                 ),
@@ -426,16 +462,27 @@ class SpaceRentalDetailState extends State<SpaceRentalDetail> {
   }
 
   Widget buildPageView() {
-    return SizedBox(
-      width: double.infinity,
-      height: 300,
-      child: PageView.builder(
-        itemBuilder: (_, index) {
-          return pages[index % pages.length];
-        },
-        controller: _pageController,
-      ),
-    );
+    print('buildPageView + ${viewModel.contentImageList.length}');
+    if(viewModel.contentImageList.isNotEmpty) {
+      return SizedBox(
+        width: double.infinity,
+        height: 300,
+        child: PageView.builder(
+          itemCount: viewModel.contentImageList.length,
+          itemBuilder: (_, index) {
+            //return pages[index % pages.length];
+            return Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}');
+              //Text(viewModel.contentImageList[index].content_img_url);
+              //pages[index];
+          },
+          controller: _pageController,
+
+        ),
+      );
+    } else {
+      return Container();
+    }
+
   }
 
   AppBar buildAppBar() {

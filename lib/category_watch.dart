@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/category/category_primium_list.dart';
 import 'package:grip/category/category_primium_wide.dart';
 import 'package:grip/category/category_list.dart';
-import 'package:grip/category/space_rental_detail.dart';
+import 'package:grip/category/content_detail.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/pair.dart';
 
@@ -117,8 +117,12 @@ class CategoryWatchState extends State<CategoryWatch> {
                 const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
             child: GestureDetector(
               onTap: () {
-                navigate(context, SpaceRentalDetail.route,
-                    isRootNavigator: false, arguments: {});
+                navigate(context, ContentDetail.route,
+                    isRootNavigator: false,
+                    arguments: {
+                      'root': '$categoryName > ${viewModel.contentList![index].content_title}',
+                      'content_idx': viewModel.contentList![index].content_idx
+                    });
               },
               child: Container(
                 width: 300,
@@ -189,8 +193,13 @@ class CategoryWatchState extends State<CategoryWatch> {
                 const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: GestureDetector(
               onTap: () {
-                navigate(context, SpaceRentalDetail.route,
-                    isRootNavigator: false, arguments: {});
+                navigate(context, ContentDetail.route,
+                    isRootNavigator: false,
+                    arguments: {
+                      'root':
+                          '$categoryName > ${viewModel.contentList![index].content_title}',
+                      'content_idx': viewModel.contentList![index].content_idx
+                    });
               },
               child: Container(
                 color: Colors.white,
@@ -300,8 +309,6 @@ class CategoryWatchState extends State<CategoryWatch> {
                           selectedPosition = index;
                           viewModel.selectContent(list[index].first);
                           subCategoryIdx = list[index].first;
-                          print('list[index].first');
-                          print(list[index].first);
                         });
                         //onCategoryButtonClicked(false);
                       },

@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:grip/model/content_detail_model.dart';
+import 'package:grip/model/content_image_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/content_model.dart';
@@ -134,4 +136,29 @@ class ApiService {
 
     return null;
   }
+
+  Future<ContentDetailModel?> selectContentDetail(int contentIdx) async {
+    Map<String, String> param = {'contentIdx' : contentIdx.toString()};
+    Uri uri = Uri.parse('${BASE_URL}selectContentDetail').replace(queryParameters: param);
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      Map<String, dynamic> map = json.decode(response.body);
+      ContentDetailModel responseJson = ContentDetailModel.fromJson(map);
+      return responseJson;
+    }
+    return null;
+  }
+
+  Future<List<ContentImageModel>?> selectContentImage(int contentIdx) async {
+    Map<String, String> param = {'contentIdx' : contentIdx.toString()};
+    Uri uri = Uri.parse('${BASE_URL}selectContentImage').replace(queryParameters: param);
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson.map((json) => ContentImageModel.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
 }

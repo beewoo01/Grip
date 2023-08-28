@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:grip/category/reservation.dart';
-import 'package:grip/category/space_rental_detail.dart';
+import 'package:grip/category/content_detail.dart';
 import 'package:provider/provider.dart';
 import 'category/category_viewmodel.dart';
 import 'category_watch.dart';
@@ -42,9 +42,12 @@ class Category extends StatelessWidget {
                 };
                 break;
 
-              case SpaceRentalDetail.route:
+              case ContentDetail.route:
                 builder = (BuildContext _) {
-                  return const SpaceRentalDetail();
+                  final root = (settings.arguments as Map)['root'];
+                  final idx = (settings.arguments as Map)['content_idx'];
+                  print('SpaceRentalDetail.route root $root');
+                  return  ContentDetail(path: '$root', contentIdx: idx,);
                 };
                 break;
 
