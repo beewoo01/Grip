@@ -303,10 +303,7 @@ class _HomeSfw extends State<HomeSfw> {
           width: 200,
           height: 250,
           color: Colors.grey,
-          child: Image.asset(
-            'assets/images/weding/$index.jpg',
-            fit: BoxFit.fill,
-          ),
+          //child: Image.asset('assets/images/weding/$index.jpg', fit: BoxFit.fill,),
 
           //color: Colors.amber[colorCodes[index]],
         );
@@ -339,10 +336,7 @@ class _HomeSfw extends State<HomeSfw> {
               height: 50,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  'assets/images/weding/$index.jpg',
-                  fit: BoxFit.fill,
-                ),
+                //child: Image.asset('assets/images/weding/$index.jpg', fit: BoxFit.fill,),
               ),
             ),
             const Padding(padding: EdgeInsets.only(top: 10)),
@@ -364,7 +358,7 @@ class _HomeSfw extends State<HomeSfw> {
     return SizedBox(
       width: 50,
       height: 50,
-      child: Image.asset('assets/images/noimage.png'),
+      //child: Image.asset('assets/images/noimage.png'),
     );
   }
 
@@ -409,10 +403,7 @@ class _HomeSfw extends State<HomeSfw> {
                     width: 250,
                     height: 320,
                     color: Colors.grey,
-                    child: Image.asset(
-                      'assets/images/$folder/$index.jpg',
-                      fit: BoxFit.fill,
-                    ),
+                    //child: Image.asset('assets/images/$folder/$index.jpg', fit: BoxFit.fill,),
                     //color: Colors.amber[colorCodes[index]],
                   ),
                   Text(title)
@@ -494,10 +485,7 @@ class _HomeSfw extends State<HomeSfw> {
                         width: contentWidth,
                         height: contentHeight - 30,
                         color: Colors.grey,
-                        child: Image.asset(
-                          'assets/images/$folder/$index.jpg',
-                          fit: BoxFit.fill,
-                        ),
+                        //child: Image.asset('assets/images/$folder/$index.jpg', fit: BoxFit.fill,),
                       ),
                       Text('item ${contentList[index]}')
                     ],

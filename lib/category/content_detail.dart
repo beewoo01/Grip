@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/main.dart';
+import 'package:grip/model/content_detail_model.dart';
 import 'package:grip/util/util.dart';
 
 import '../community/community_viewmodel.dart';
@@ -31,22 +32,25 @@ class ContentDetailState extends State<ContentDetail> {
       PageController(viewportFraction: 0.5, keepPage: true);
   int pageViewLength = 2;
   List pages = [];
+  int selectedPagePosition = 0;
 
   CommunityViewModel viewModel = CommunityViewModel();
 
   @override
   void initState() {
     super.initState();
-    print('initState');
-    viewModel.selectContentImage(2);
-    pages = generatePages();
+    print('ContentDetailState initState');
+    //viewModel.selectContentImage(2);
+    //pages = generatePages();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('ContentDetailState build');
 
     return FutureBuilder(
         future: viewModel.selectContentDetail(contentIdx!),
+        //future: viewModel.selectContentDetail(contentIdx!),
         builder: (context, snapShot) {
           if (snapShot.hasData) {
             return buildScaffold();
@@ -107,12 +111,20 @@ class ContentDetailState extends State<ContentDetail> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          color: index % 2 == 0 ? Colors.blue : Colors.green,
-                          alignment: Alignment.center,
-                          child: Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}'),
+                        child: GestureDetector(
+                          onTap: () {
+                            _pageController.jumpToPage(index);
+                          },
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            child: Container(
+                                width: 80,
+                                height: 80,
+                                alignment: Alignment.center,
+                                child: Image.network(
+                                    'https://picsum.photos/${viewModel.contentImageList[index].content_img_url}')),
+                          ),
                         ),
                       );
                     },
@@ -213,7 +225,8 @@ class ContentDetailState extends State<ContentDetail> {
                           child: OutlinedButton(
                             onPressed: () {
                               navigate(context, Reservation.route,
-                                  isRootNavigator: false);
+                                  isRootNavigator: false,
+                                  arguments: {'content_idx': contentIdx});
                             },
                             style: OutlinedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 50),
@@ -342,6 +355,10 @@ class ContentDetailState extends State<ContentDetail> {
                           ),
                         ),
                       ),
+                      /*Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20, left: 10, bottom: 10, right: 10),
+                          child: buildInquiry()),*/
                       const Padding(padding: EdgeInsets.only(bottom: 100))
                     ],
                   ),
@@ -382,45 +399,6 @@ class ContentDetailState extends State<ContentDetail> {
                 ),
               ),
             ),
-
-            /*const Padding(
-              padding: EdgeInsets.only(top: 30),
-              child: Text(
-                '텍스트 공간',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-            ),
-            Container(
-              width: 200,
-              alignment: Alignment.centerLeft,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        '1. 상품설명',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 20),
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: const Text(
-                        '2. 판매자 개인의 규정 작성',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )*/
           ],
         ),
       ),
@@ -463,26 +441,73 @@ class ContentDetailState extends State<ContentDetail> {
 
   Widget buildPageView() {
     print('buildPageView + ${viewModel.contentImageList.length}');
-    if(viewModel.contentImageList.isNotEmpty) {
+    if (viewModel.contentImageList.isNotEmpty) {
       return SizedBox(
         width: double.infinity,
         height: 300,
         child: PageView.builder(
           itemCount: viewModel.contentImageList.length,
           itemBuilder: (_, index) {
-            //return pages[index % pages.length];
-            return Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}');
-              //Text(viewModel.contentImageList[index].content_img_url);
-              //pages[index];
+            return Image.network(
+                'https://picsum.photos/${viewModel.contentImageList[index].content_img_url}');
           },
           controller: _pageController,
-
         ),
       );
     } else {
       return Container();
     }
+  }
 
+  Widget buildInquiry() {
+    return Column(
+      children: [
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            '문의하기',
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+          ),
+        ),
+        SizedBox(
+            height: 350,
+            child: Container(
+              color: Colors.pink,
+              child: ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                return buildInquiryItem();
+              }),
+            ))
+      ],
+    );
+  }
+
+  Widget buildInquiryItem() {
+    return Row(
+      children: [
+        Expanded(
+            flex: 1,
+            child: Container(
+              color: Colors.black,
+            ) //Text('닉네임'),
+            ),
+        Expanded(
+          child: Container(
+            color: Colors.green,
+          ),
+          //child: Text('공간 벽쪽에 있는 테이블 크기 문의 드립니다.'),
+          flex: 8,
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(
+            color: Colors.deepPurple,
+          ),
+          //child: Text('23.01.01'),
+        )
+      ],
+    );
   }
 
   AppBar buildAppBar() {
@@ -504,15 +529,6 @@ class ContentDetailState extends State<ContentDetail> {
           height: 30,
           child: SvgPicture.asset('assets/images/category.svg'),
         )
-
-        /*IconButton(
-          icon: Image.asset('assets/images/setting_icon.png'),
-          */ /*icon: const Icon(
-            Icons.settings,
-            color: Colors.black,
-          ),*/ /*
-          onPressed: () {},
-        )*/
       ],
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(4.0),

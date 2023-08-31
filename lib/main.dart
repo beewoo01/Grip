@@ -17,14 +17,13 @@ import 'package:provider/provider.dart';
 import 'category/category_viewmodel.dart';
 
 void main() {
-  runApp(
-    MultiProvider(providers: [
+  runApp(MultiProvider(
+    providers: [
       ChangeNotifierProvider(create: (_) => AccountRepository()),
       //ChangeNotifierProvider(create: (_) => CategoryViewModel()),
     ],
-      child: const MyApp(),
-    )
-  );
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -41,8 +40,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const NavBarHandler()
-      //const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+        //const MyHomePage(title: 'Flutter Demo Home Page'),
+        );
   }
 }
 
@@ -79,14 +78,15 @@ class _NavBarHandlerState extends State<NavBarHandler>
   ];
 
   final menuItemList = <MenuItem>[
-    MenuItem(SvgPicture.asset('assets/images/category.svg'), TabItem.CATEGORY.tap),
-    MenuItem(SvgPicture.asset('assets/images/promotion.svg'), TabItem.PROMOTION.tap),
+    MenuItem(
+        SvgPicture.asset('assets/images/category.svg'), TabItem.CATEGORY.tap),
+    MenuItem(
+        SvgPicture.asset('assets/images/promotion.svg'), TabItem.PROMOTION.tap),
     MenuItem(SvgPicture.asset('assets/images/home.svg'), TabItem.HOME.tap),
-    MenuItem(SvgPicture.asset('assets/images/community.svg'), TabItem.COMMUNITY.tap),
+    MenuItem(
+        SvgPicture.asset('assets/images/community.svg'), TabItem.COMMUNITY.tap),
     MenuItem(SvgPicture.asset('assets/images/myinfo.svg'), TabItem.MyINFO.tap),
   ];
-
-  //late AnimationController _controller;
 
   @override
   void initState() {
@@ -95,7 +95,6 @@ class _NavBarHandlerState extends State<NavBarHandler>
 
   DateTime oldTime = DateTime.now();
   DateTime newTime = DateTime.now();
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +138,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
                                   backgroundColor: Colors.white,
                                   icon: menuItem.iconData,
                                   //SvgPicture.asset('assets/images/home.svg'),
-                          //Image.asset('assets/images/sample2.png'),//Icon(menuItem.iconData),
+                                  //Image.asset('assets/images/sample2.png'),//Icon(menuItem.iconData),
                                   label: menuItem.text,
                                 ))
                             .toList(),

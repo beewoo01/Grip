@@ -53,7 +53,8 @@ class Category extends StatelessWidget {
 
               case Reservation.route:
                 builder = (BuildContext _) {
-                  return const Reservation();
+                  final contentIdx = (settings.arguments as Map)['content_idx'];
+                  return Reservation(contentIdx: contentIdx);
                 };
                 break;
 
