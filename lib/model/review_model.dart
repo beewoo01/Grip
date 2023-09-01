@@ -2,7 +2,7 @@ class ReviewModel {
   int review_idx;
   String review_title;
   String review_description;
-  int account_account_idx;
+  int account_idx;
   int content_idx;
   int sub_category_idx;
   String sub_category_name;
@@ -14,7 +14,7 @@ class ReviewModel {
       {required this.review_idx,
       required this.review_title,
       required this.review_description,
-      required this.account_account_idx,
+      required this.account_idx,
       required this.content_idx,
       required this.sub_category_idx,
       required this.sub_category_name,
@@ -27,7 +27,7 @@ class ReviewModel {
       review_idx: json['review_idx'],
       review_title: json['review_title'],
       review_description: json['review_description'],
-      account_account_idx: json['account_account_idx'],
+      account_idx: json['account_account_idx'],
       content_idx: json['content_idx'],
       sub_category_idx: json['sub_category_idx'],
       sub_category_name: json['sub_category_name'],

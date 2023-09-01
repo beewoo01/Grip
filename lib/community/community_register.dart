@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:grip/model/pair.dart';
+import 'package:grip/model/purchase_model.dart';
 import 'package:grip/util/util.dart';
 import 'package:grip/main.dart';
 import 'package:grip/sample.dart';
+
+import '../util/Singleton.dart';
+import 'community_viewmodel.dart';
 
 class CommunityResister extends StatefulWidget {
   const CommunityResister({Key? key}) : super(key: key);
@@ -10,19 +16,70 @@ class CommunityResister extends StatefulWidget {
   @override
   State createState() => _CommunityResisterSfw();
   static const String route = '/community/write';
-
 }
 
 class _CommunityResisterSfw extends State<CommunityResister> {
   List<int> photoList = [];
-  List<String> typeDropdownList = ['사진리뷰', '문의하기'];
-  List<String> photoDetailTypeDropdownList = ['상품 이용 내역 리스트업', '카테고리 리스트업'];
-  List<String> inquiryDetailTypeDropdownList = ['상품 이용 내역 리스트업', '카테고리 리스트업'];
-  String selectedTypeDropDown = '사진리뷰';
-  String selectedDetailDropDown = '상품 이용 내역 리스트업';
+  List<PurchaseModel> typeDropdownList = [
+    PurchaseModel(content_idx: 0, content_title: '사진리뷰'),
+    PurchaseModel(content_idx: 1, content_title: '문의하기')
+  ];
+  List<PurchaseModel>? photoDetailTypeDropdownList;
+  List<PurchaseModel>? inquiryTypeDropdownList;
+  //late String? selectedTypeDropDown = typeDropdownList[0].content_title;
+  late Pair<int, String> selectedTypeDropDown = Pair(typeDropdownList[0].content_idx, typeDropdownList[0].content_title);
+  Pair<int?, String?>? selectedDetailDropDown;
+  //String? selectedDetailDropDown;
+
+  TextEditingController titleEditController = TextEditingController();
+  TextEditingController descriptionEditController = TextEditingController();
+
+  var viewModel = CommunityViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    Singleton().setAccountIdx(2);
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    int? accountIdx = Singleton().getAccountIdx();
+
+    if (accountIdx == null || accountIdx == 0) {
+      showToast('로그인을 해주세요.');
+    } else {
+      setState(() async {
+        print('_CommunityResisterSfw setState1111');
+        List<PurchaseModel>? list =
+            await viewModel.selectPurchaseList(accountIdx);
+
+        setState(() {
+          print('_CommunityResisterSfw setState2222');
+          photoDetailTypeDropdownList = list;
+          selectedDetailDropDown = Pair(photoDetailTypeDropdownList?[0].content_idx, photoDetailTypeDropdownList?[0].content_title);
+              //photoDetailTypeDropdownList?[0].content_title;
+          print('photoDetailTypeDropdownList result');
+          print('$photoDetailTypeDropdownList');
+        });
+      });
+    }
+  }
+
+  void showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('_CommunityResisterSfw build');
     return Material(
       child: SingleChildScrollView(
         child: Container(
@@ -36,8 +93,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                   color: Colors.black,
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 20, bottom: 10),
                   child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
                 ),
                 Padding(
@@ -62,14 +119,13 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 Container(
                   width: double.infinity,
                   alignment: Alignment.centerLeft,
-                  child: buildDropdownButton(
-                      (200), selectedTypeDropDown, typeDropdownList, 0),
+                  //child: buildDropdownButton((200), selectedTypeDropDown, typeDropdownList, 0),
+                  child: buildDropdownButton((200), 0),
                 ),
                 Container(
                   width: double.infinity,
                   alignment: Alignment.centerLeft,
-                  child: buildDropdownButton(double.infinity,
-                      selectedDetailDropDown, photoDetailTypeDropdownList, 1),
+                  child: buildDropdownButton(double.infinity, 1),
                 ),
                 Padding(
                     padding: const EdgeInsets.only(
@@ -87,7 +143,15 @@ class _CommunityResisterSfw extends State<CommunityResister> {
 
   Widget buildResisterButton() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        String title= titleEditController.text;
+        String description = descriptionEditController.text;
+        /*int contentIdx =
+        if(selectedTypeDropDown.first == 0) {
+          viewModel.insertReview();
+        }*/
+
+      },
       style: ButtonStyle(
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
@@ -117,11 +181,12 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 blurRadius: 1,
                 offset: const Offset(0, 2))
           ]),
-      child: const TextField(
+      child: TextField(
+        controller: descriptionEditController,
         keyboardType: TextInputType.multiline,
         maxLines: 8,
         maxLength: 8 * 22,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
             border: InputBorder.none,
             filled: true,
             fillColor: Colors.transparent,
@@ -131,8 +196,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     );
   }
 
-  Widget buildDropdownButton(
-      double width, String value, List<String> list, int dropBoxStatus) {
+  Widget buildDropdownButton(double width, int dropBoxStatus) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Container(
@@ -150,28 +214,59 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             ]),
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: DropdownButton(
-            underline: const SizedBox(),
-            isExpanded: true,
-            value: value,
-            items: list.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(item),
-              );
-            }).toList(),
-            onChanged: (dynamic value) {
-              setState(() {
-                if (dropBoxStatus == 0) {
-                  selectedTypeDropDown = value;
-                } else {
-                  selectedDetailDropDown = value;
-                }
-              });
-            },
-          ),
+          child: dropBoxStatus == 0 ? buildTypeDropdown() : buildDropdown(),
+
         ),
       ),
+    );
+  }
+
+  DropdownButton buildTypeDropdown() {
+    print('buildTypeDropdown');
+    return DropdownButton(
+      underline: const SizedBox(),
+      isExpanded: true,
+      value: selectedTypeDropDown.secend,
+      items: typeDropdownList.map((PurchaseModel item) {
+        return DropdownMenuItem<String>(
+          value: item.content_title,
+          child: Text(item.content_title),
+        );
+      }).toList(),
+      onChanged: (dynamic value) {
+        print('buildTypeDropdown onChanged value is');
+        print(value);
+        setState(() {
+          selectedTypeDropDown = value;
+        });
+      },
+    );
+  }
+
+  DropdownButton buildDropdown() {
+    print('buildDropdown');
+    return DropdownButton(
+      underline: const SizedBox(),
+      isExpanded: true,
+      value: selectedDetailDropDown?.secend,
+      items: photoDetailTypeDropdownList?.map((PurchaseModel item) {
+            return DropdownMenuItem<String>(
+              value: item.content_title,
+              child: Text(item.content_title),
+            );
+          }).toList() ?? [],
+      onChanged: (dynamic value) {
+        print('buildDropdown onChanged value is');
+        print(value);
+        setState(() {
+          selectedDetailDropDown = value;
+          /*if (dropBoxStatus == 0) {
+            selectedTypeDropDown = value;
+          } else {
+            selectedDetailDropDown = value;
+          }*/
+        });
+      },
     );
   }
 
@@ -295,6 +390,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 offset: const Offset(0, 2))
           ]),
       child: TextField(
+        controller: titleEditController,
         decoration: InputDecoration(
             filled: true,
             fillColor: HexColor.fromHex('#EBEBEB'),

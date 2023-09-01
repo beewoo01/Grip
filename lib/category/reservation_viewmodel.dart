@@ -15,12 +15,13 @@ class ReservationViewModel extends ChangeNotifier {
   }
 
 
-  Future<void> insertReservation(ReservationModel model) async {
+  Future<int?> insertReservation(ReservationModel model) async {
     print('ReservationViewModel insertReservation 여기는옴');
     // insertReservationResult = await apiService.insertReservation(model);
     // return insertReservationResult;
 
     final insertResult = await apiService.insertReservation(model);
     _insertionResultController.add(insertResult);
+    return insertResult;
   }
 }

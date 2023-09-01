@@ -6,4 +6,11 @@ class Pair<T, U> {
 
   @override
   String toString() => '($first, $secend)';
+
+  @override
+  bool operator ==(Object other) {
+    Pair pair = other as Pair;
+    return first == pair.first && secend == pair.secend;
+  }
+
 }

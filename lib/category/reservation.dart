@@ -6,7 +6,6 @@ import 'package:grip/model/reservation_model.dart';
 import 'package:grip/myinfo/account_repository.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:grip/util/util.dart';
-import 'package:provider/provider.dart';
 
 class Reservation extends StatefulWidget {
   int contentIdx;
@@ -26,7 +25,6 @@ class ReservationState extends State<Reservation> {
 
   ReservationState({required this.contentIdx});
 
-
   TextEditingController textEditingController = TextEditingController();
   DateTime? selectedDay;
   bool isTransparent = false;
@@ -37,19 +35,15 @@ class ReservationState extends State<Reservation> {
   var startDateStr = '07:00 ~ 08:00';
   var endDateStr = '07:00 ~ 08:00';
 
-
-
   @override
   void initState() {
     super.initState();
     print('ReservationState initState');
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-    ReservationViewModel viewModel = context.watch<ReservationViewModel>();
+    ReservationViewModel viewModel = ReservationViewModel();
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -60,8 +54,8 @@ class ReservationState extends State<Reservation> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 30),
-                child: buildTextField(
-                    '이름', '이용자 본인의 이름을 입력하세요', nameController),
+                child:
+                    buildTextField('이름', '이용자 본인의 이름을 입력하세요', nameController),
               ),
               Padding(
                   padding: const EdgeInsets.only(top: 20),
@@ -86,62 +80,63 @@ class ReservationState extends State<Reservation> {
                                     ? Colors.transparent
                                     : Colors.white,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18
-                            ),
-
+                                fontSize: 18),
                           ),
                         ),
                         onTap: () async {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                  const TableCalendarScreen()))
-                              .then((value) =>
-                          {
-                            if (value != null)
-                              {
-                                setState(() {
-                                  isTransparent = true;
-                                  setReservationDate(value);
-                                })
-                              }
-                            else
-                              {isTransparent = false}
-                          });
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TableCalendarScreen()))
+                              .then((value) => {
+                                    if (value != null)
+                                      {
+                                        setState(() {
+                                          isTransparent = true;
+                                          setReservationDate(value);
+                                        })
+                                      }
+                                    else
+                                      {isTransparent = false}
+                                  });
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                              const TableCalendarScreen()));
+                                  const TableCalendarScreen()));
                         },
                       )
                     ],
                   )),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child:
-                buildFilmContainer('촬영시작시간', [
-                  '07:00 ~ 08:00',
-                  '08:00 ~ 09:00',
-                  '09:00 ~ 10:00',
-                  '10:00 ~ 11:00',
-                  '11:00 ~ 12:00'
-                ], true),
+                child: buildFilmContainer(
+                    '촬영시작시간',
+                    [
+                      '07:00 ~ 08:00',
+                      '08:00 ~ 09:00',
+                      '09:00 ~ 10:00',
+                      '10:00 ~ 11:00',
+                      '11:00 ~ 12:00'
+                    ],
+                    true),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: buildFilmContainer(
+                    '촬영종료시간',
+                    [
+                      '07:00 ~ 08:00',
+                      '08:00 ~ 09:00',
+                      '09:00 ~ 10:00',
+                      '10:00 ~ 11:00',
+                      '11:00 ~ 12:00'
+                    ],
+                    false),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child:
-                buildFilmContainer('촬영종료시간', [
-                  '07:00 ~ 08:00',
-                  '08:00 ~ 09:00',
-                  '09:00 ~ 10:00',
-                  '10:00 ~ 11:00',
-                  '11:00 ~ 12:00'
-                ], false),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: buildTextField(
-                    '이메일', '@까지 정확하게 입력해주세요', emailController),
+                    buildTextField('이메일', '@까지 정확하게 입력해주세요', emailController),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
@@ -159,46 +154,20 @@ class ReservationState extends State<Reservation> {
                     widget.singleton.setAccountIdx(2);
                     int? accountIdx = widget.singleton.getAccountIdx();
 
-                    if(accountIdx == null) {
+                    if (accountIdx == null) {
                       showToast('로그인을 해주세요.');
                     }
 
-                    if(nameController.text.toString().isEmpty) {
+                    if (nameController.text.toString().isEmpty) {
                       showToast('이름을 입력해주세요.');
-                    } else if(textEditingController.text.isEmpty) {
+                    } else if (textEditingController.text.isEmpty) {
                       showToast('예약일자를 선택해주세요.');
-                    } else if(emailController.text.isEmpty) {
+                    } else if (emailController.text.isEmpty) {
                       showToast('이메일을 입력해주세요.');
-                    } else if(phoneController.text.isEmpty) {
+                    } else if (phoneController.text.isEmpty) {
                       showToast('전화번호를 입력해주세요.');
                     } else {
-                      var model = ReservationModel.withOutReservationIdx(
-                          widget.singleton.getAccountIdx()!,
-                          contentIdx,
-                          nameController.text,
-                          textEditingController.text,
-                          startDateStr,
-                          endDateStr,
-                          phoneController.text,
-                          emailController.text,
-                          etcController.text);
-
-
-                      await viewModel.insertReservation(model);
-
-                      TODO!!!!
-
-                      if(viewModel.insertionResultStream != null) {
-                        if(viewModel.insertionResultStream > 0) {
-                          showMessage('예약이 완료 되었습니다.');
-                          Navigator.of(context).pop();
-                        } else {
-                          showMessage('예약이 실패 되었습니다.');
-                        }
-                      } else {
-                        print('viewModel.insertReservationResult == null');
-                      }
-
+                      reservation(viewModel);
                     }
                   },
                   style: OutlinedButton.styleFrom(
@@ -219,6 +188,32 @@ class ReservationState extends State<Reservation> {
         ));
   }
 
+  void reservation(ReservationViewModel viewModel) async {
+    final model = ReservationModel.withOutReservationIdx(
+        widget.singleton.getAccountIdx()!,
+        contentIdx,
+        nameController.text,
+        textEditingController.text,
+        startDateStr,
+        endDateStr,
+        phoneController.text,
+        emailController.text,
+        etcController.text);
+
+    final result = await viewModel.insertReservation(model);
+
+    if (result != null) {
+      if (result > 0) {
+        showMessage('예약이 완료 되었습니다.');
+        Navigator.of(context).pop();
+      } else {
+        showMessage('예약이 실패 되었습니다.');
+      }
+    } else {
+      print('viewModel.insertReservationResult == null');
+    }
+  }
+
   void showToast(String msg) {
     Fluttertoast.showToast(
         msg: msg,
@@ -230,10 +225,7 @@ class ReservationState extends State<Reservation> {
         fontSize: 16.0);
   }
 
-  void insertReservation(ReservationViewModel viewModel) {
-
-
-  }
+  void insertReservation(ReservationViewModel viewModel) {}
 
   void showMessage(String msg) {
     Fluttertoast.showToast(
@@ -342,7 +334,7 @@ class ReservationState extends State<Reservation> {
               child: Text(
                 title,
                 style:
-                const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -377,8 +369,8 @@ class ReservationState extends State<Reservation> {
     );
   }
 
-  Widget buildTextField(String name, String hint,
-      TextEditingController? controller) {
+  Widget buildTextField(
+      String name, String hint, TextEditingController? controller) {
     return GestureDetector(
       child: Container(
         height: 65,

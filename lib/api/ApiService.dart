@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import '../category/reservation_viewmodel.dart';
 import '../model/content_model.dart';
+import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
@@ -113,7 +114,7 @@ class ApiService {
   Future<List<ContentModel>?> selectContent(int subCategoryIdx) async {
     Map<String, String> param = {'sub_category_idx': subCategoryIdx.toString()};
     Uri uri =
-        Uri.parse('${BASE_URL}selectContent').replace(queryParameters: param);
+    Uri.parse('${BASE_URL}selectContent').replace(queryParameters: param);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
@@ -193,6 +194,45 @@ class ApiService {
     }
 
     return null;
+  }
 
+
+  Future<List<PurchaseModel>?> selectPurchaseList(int accountIdx) async {
+    print('apiService selectPurchaseList111');
+    var param = {'account_idx': accountIdx.toString()};
+    Uri uri = Uri.parse('${BASE_URL}selectPurchaseList').replace(
+        queryParameters: param);
+    print('apiService selectPurchaseList222');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson.map((json) => PurchaseModel.fromJson(json)).toList();
+    }
+    return null;
+  }
+
+
+  Future<int?> insertReview(ReviewModel reviewModel) async {
+    var param = {
+      'review_title': reviewModel.review_title,
+      'review_description': reviewModel.review_description,
+      'account_account_idx' : reviewModel.account_idx,
+      'content_content_idx' : reviewModel.content_idx
+    };
+
+    Uri uri = Uri.parse('${BASE_URL}insertReview').replace(
+      queryParameters: param
+    );
+
+    var response = await http.post(uri, body: param);
+
+    if(response.statusCode == 200) {
+      print('insertReview 200');
+      print(response.body);
+      return response.body as int;
+    } else {
+      return -1;
+    }
   }
 }

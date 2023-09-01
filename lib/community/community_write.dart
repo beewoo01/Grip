@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:grip/community/community_viewmodel.dart';
+import 'package:grip/util/Singleton.dart';
 import 'package:grip/util/util.dart';
 
 class CommunityWrite extends StatefulWidget {
@@ -9,9 +12,7 @@ class CommunityWrite extends StatefulWidget {
   State createState() => CommunityWriteState();
 }
 
-
 class CommunityWriteState extends State<CommunityWrite> {
-
   List<int> photoList = [];
   List<String> typeDropdownList = ['사진리뷰', '문의하기'];
   List<String> photoDetailTypeDropdownList = ['상품 이용 내역 리스트업', '카테고리 리스트업'];
@@ -22,63 +23,63 @@ class CommunityWriteState extends State<CommunityWrite> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(child: Column(
-      children: [
-        //buildAppbar(),
-        const Divider(
-          thickness: 1,
-          height: 1,
-          color: Colors.black,
-        ),
-        Padding(
-          padding:
-          const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
-          child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(
-                left: 10, right: 10, top: 5, bottom: 10),
-            child: SizedBox(
-              height: 80,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5),
-                    child: buildOpenCameraContainer(),
-                  ),
-                  Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: buildPhotoList(),
-                      ))
-                ],
-              ),
-            )),
-        Container(
-          width: double.infinity,
-          alignment: Alignment.centerLeft,
-          child: buildDropdownButton(
-              (200), selectedTypeDropDown, typeDropdownList, 0),
-        ),
-        Container(
-          width: double.infinity,
-          alignment: Alignment.centerLeft,
-          child: buildDropdownButton(double.infinity,
-              selectedDetailDropDown, photoDetailTypeDropdownList,
-              1),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(
-                left: 10, right: 10, top: 20, bottom: 10),
-            child: buildLongTextField()),
-        Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: buildResisterButton(),
-        )
-      ],
-    ),);
+    return Material(
+      child: Column(
+        children: [
+          //buildAppbar(),
+          const Divider(
+            thickness: 1,
+            height: 1,
+            color: Colors.black,
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 10),
+            child: buildTextField(13, 16.0, '제목을 입력해주세요.'),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(
+                  left: 10, right: 10, top: 5, bottom: 10),
+              child: SizedBox(
+                height: 80,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: buildOpenCameraContainer(),
+                    ),
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: buildPhotoList(),
+                    ))
+                  ],
+                ),
+              )),
+          Container(
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+            child: buildDropdownButton(
+                (200), selectedTypeDropDown, typeDropdownList, 0),
+          ),
+          Container(
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+            child: buildDropdownButton(double.infinity, selectedDetailDropDown,
+                photoDetailTypeDropdownList, 1),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(
+                  left: 10, right: 10, top: 20, bottom: 10),
+              child: buildLongTextField()),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: buildResisterButton(),
+          )
+        ],
+      ),
+    );
   }
-
 
   Widget buildResisterButton() {
     return TextButton(
@@ -126,8 +127,8 @@ class CommunityWriteState extends State<CommunityWrite> {
     );
   }
 
-  Widget buildDropdownButton(double width, String value, List<String> list,
-      int dropBoxStatus) {
+  Widget buildDropdownButton(
+      double width, String value, List<String> list, int dropBoxStatus) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Container(
@@ -296,7 +297,7 @@ class CommunityWriteState extends State<CommunityWrite> {
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(radius),
                 borderSide:
-                BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
+                    BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
             hintText: hint,
             isDense: true,
             contentPadding: EdgeInsets.all(padding)),

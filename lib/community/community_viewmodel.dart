@@ -1,5 +1,6 @@
 import 'package:grip/api/ApiService.dart';
 import 'package:grip/model/content_detail_model.dart';
+import 'package:grip/model/purchase_model.dart';
 import 'package:grip/model/review_model.dart';
 
 import '../model/content_image_model.dart';
@@ -52,5 +53,19 @@ class CommunityViewModel {
     }
 
     return null;
+  }
+
+  Future<List<PurchaseModel>?> selectPurchaseList(int accountIdx) async {
+    print('selectPurchaseList1');
+    List<PurchaseModel>? list = await apiService.selectPurchaseList(accountIdx);
+    print('selectPurchaseList2');
+    print('$list');
+    return list;
+  }
+
+  Future<int?> insertReview(ReviewModel reviewModel) async {
+    int? result = await apiService.insertReview(reviewModel);
+    print('insertReview');
+    return result;
   }
 }
