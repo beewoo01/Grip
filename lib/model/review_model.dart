@@ -1,14 +1,14 @@
 class ReviewModel {
-  int review_idx;
+  int? review_idx;
   String review_title;
   String review_description;
   int account_idx;
   int content_idx;
-  int sub_category_idx;
-  String sub_category_name;
-  int category_idx;
-  String category_name;
-  String review_img_url;
+  int? sub_category_idx;
+  String? sub_category_name;
+  int? category_idx;
+  String? category_name;
+  String? review_img_url;
 
   ReviewModel(
       {required this.review_idx,

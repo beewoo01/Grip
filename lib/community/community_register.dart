@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grip/model/pair.dart';
 import 'package:grip/model/purchase_model.dart';
+import 'package:grip/model/review_model.dart';
 import 'package:grip/util/util.dart';
 import 'package:grip/main.dart';
 import 'package:grip/sample.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../util/Singleton.dart';
 import 'community_viewmodel.dart';
@@ -20,16 +24,18 @@ class CommunityResister extends StatefulWidget {
 
 class _CommunityResisterSfw extends State<CommunityResister> {
   List<int> photoList = [];
+  List<XFile> photoImageList = [];
   List<PurchaseModel> typeDropdownList = [
     PurchaseModel(content_idx: 0, content_title: '사진리뷰'),
     PurchaseModel(content_idx: 1, content_title: '문의하기')
   ];
+
   List<PurchaseModel>? photoDetailTypeDropdownList;
   List<PurchaseModel>? inquiryTypeDropdownList;
-  //late String? selectedTypeDropDown = typeDropdownList[0].content_title;
-  late Pair<int, String> selectedTypeDropDown = Pair(typeDropdownList[0].content_idx, typeDropdownList[0].content_title);
+
+  late Pair<int, String> selectedTypeDropDown = Pair(
+      typeDropdownList[0].content_idx, typeDropdownList[0].content_title);
   Pair<int?, String?>? selectedDetailDropDown;
-  //String? selectedDetailDropDown;
 
   TextEditingController titleEditController = TextEditingController();
   TextEditingController descriptionEditController = TextEditingController();
@@ -52,13 +58,15 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       setState(() async {
         print('_CommunityResisterSfw setState1111');
         List<PurchaseModel>? list =
-            await viewModel.selectPurchaseList(accountIdx);
+        await viewModel.selectPurchaseList(accountIdx);
 
         setState(() {
           print('_CommunityResisterSfw setState2222');
           photoDetailTypeDropdownList = list;
-          selectedDetailDropDown = Pair(photoDetailTypeDropdownList?[0].content_idx, photoDetailTypeDropdownList?[0].content_title);
-              //photoDetailTypeDropdownList?[0].content_title;
+          selectedDetailDropDown = Pair(
+              photoDetailTypeDropdownList?[0].content_idx,
+              photoDetailTypeDropdownList?[0].content_title);
+          //photoDetailTypeDropdownList?[0].content_title;
           print('photoDetailTypeDropdownList result');
           print('$photoDetailTypeDropdownList');
         });
@@ -110,9 +118,9 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                           ),
                           Expanded(
                               child: Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: buildPhotoList(),
-                          ))
+                                padding: const EdgeInsets.only(right: 5),
+                                child: buildPhotoList(),
+                              ))
                         ],
                       ),
                     )),
@@ -143,13 +151,68 @@ class _CommunityResisterSfw extends State<CommunityResister> {
 
   Widget buildResisterButton() {
     return TextButton(
-      onPressed: () {
-        String title= titleEditController.text;
+      onPressed: () async {
+        int? accountIdx = Singleton().getAccountIdx();
+        int? contentIdx = selectedDetailDropDown?.first;
+        String title = titleEditController.text;
         String description = descriptionEditController.text;
-        /*int contentIdx =
-        if(selectedTypeDropDown.first == 0) {
-          viewModel.insertReview();
-        }*/
+
+
+        if (accountIdx == null) {
+          showToast('로그인을 해주세요');
+          return;
+        }
+
+        if (contentIdx == null) {
+          showToast('리뷰할 상품을 선택해주세요');
+          return;
+        }
+
+        if (title.isEmpty) {
+          showToast('리뷰 제목을 입력해주세요.');
+          return;
+        }
+
+        if (description.isEmpty) {
+          showToast('리뷰 내용을 입력해주세요.');
+          return;
+        }
+
+        ///TODO You Have to Do List
+        /// 1. Save Review
+        /// 2. Save Images
+        /// 3. Save Review Images
+
+        final model = ReviewModel(
+          review_idx: null,
+          review_title: title,
+          review_description: description,
+          account_idx: accountIdx,
+          content_idx: contentIdx,
+          sub_category_idx: null,
+          sub_category_name: null,
+          category_idx: null,
+          category_name: null,
+          review_img_url: null,);
+
+        final result = await viewModel.insertReview(model);
+
+        if (result == null || result <= 0) {
+          return;
+        }
+
+        final savedList = await viewModel.saveFiles2(photoImageList, Singleton().getAccountIdx()!);
+
+        if(savedList == null) {
+          return;
+        }
+
+        final imageSaved = await viewModel.insertReviewImages(savedList , result);
+        if (imageSaved != null && imageSaved > 0) {
+          showToast("리뷰가 등록되었습니다.");
+          Navigator.pop(context);
+        }
+
 
       },
       style: ButtonStyle(
@@ -250,11 +313,11 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       isExpanded: true,
       value: selectedDetailDropDown?.secend,
       items: photoDetailTypeDropdownList?.map((PurchaseModel item) {
-            return DropdownMenuItem<String>(
-              value: item.content_title,
-              child: Text(item.content_title),
-            );
-          }).toList() ?? [],
+        return DropdownMenuItem<String>(
+          value: item.content_title,
+          child: Text(item.content_title),
+        );
+      }).toList() ?? [],
       onChanged: (dynamic value) {
         print('buildDropdown onChanged value is');
         print(value);
@@ -283,6 +346,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                   onTap: () {
                     setState(() {
                       photoList.removeAt(position);
+                      photoImageList.removeAt(position);
                     });
                   },
                   child: Padding(
@@ -290,7 +354,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        buildPhotoBox(),
+                        buildPhotoBox(position),
                         Positioned(
                           top: 10,
                           right: 0,
@@ -315,32 +379,94 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             }));
   }
 
-  Widget buildPhotoBox() {
+  Widget buildPhotoBox(int position) {
+    String path = photoImageList[position].path;
+
     return Container(
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-          color: HexColor.fromHex("#EBEBEB"),
-          borderRadius: BorderRadius.circular(15.0),
-          border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: const Offset(0, 2))
-          ]),
+        color: HexColor.fromHex("#EBEBEB"),
+        borderRadius: BorderRadius.circular(15.0),
+        border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 1,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15.0),
+        child: Image.file(File(path), fit: BoxFit.fill, ),
+      )
+
     );
   }
 
-  Widget buildOpenCameraContainer() {
+  /*Widget buildPhotoBox() {
+    return FutureBuilder<String>(
+      future: getGalleryImage(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            String file = snapshot.data!;
+            return Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: HexColor.fromHex("#EBEBEB"),
+                borderRadius: BorderRadius.circular(15.0),
+                border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Image.file(File(file)),
+            );
+          }
+        } else {
+          return const CircularProgressIndicator(); // 로딩 중임을 표시
+        }
+      },
+    );
+  }*/
+
+  Future<void> getGalleryImage() async {
+    final XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    print('after await getGalleryImage');
+    setState(() {
+      if(file == null) {
+        return;
+      }
+      photoList.add(photoList.length + 1);
+      photoImageList.add(file);
+    });
+
+  }
+
+  Widget buildOpenCameraContainer()  {
+
     return GestureDetector(
       onTap: () {
+        print('buildOpenCameraContainer onTap');
         setState(() {
+          print('setState onTap');
           if (photoList.length == 10) {
             return;
           }
-          photoList.add(photoList.length + 1);
+
+          getGalleryImage();
+
           //selectedPhotoCount++;
         });
       },
@@ -394,10 +520,14 @@ class _CommunityResisterSfw extends State<CommunityResister> {
         decoration: InputDecoration(
             filled: true,
             fillColor: HexColor.fromHex('#EBEBEB'),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(radius),
+                borderSide:
+                BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(radius),
                 borderSide:
-                    BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
+                BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
             hintText: hint,
             isDense: true,
             contentPadding: EdgeInsets.all(padding)),
@@ -418,17 +548,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       actions: [
         IconButton(
             onPressed: () {
-              print('IconButton onPressed');
               Navigator.pop(context);
-
-              //print('IconButton onPressed');
-              //Navigator.pop(context);
-
-              /*Navigator.of(context).rou;
-              var navigatorState = Navigator.of(context);
-              final routes = navigatorState.routes;*/
-              //Navigator.of(context).pop();
-              //Navigator(context).pop();
             },
             icon: const Icon(
               Icons.close,

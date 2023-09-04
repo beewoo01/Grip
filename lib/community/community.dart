@@ -57,19 +57,25 @@ class CommunitySfw extends State<Community> {
   Widget build(BuildContext context) {
     print('_CommunitySfw');
     return FutureBuilder(
-        future: viewModel.selectReview(), builder: (context, snapShot) {
+        future: viewModel.selectReview(),
+        builder: (context, snapShot) {
           if (snapShot.hasData) {
             return buildAppScaffold();
-          } else if(snapShot.hasError) {
+          } else if (snapShot.hasError) {
             return buildEmptyList();
           } else {
             return buildEmptyList();
           }
-    });
+        });
   }
 
   Scaffold buildEmptyList() {
-    return Scaffold(appBar: buildAppBar(), body: const Center(child: Text(''),),);
+    return Scaffold(
+      appBar: buildAppBar(),
+      body: const Center(
+        child: Text(''),
+      ),
+    );
   }
 
   Scaffold buildAppScaffold() {
@@ -186,7 +192,6 @@ class CommunitySfw extends State<Community> {
   }
 
   Widget buildCommunityList() {
-
     return ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: viewModel.reviewList?.length,
@@ -219,12 +224,20 @@ class CommunitySfw extends State<Community> {
                                             FontWeight.bold,
                                             1),
                                         buildListText(
-                                            viewModel.reviewList![position].review_title, 14, FontWeight.bold, 1),
+                                            viewModel.reviewList![position]
+                                                .review_title,
+                                            14,
+                                            FontWeight.bold,
+                                            1),
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 1),
-                                          child: buildListText(viewModel.reviewList![position].review_description,
-                                              10, FontWeight.normal, 3),
+                                          child: buildListText(
+                                              viewModel.reviewList![position]
+                                                  .review_description,
+                                              10,
+                                              FontWeight.normal,
+                                              3),
                                         )
                                       ],
                                     ),
@@ -244,10 +257,8 @@ class CommunitySfw extends State<Community> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
-                                  child: Image.network(
-                                    'https://picsum.photos/${viewModel.reviewList![position].review_img_url}',
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: buildCoverImage(viewModel
+                                      .reviewList![position].review_img_url),
                                 ),
                               ),
                             ),
@@ -258,12 +269,20 @@ class CommunitySfw extends State<Community> {
                     buildDivider(1, 1)
                   ],
                 )
-
-                /**/
-                ),
+            ),
           );
         });
   }
+
+  Image buildCoverImage(String? url) => url == null
+      ? Image.asset(
+          'assets/images/noimage.png',
+          fit: BoxFit.fill,
+        )
+      : Image.network(
+          'https://picsum.photos/$url',
+          fit: BoxFit.cover,
+        );
 
   Widget buildListText(
       String text, double textSize, FontWeight fontWeight, int maxLines) {

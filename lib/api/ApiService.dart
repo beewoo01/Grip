@@ -217,22 +217,49 @@ class ApiService {
     var param = {
       'review_title': reviewModel.review_title,
       'review_description': reviewModel.review_description,
-      'account_account_idx' : reviewModel.account_idx,
-      'content_content_idx' : reviewModel.content_idx
+      'account_account_idx' : reviewModel.account_idx.toString(),
+      'content_idx' : reviewModel.content_idx.toString()
     };
 
-    Uri uri = Uri.parse('${BASE_URL}insertReview').replace(
-      queryParameters: param
-    );
+    Uri uri = Uri.parse('${BASE_URL}insertReview');
 
     var response = await http.post(uri, body: param);
 
     if(response.statusCode == 200) {
       print('insertReview 200');
       print(response.body);
-      return response.body as int;
+      return int.parse(response.body);
+
     } else {
       return -1;
     }
+  }
+
+  Future<int?> insertReviewImages(List<String> names, int reviewIdx) async {
+    String namesStr = names.toString();
+    print(namesStr);
+    final Map<String, String> param = {
+      'images' : namesStr,
+      'reviewIdx' : reviewIdx.toString()
+    };
+
+    final headers = {
+
+      'Content-Type': 'application/json',
+    };
+
+    Uri uri = Uri.parse('${BASE_URL}insertReviewImages');
+
+    final response = await http.post(uri, body: param);
+
+    if(response.statusCode == 200){
+      print('POST요청 성공');
+
+      return int.parse(response.body);
+    } else {
+      print('POST요청 실패');
+      return null;
+    }
+
   }
 }
