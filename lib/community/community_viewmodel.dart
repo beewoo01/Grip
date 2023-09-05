@@ -13,12 +13,17 @@ import 'package:ssh2/ssh2.dart';
 import 'package:path/path.dart' as path;
 
 import '../model/content_image_model.dart';
+import '../model/sub_category_model.dart';
 
 class CommunityViewModel {
   final ApiService apiService = ApiService();
   List<ReviewModel>? reviewList;
   ContentDetailModel? contentDetailModel;
+
   List<ContentImageModel> contentImageList = [];
+
+  List<PurchaseModel>? purchaseList = [];
+  List<SubCategoryModel>? subCategoryList = [];
 
   Future<List<ReviewModel>?> selectReview() async {
     List<ReviewModel>? reviewList = await apiService.selectReview();
@@ -68,10 +73,8 @@ class CommunityViewModel {
   }
 
   Future<List<PurchaseModel>?> selectPurchaseList(int accountIdx) async {
-    print('selectPurchaseList1');
     List<PurchaseModel>? list = await apiService.selectPurchaseList(accountIdx);
-    print('selectPurchaseList2');
-    print('$list');
+    purchaseList = list;
     return list;
   }
 
@@ -164,6 +167,13 @@ class CommunityViewModel {
       result = errorMessage;
       print(errorMessage);
     }
+  }
+
+
+  Future<List<SubCategoryModel>?> selectCategory() async {
+    List<SubCategoryModel>? list = await apiService.selectCategory();
+    subCategoryList = list;
+    return list;
   }
 
 

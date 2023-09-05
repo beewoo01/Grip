@@ -11,6 +11,8 @@ import 'package:grip/main.dart';
 import 'package:grip/sample.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../model/cummunity_model.dart';
+import '../model/sub_category_model.dart';
 import '../util/Singleton.dart';
 import 'community_viewmodel.dart';
 
@@ -25,17 +27,27 @@ class CommunityResister extends StatefulWidget {
 class _CommunityResisterSfw extends State<CommunityResister> {
   List<int> photoList = [];
   List<XFile> photoImageList = [];
-  List<PurchaseModel> typeDropdownList = [
-    PurchaseModel(content_idx: 0, content_title: '사진리뷰'),
-    PurchaseModel(content_idx: 1, content_title: '문의하기')
+
+  /*List<PurchaseModel>? photoDetailTypeDropdownList;
+  List<SubCategoryModel>? inquiryTypeDropdownList;*/
+
+  List<CommunityModel> targetDropDownList = [];
+
+  List<CommunityModel> typeDropdownList = [
+    CommunityModel(idx: null, position: 0, title: '사진리뷰'),
+    CommunityModel(idx: null, position: 1, title: '문의하기')
   ];
 
-  List<PurchaseModel>? photoDetailTypeDropdownList;
-  List<PurchaseModel>? inquiryTypeDropdownList;
+  CommunityModel selectedTypeModel = CommunityModel(
+      idx: null, position: 0, title: '사진리뷰');
+  CommunityModel selectedTargetModel = CommunityModel(
+      idx: null, position: null, title: '');
 
-  late Pair<int, String> selectedTypeDropDown = Pair(
-      typeDropdownList[0].content_idx, typeDropdownList[0].content_title);
-  Pair<int?, String?>? selectedDetailDropDown;
+
+  /*late Pair<int, String> selectedTypeDropDown =
+      Pair(typeDropdownList[0].position!, typeDropdownList[0].title);
+
+  Pair<int?, String?>? selectedDetailDropDown;*/
 
   TextEditingController titleEditController = TextEditingController();
   TextEditingController descriptionEditController = TextEditingController();
@@ -56,19 +68,37 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       showToast('로그인을 해주세요.');
     } else {
       setState(() async {
-        print('_CommunityResisterSfw setState1111');
-        List<PurchaseModel>? list =
         await viewModel.selectPurchaseList(accountIdx);
+        await viewModel.selectCategory();
+
+        if (viewModel.purchaseList == null) {
+          return;
+        }
+
+        if (viewModel.purchaseList!.isEmpty) {
+          return;
+        }
+
+        List<CommunityModel> list = [];
+
+        viewModel.purchaseList?.forEach((element) {
+          list.add(CommunityModel(
+              idx: element.content_idx,
+              position: null,
+              title: element.content_title));
+        });
 
         setState(() {
-          print('_CommunityResisterSfw setState2222');
-          photoDetailTypeDropdownList = list;
-          selectedDetailDropDown = Pair(
-              photoDetailTypeDropdownList?[0].content_idx,
-              photoDetailTypeDropdownList?[0].content_title);
-          //photoDetailTypeDropdownList?[0].content_title;
-          print('photoDetailTypeDropdownList result');
-          print('$photoDetailTypeDropdownList');
+          // selectedTargetModel =
+          //     CommunityModel(idx: null, position: null, title: '');
+
+          targetDropDownList.clear();
+          targetDropDownList.addAll(list);
+
+          selectedTargetModel = CommunityModel(
+              idx: targetDropDownList[0].idx,
+              position: 0,
+              title: targetDropDownList[0].title);
         });
       });
     }
@@ -149,69 +179,83 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     );
   }
 
+  void insertReview(int accountIdx) async {
+
+    int? contentIdx = selectedTargetModel.idx;
+    String title = titleEditController.text;
+    String description = descriptionEditController.text;
+
+    if (contentIdx == null) {
+      showToast('리뷰할 상품을 선택해주세요');
+      return;
+    }
+
+    if (title.isEmpty) {
+      showToast('리뷰 제목을 입력해주세요.');
+      return;
+    }
+
+    if (description.isEmpty) {
+      showToast('리뷰 내용을 입력해주세요.');
+      return;
+    }
+
+    final model = ReviewModel(
+      review_idx: null,
+      review_title: title,
+      review_description: description,
+      account_idx: accountIdx,
+      content_idx: contentIdx,
+      sub_category_idx: null,
+      sub_category_name: null,
+      category_idx: null,
+      category_name: null,
+      review_img_url: null,
+    );
+
+    final result = await viewModel.insertReview(model);
+
+    if (result == null || result <= 0) {
+      return;
+    }
+
+    final savedList = await viewModel.saveFiles2(
+        photoImageList, Singleton().getAccountIdx()!);
+
+    if (savedList == null) {
+      return;
+    }
+
+    final imageSaved =
+        await viewModel.insertReviewImages(savedList, result);
+    if (imageSaved != null && imageSaved > 0) {
+      showToast("리뷰가 등록되었습니다.");
+      Navigator.pop(context);
+    }
+  }
+
+  void insertInquiry(int accountIdx) {
+
+  }
+
   Widget buildResisterButton() {
     return TextButton(
-      onPressed: () async {
+      onPressed: ()  {
         int? accountIdx = Singleton().getAccountIdx();
-        int? contentIdx = selectedDetailDropDown?.first;
-        String title = titleEditController.text;
-        String description = descriptionEditController.text;
-
 
         if (accountIdx == null) {
           showToast('로그인을 해주세요');
           return;
         }
 
-        if (contentIdx == null) {
-          showToast('리뷰할 상품을 선택해주세요');
-          return;
+        if(selectedTypeModel.position == 0) {
+          insertReview(accountIdx);
+        } else if(selectedTypeModel.position == 1) {
+          insertInquiry(accountIdx);
         }
 
-        if (title.isEmpty) {
-          showToast('리뷰 제목을 입력해주세요.');
-          return;
-        }
-
-        if (description.isEmpty) {
-          showToast('리뷰 내용을 입력해주세요.');
-          return;
-        }
-
-        ///TODO You Have to Do List
-        /// 1. Save Review
-        /// 2. Save Images
-        /// 3. Save Review Images
-
-        final model = ReviewModel(
-          review_idx: null,
-          review_title: title,
-          review_description: description,
-          account_idx: accountIdx,
-          content_idx: contentIdx,
-          sub_category_idx: null,
-          sub_category_name: null,
-          category_idx: null,
-          category_name: null,
-          review_img_url: null,);
-
-        final result = await viewModel.insertReview(model);
-
-        if (result == null || result <= 0) {
-          return;
-        }
-
-        final savedList = await viewModel.saveFiles2(photoImageList, Singleton().getAccountIdx()!);
-
-        if(savedList == null) {
-          return;
-        }
-
-        final imageSaved = await viewModel.insertReviewImages(savedList , result);
-        if (imageSaved != null && imageSaved > 0) {
-          showToast("리뷰가 등록되었습니다.");
-          Navigator.pop(context);
-        }
+        print(selectedTypeModel.position);
+        return;
 
 
       },
@@ -278,7 +322,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
           child: dropBoxStatus == 0 ? buildTypeDropdown() : buildDropdown(),
-
         ),
       ),
     );
@@ -289,18 +332,53 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     return DropdownButton(
       underline: const SizedBox(),
       isExpanded: true,
-      value: selectedTypeDropDown.secend,
-      items: typeDropdownList.map((PurchaseModel item) {
+      //value: selectedTypeDropDown.secend,
+      value: selectedTypeModel.title,
+      items: typeDropdownList.map((CommunityModel item) {
         return DropdownMenuItem<String>(
-          value: item.content_title,
-          child: Text(item.content_title),
+          value: item.title,
+          child: Text(item.title),
         );
       }).toList(),
       onChanged: (dynamic value) {
-        print('buildTypeDropdown onChanged value is');
-        print(value);
+        int position = value == "사진리뷰" ? 0 : 1;
+        List<CommunityModel> list = [];
+
+        if (position == 0) {
+          print('first is zero');
+          viewModel.purchaseList?.forEach((element) {
+            list.add(CommunityModel(
+                idx: element.content_idx,
+                position: null,
+                title: element.content_title));
+          });
+        } else {
+          print('first is one');
+          viewModel.subCategoryList?.forEach((element) {
+            print(element.toString());
+            final title =
+                '${element.category_name}·${element.sub_category_name}';
+            list.add(CommunityModel(
+                idx: element.sub_category_idx, position: null, title: title));
+          });
+        }
+
         setState(() {
-          selectedTypeDropDown = value;
+          selectedTypeModel = CommunityModel(
+              idx: typeDropdownList[position].idx,
+              position: typeDropdownList[position].position,
+              title: typeDropdownList[position].title);
+
+          targetDropDownList.clear();
+          targetDropDownList.addAll(list);
+          selectedTargetModel = CommunityModel(
+              idx: targetDropDownList[0].idx,
+              position: 0,
+              title: targetDropDownList[0].title);
+          //selectedTargetModel = CommunityModel(idx: targetDropDownList[0].idx, position: position, title: targetDropDownList[0].title);
+
+
+
         });
       },
     );
@@ -311,23 +389,46 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     return DropdownButton(
       underline: const SizedBox(),
       isExpanded: true,
-      value: selectedDetailDropDown?.secend,
-      items: photoDetailTypeDropdownList?.map((PurchaseModel item) {
+      //value: selectedDetailDropDown?.secend,
+      value: selectedTargetModel.title,
+      items: targetDropDownList.map((CommunityModel item) {
         return DropdownMenuItem<String>(
-          value: item.content_title,
-          child: Text(item.content_title),
+          value: item.title,
+          child: Text(item.title),
         );
-      }).toList() ?? [],
+      }).toList(),
       onChanged: (dynamic value) {
-        print('buildDropdown onChanged value is');
-        print(value);
         setState(() {
-          selectedDetailDropDown = value;
-          /*if (dropBoxStatus == 0) {
-            selectedTypeDropDown = value;
+          if (selectedTargetModel.position == 0) {
+            int? length = viewModel.purchaseList?.length;
+            if (length == null) {
+              return;
+            }
+
+            for (int i = 0; i < length; i++) {
+              final model = viewModel.purchaseList?[i];
+              if (value == model?.content_title) {
+                selectedTargetModel = CommunityModel(idx: model?.content_idx, position: 0, title: value);
+
+              }
+            }
           } else {
-            selectedDetailDropDown = value;
-          }*/
+            int? length = viewModel.subCategoryList?.length;
+            if (length == null) {
+              return;
+            }
+
+            for (int i = 0; i < length; i++) {
+              final model = viewModel.subCategoryList?[i];
+              final iValue =
+                  '${model?.category_name}·${model?.sub_category_name}';
+
+              if (value == iValue) {
+                selectedTargetModel = CommunityModel(idx: model?.sub_category_idx, position: 1, title: value);
+
+              }
+            }
+          }
         });
       },
     );
@@ -383,27 +484,28 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     String path = photoImageList[position].path;
 
     return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: HexColor.fromHex("#EBEBEB"),
-        borderRadius: BorderRadius.circular(15.0),
-        border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 1,
-            offset: const Offset(0, 2),
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: HexColor.fromHex("#EBEBEB"),
+          borderRadius: BorderRadius.circular(15.0),
+          border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 1,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: Image.file(
+            File(path),
+            fit: BoxFit.fill,
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
-        child: Image.file(File(path), fit: BoxFit.fill, ),
-      )
-
-    );
+        ));
   }
 
   /*Widget buildPhotoBox() {
@@ -442,20 +544,19 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   }*/
 
   Future<void> getGalleryImage() async {
-    final XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final XFile? file =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     print('after await getGalleryImage');
     setState(() {
-      if(file == null) {
+      if (file == null) {
         return;
       }
       photoList.add(photoList.length + 1);
       photoImageList.add(file);
     });
-
   }
 
-  Widget buildOpenCameraContainer()  {
-
+  Widget buildOpenCameraContainer() {
     return GestureDetector(
       onTap: () {
         print('buildOpenCameraContainer onTap');

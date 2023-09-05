@@ -280,7 +280,7 @@ class CommunitySfw extends State<Community> {
           fit: BoxFit.fill,
         )
       : Image.network(
-          'https://picsum.photos/$url',
+          'http://codebrosdev.cafe24.com:8080/media/grip/$url',
           fit: BoxFit.cover,
         );
 
