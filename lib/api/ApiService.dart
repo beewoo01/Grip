@@ -4,6 +4,7 @@ import 'dart:ffi';
 
 import 'package:grip/model/content_detail_model.dart';
 import 'package:grip/model/content_image_model.dart';
+import 'package:grip/model/inquiry_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../category/reservation_viewmodel.dart';
@@ -259,6 +260,38 @@ class ApiService {
     } else {
       print('POST요청 실패');
       return null;
+    }
+
+  }
+
+  Future<List<InquiryModel>?> selectInquiry() async {
+    Uri uri = Uri.parse('${BASE_URL}selectInquiry');
+    final response = await http.get(uri);
+    print('selectInquiry statusCode is ${response.statusCode}');
+
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print(responseJson);
+      return responseJson.map((json) => InquiryModel.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+  Future<int> insertInquiry(int sub_category_idx, int account_idx, String inquiry_title, String inquiry_description) async {
+
+    Uri uri = Uri.parse('${BASE_URL}insertInquiry');
+    final response = await http.post(uri, body: {
+      'sub_category_idx': sub_category_idx.toString(),
+      'account_idx' : account_idx.toString(),
+      'inquiry_title' : inquiry_title,
+      'inquiry_description' : inquiry_description
+    });
+
+    if(response.statusCode == 200) {
+      return int.parse(response.body);
+    } else {
+      return -1;
     }
 
   }

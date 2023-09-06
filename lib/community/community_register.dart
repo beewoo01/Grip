@@ -234,7 +234,34 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     }
   }
 
-  void insertInquiry(int accountIdx) {
+  void insertInquiry(int accountIdx) async {
+    int? idx = selectedTargetModel.idx;
+    int? accountIdx = Singleton().getAccountIdx();
+
+    if(idx == null || accountIdx == null) {
+      print('???????');
+      return;
+    }
+
+    String title = titleEditController.text;
+    String description = descriptionEditController.text;
+
+    if (title.isEmpty) {
+      showToast('문의사항 제목을 입력해주세요.');
+      return;
+    }
+
+    if (description.isEmpty) {
+      showToast('문의사항 내용을 입력해주세요.');
+      return;
+    }
+
+    int? result = await viewModel.insertInquiry(idx, accountIdx, title, description);
+    if (result == null || result < 1) {
+      showToast('문의사항 등록을 실패했습니다.');
+      return;
+    }
+    showToast('문의사항 등록을 완료했습니다.');
 
   }
 
@@ -345,7 +372,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
         List<CommunityModel> list = [];
 
         if (position == 0) {
-          print('first is zero');
           viewModel.purchaseList?.forEach((element) {
             list.add(CommunityModel(
                 idx: element.content_idx,
@@ -353,9 +379,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                 title: element.content_title));
           });
         } else {
-          print('first is one');
           viewModel.subCategoryList?.forEach((element) {
-            print(element.toString());
+
             final title =
                 '${element.category_name}·${element.sub_category_name}';
             list.add(CommunityModel(
@@ -375,9 +400,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
               idx: targetDropDownList[0].idx,
               position: 0,
               title: targetDropDownList[0].title);
-          //selectedTargetModel = CommunityModel(idx: targetDropDownList[0].idx, position: position, title: targetDropDownList[0].title);
-
-
 
         });
       },
@@ -385,7 +407,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   }
 
   DropdownButton buildDropdown() {
-    print('buildDropdown');
     return DropdownButton(
       underline: const SizedBox(),
       isExpanded: true,
@@ -398,8 +419,10 @@ class _CommunityResisterSfw extends State<CommunityResister> {
         );
       }).toList(),
       onChanged: (dynamic value) {
+        print(value);
         setState(() {
-          if (selectedTargetModel.position == 0) {
+          if (selectedTypeModel.position == 0) {
+            print('selectedTargetModel.position == 0');
             int? length = viewModel.purchaseList?.length;
             if (length == null) {
               return;
@@ -414,6 +437,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             }
           } else {
             int? length = viewModel.subCategoryList?.length;
+            print('else');
+            print('length is $length');
             if (length == null) {
               return;
             }
@@ -422,6 +447,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
               final model = viewModel.subCategoryList?[i];
               final iValue =
                   '${model?.category_name}·${model?.sub_category_name}';
+
+              print('iValue is $iValue');
 
               if (value == iValue) {
                 selectedTargetModel = CommunityModel(idx: model?.sub_category_idx, position: 1, title: value);
@@ -507,41 +534,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
           ),
         ));
   }
-
-  /*Widget buildPhotoBox() {
-    return FutureBuilder<String>(
-      future: getGalleryImage(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            String file = snapshot.data!;
-            return Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: HexColor.fromHex("#EBEBEB"),
-                borderRadius: BorderRadius.circular(15.0),
-                border: Border.all(width: 0.0, color: HexColor.fromHex("#EBEBEB")),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 1,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Image.file(File(file)),
-            );
-          }
-        } else {
-          return const CircularProgressIndicator(); // 로딩 중임을 표시
-        }
-      },
-    );
-  }*/
 
   Future<void> getGalleryImage() async {
     final XFile? file =

@@ -13,11 +13,13 @@ import 'package:ssh2/ssh2.dart';
 import 'package:path/path.dart' as path;
 
 import '../model/content_image_model.dart';
+import '../model/inquiry_model.dart';
 import '../model/sub_category_model.dart';
 
 class CommunityViewModel {
   final ApiService apiService = ApiService();
   List<ReviewModel>? reviewList;
+  List<InquiryModel>? inquiryList;
   ContentDetailModel? contentDetailModel;
 
   List<ContentImageModel> contentImageList = [];
@@ -126,11 +128,12 @@ class CommunityViewModel {
         result = await client.connectSFTP() ?? 'Null result';
         if (result == "sftp_connected") {
           print('sftp_connected!!');
-          for(var i = 0; i < fileList.length; i++) {
+          for (var i = 0; i < fileList.length; i++) {
             //rename
             final file = File(fileList[i].path);
             String dir = path.dirname(fileList[i].path);
-            final currentTime = DateFormat('yyyyMMddHHmmssSSS').format(DateTime.now());
+            final currentTime =
+                DateFormat('yyyyMMddHHmmssSSS').format(DateTime.now());
 
             var fileName = '${currentTime}_${i}_$accountIdx.jpg';
             String newPath = path.join(dir, fileName);
@@ -147,13 +150,12 @@ class CommunityViewModel {
               },
             );
 
-            if(uploadResult == null) {
+            if (uploadResult == null) {
               print('Upload Fail $i');
             }
           }
 
           return savedList;
-
         } else {
           print('sftp_connected else..');
         }
@@ -169,13 +171,27 @@ class CommunityViewModel {
     }
   }
 
-
   Future<List<SubCategoryModel>?> selectCategory() async {
     List<SubCategoryModel>? list = await apiService.selectCategory();
     subCategoryList = list;
     return list;
   }
 
+  Future<List<InquiryModel>?> selectInquiry() async {
+    List<InquiryModel>? list = await apiService.selectInquiry();
+    print('selectInquiry');
+    inquiryList = list;
+    print(inquiryList.toString());
+    return list;
+  }
+
+  Future<int?> insertInquiry(int sub_category_idx, int account_idx,
+      String inquiry_title, String inquiry_description) async {
 
 
+    int result = await apiService.insertInquiry(
+        sub_category_idx, account_idx, inquiry_title, inquiry_description);
+
+    return result;
+  }
 }

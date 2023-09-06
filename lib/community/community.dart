@@ -4,6 +4,9 @@ import 'package:grip/community/community_register.dart';
 import 'package:grip/community/community_viewmodel.dart';
 import 'package:grip/community/community_write.dart';
 import 'package:grip/main.dart';
+import 'package:grip/model/inquiry_model.dart';
+
+import '../model/review_model.dart';
 
 class CommunityMenu extends StatelessWidget {
   const CommunityMenu({Key? key}) : super(key: key);
@@ -52,21 +55,34 @@ class CommunitySfw extends State<Community> {
   Color questionTextColor = Colors.black;
 
   CommunityViewModel viewModel = CommunityViewModel();
+  int currentState = 0;
+
+  late final PhotoReviewWidget photoReviewWidget =
+      PhotoReviewWidget(viewModel: viewModel);
+
+  late final InquiryListWidget inquiryListWidget = InquiryListWidget(
+    viewModel: viewModel,
+  );
+
+  // 0 -> 사진리뷰, 1 -> 문의하기
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState');
+    getData();
+  }
+
+  void getData() async {
+    await viewModel.selectReview();
+    await viewModel.selectInquiry();
+  }
 
   @override
   Widget build(BuildContext context) {
     print('_CommunitySfw');
-    return FutureBuilder(
-        future: viewModel.selectReview(),
-        builder: (context, snapShot) {
-          if (snapShot.hasData) {
-            return buildAppScaffold();
-          } else if (snapShot.hasError) {
-            return buildEmptyList();
-          } else {
-            return buildEmptyList();
-          }
-        });
+
+    return buildAppScaffold();
   }
 
   Scaffold buildEmptyList() {
@@ -107,8 +123,9 @@ class CommunitySfw extends State<Community> {
                 ),
 
                 Expanded(
-                  child: buildCommunityList(),
-                ),
+                    child: currentState == 0
+                        ? photoReviewWidget
+                        : inquiryListWidget),
 
                 const Padding(padding: EdgeInsets.only(bottom: 60))
                 //buildCommunityList()
@@ -189,113 +206,6 @@ class CommunitySfw extends State<Community> {
                   MaterialPageRoute(builder: (_) => const CommunityResister()));*/
             },
             icon: const Icon(Icons.ac_unit)));
-  }
-
-  Widget buildCommunityList() {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: viewModel.reviewList?.length,
-        itemBuilder: (BuildContext context, int position) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-            child: SizedBox(
-                width: double.infinity,
-                height: 100,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Flexible(
-                            flex: 7,
-                            child: Container(
-                                width: double.infinity,
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 5),
-                                  child: Container(
-                                    width: double.infinity,
-                                    alignment: Alignment.topLeft,
-                                    child: Column(
-                                      children: [
-                                        buildListText(
-                                            '${viewModel.reviewList![position].category_name} * ${viewModel.reviewList![position].sub_category_name}',
-                                            10,
-                                            FontWeight.bold,
-                                            1),
-                                        buildListText(
-                                            viewModel.reviewList![position]
-                                                .review_title,
-                                            14,
-                                            FontWeight.bold,
-                                            1),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 1),
-                                          child: buildListText(
-                                              viewModel.reviewList![position]
-                                                  .review_description,
-                                              10,
-                                              FontWeight.normal,
-                                              3),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )),
-                          ),
-                          Flexible(
-                            flex: 3,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: Colors.grey,
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: buildCoverImage(viewModel
-                                      .reviewList![position].review_img_url),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    buildDivider(1, 1)
-                  ],
-                )
-            ),
-          );
-        });
-  }
-
-  Image buildCoverImage(String? url) => url == null
-      ? Image.asset(
-          'assets/images/noimage.png',
-          fit: BoxFit.fill,
-        )
-      : Image.network(
-          'http://codebrosdev.cafe24.com:8080/media/grip/$url',
-          fit: BoxFit.cover,
-        );
-
-  Widget buildListText(
-      String text, double textSize, FontWeight fontWeight, int maxLines) {
-    return SizedBox(
-      width: double.infinity,
-      child: Text(
-        text,
-        style: TextStyle(fontSize: textSize, fontWeight: fontWeight),
-        textAlign: TextAlign.start,
-        overflow: TextOverflow.ellipsis,
-        maxLines: maxLines,
-      ),
-    );
   }
 
   Widget buildBottomCategory() {
@@ -453,11 +363,13 @@ class CommunitySfw extends State<Community> {
   void onCategoryButtonClicked(bool isPhotoClick) {
     setState(() {
       if (isPhotoClick) {
+        currentState = 0;
         photoBackgroundColor = Colors.black;
         questionBackgroundColor = Colors.transparent;
         photoTextColor = Colors.white;
         questionTextColor = Colors.black;
       } else {
+        currentState = 1;
         photoBackgroundColor = Colors.transparent;
         questionBackgroundColor = Colors.black;
         photoTextColor = Colors.black;
@@ -469,28 +381,220 @@ class CommunitySfw extends State<Community> {
   Widget buildCategory() {
     return Container();
   }
+}
 
-/*AppBar buildAppBar() {
-    return AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-                flex: 3,
-                child: Text(
-                  '커뮤니티',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                )),
-            Expanded(flex: 6, child: Container()),
-            Expanded(
-                flex: 1,
-                child: IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {},
-                ))
-          ],
-        ));
-  }*/
+class PhotoReviewWidget extends StatelessWidget {
+  final CommunityViewModel viewModel;
+
+  const PhotoReviewWidget({super.key, required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: viewModel.reviewList?.length,
+        itemBuilder: (BuildContext context, int position) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 100,
+                        padding: const EdgeInsets.only(left: 5),
+                        child: buildContent(position),
+                      ),
+                    ),
+                    SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: Colors.grey,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: buildCoverImage(viewModel
+                                  .reviewList![position].review_img_url),
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+                buildDivider(1, 1)
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget buildContent(int position) {
+    ReviewModel? model = viewModel.reviewList?[position];
+    if (model == null) {
+      return const Center(
+        child: Text(''),
+      );
+    } else {
+      return Column(
+        children: [
+          buildListText('${model.category_name} * ${model.sub_category_name}',
+              10, FontWeight.bold, 1),
+          buildListText(model.review_title, 14, FontWeight.bold, 1),
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: buildListText(
+                model.review_description, 10, FontWeight.normal, 3),
+          )
+        ],
+      );
+    }
+  }
+
+  Widget buildListText(
+      String text, double textSize, FontWeight fontWeight, int maxLines) {
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        text,
+        style: TextStyle(fontSize: textSize, fontWeight: fontWeight),
+        textAlign: TextAlign.start,
+        overflow: TextOverflow.ellipsis,
+        maxLines: maxLines,
+      ),
+    );
+  }
+
+  Divider buildDivider(double thickness, double height) {
+    return Divider(
+      thickness: thickness,
+      height: height,
+      color: Colors.black,
+    );
+  }
+
+  Image buildCoverImage(String? url) => url == null
+      ? Image.asset(
+          'assets/images/noimage.png',
+          fit: BoxFit.fill,
+        )
+      : Image.network(
+          'http://codebrosdev.cafe24.com:8080/media/grip/$url',
+          fit: BoxFit.cover,
+        );
+}
+
+class InquiryListWidget extends StatelessWidget {
+  final CommunityViewModel viewModel;
+
+  const InquiryListWidget({super.key, required this.viewModel});
+
+  @override
+  Widget build(BuildContext context) {
+    print('InquiryListWidget build ${viewModel.inquiryList?.length}');
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: viewModel.inquiryList?.length,
+        itemBuilder: (BuildContext context, int position) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 100,
+                        padding: const EdgeInsets.only(left: 5),
+                        child: buildContent(position),
+                      ),
+                    ),
+                    SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: Colors.grey,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: buildCoverImage(
+                                  //    viewModel.inquiryList![position].
+                                  viewModel.inquiryList?[position]
+                                      .inquiry_image_url),
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+                buildDivider(1, 1)
+              ],
+            ),
+          );
+        });
+  }
+
+  Divider buildDivider(double thickness, double height) {
+    return Divider(
+      thickness: thickness,
+      height: height,
+      color: Colors.black,
+    );
+  }
+
+  Widget buildContent(int position) {
+    InquiryModel? model = viewModel.inquiryList?[position];
+    if (model == null) {
+      return const Center(
+        child: Text('항목이 비어 있습니다.'),
+      );
+    }
+
+    return Column(
+      children: [
+        buildListText(model.sources, 10, FontWeight.bold, 1),
+        buildListText(model.inquiry_title, 14, FontWeight.bold, 1),
+        Padding(
+          padding: const EdgeInsets.only(top: 1),
+          child: buildListText(
+              model.inquiry_description, 10, FontWeight.normal, 3),
+        )
+      ],
+    );
+  }
+
+  Image buildCoverImage(String? url) => url == null
+      ? Image.asset(
+          'assets/images/noimage.png',
+          fit: BoxFit.fill,
+        )
+      : Image.network(
+          'http://codebrosdev.cafe24.com:8080/media/grip/$url',
+          fit: BoxFit.cover,
+        );
+
+  Widget buildListText(
+      String text, double textSize, FontWeight fontWeight, int maxLines) {
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        text,
+        style: TextStyle(fontSize: textSize, fontWeight: fontWeight),
+        textAlign: TextAlign.start,
+        overflow: TextOverflow.ellipsis,
+        maxLines: maxLines,
+      ),
+    );
+  }
 }
