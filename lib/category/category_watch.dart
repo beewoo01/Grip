@@ -7,7 +7,7 @@ import 'package:grip/category/content_detail.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/pair.dart';
 
-import 'category/category_viewmodel.dart';
+import 'category_viewmodel.dart';
 
 class CategoryWatch extends StatefulWidget {
   final int categoryIdx;

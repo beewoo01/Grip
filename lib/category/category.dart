@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:grip/category/reservation.dart';
 import 'package:grip/category/content_detail.dart';
 import 'package:provider/provider.dart';
-import 'category/category_viewmodel.dart';
+import 'category_viewmodel.dart';
 import 'category_watch.dart';
 import 'package:grip/main.dart';
 
-import 'model/pair.dart';
+import '../model/pair.dart';
 
 class Category extends StatelessWidget {
   const Category({super.key});

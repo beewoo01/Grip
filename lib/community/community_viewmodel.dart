@@ -186,11 +186,10 @@ class CommunityViewModel {
   }
 
   Future<int?> insertInquiry(int sub_category_idx, int account_idx,
-      String inquiry_title, String inquiry_description) async {
-
+      String inquiry_title, String inquiry_description, List<String>? names) async {
 
     int result = await apiService.insertInquiry(
-        sub_category_idx, account_idx, inquiry_title, inquiry_description);
+        sub_category_idx, account_idx, inquiry_title, inquiry_description, names);
 
     return result;
   }

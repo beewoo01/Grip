@@ -422,7 +422,7 @@ class PhotoReviewWidget extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: buildCoverImage(viewModel
-                                  .reviewList![position].review_img_url),
+                                  .reviewList?[position].review_img_url),
                             ),
                           ),
                         )),

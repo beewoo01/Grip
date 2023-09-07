@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grip/home.dart';
-import 'package:grip/category.dart';
+import 'package:grip/home/home.dart';
+import 'package:grip/category/category.dart';
 import 'package:grip/community/community.dart';
 import 'package:grip/myinfo/account_repository.dart';
 import 'package:grip/myinfo/myinfo.dart';

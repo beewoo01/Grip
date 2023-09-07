@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:grip/home/vm_home.dart';
 import 'package:grip/main.dart';
+import 'package:grip/util/Singleton.dart';
 //final homeKey = GlobalKey<NavigatorState>();
 
 class Home extends StatelessWidget {
@@ -43,6 +45,8 @@ class HomeSfw extends StatefulWidget {
 }
 
 class _HomeSfw extends State<HomeSfw> {
+  final viewModel = HomeViewModel();
+
   final List<String> images = [
     'https://picsum.photos/200/300',
     'https://picsum.photos/200',
@@ -53,6 +57,16 @@ class _HomeSfw extends State<HomeSfw> {
 
   final colorCodes = [400, 100, 300, 200, 100];
   final categoryData = ['웨딩촬영', '바프촬영', '모델', '공간대여'];
+
+  @override
+  void initState() {
+    super.initState();
+    if (Singleton().getAccountIdx() == null) {
+      Singleton().setAccountIdx(2);
+    }
+
+    viewModel.selectPremiumModel(Singleton().getAccountIdx()!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,28 +82,32 @@ class _HomeSfw extends State<HomeSfw> {
             Container(
                 width: double.infinity,
                 color: Colors.black,
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        'GRIP 프리미엄 Pro',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          'GRIP 프리미엄 Pro',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
                       ),
-                    ),
-                    const Padding(padding: EdgeInsets.only(top: 10)),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: SizedBox(
-                          width: double.infinity,
-                          height: 250,
-                          child: buildPremiumList()),
-                    ),
-                    const Padding(padding: EdgeInsets.only(top: 10)),
-                  ],
+                      const Padding(padding: EdgeInsets.only(top: 10)),
+                      Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: SizedBox(
+                            width: double.infinity,
+                            height: 250,
+                            child: buildPremiumList()),
+                      ),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
+                    ],
+                  ),
                 )),
             const Padding(padding: EdgeInsets.only(top: 20)),
             SizedBox(
@@ -299,10 +317,95 @@ class _HomeSfw extends State<HomeSfw> {
   ListView buildPremiumList() {
     return ListView.separated(
       itemBuilder: (context, index) {
-        return Container(
+        final model = viewModel.premiumList?[index];
+        if (model == null) {
+          return Container();
+        }
+        return SizedBox(
           width: 200,
           height: 250,
-          color: Colors.grey,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 8,
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10))),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        child: model.content_img_url != null
+                            ? Image.network(
+                                'http://codebrosdev.cafe24.com:8080/media/grip/${model.content_img_url}',
+                                fit: BoxFit.fill,
+                              )
+                            : Image.asset(
+                                'assets/images/noimage.png',
+                                fit: BoxFit.fill,
+                              ),
+                      ),
+                      Positioned(
+                        right: 5,
+                        child: IconButton(
+                            onPressed: () {
+                              ///TODO 좋아요 적용 해야함
+                              print('${model.like_idx}');
+                            },
+                            icon: model.like_idx == 0 ? const Icon(Icons.favorite_border_outlined) : const Icon(Icons.favorite)
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10))),
+                    child: Container(
+                      width: double.infinity,
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.only(left: 10),
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                model.content_title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                                padding: const EdgeInsets.only(left: 10),
+                                alignment: Alignment.topLeft,
+                                child: Text(model.content_description)),
+                          )
+                        ],
+                      ),
+                    )),
+              )
+            ],
+          ),
           //child: Image.asset('assets/images/weding/$index.jpg', fit: BoxFit.fill,),
 
           //color: Colors.amber[colorCodes[index]],
@@ -313,7 +416,9 @@ class _HomeSfw extends State<HomeSfw> {
         width: 10,
         color: Colors.black,
       ),
-      itemCount: colorCodes.length,
+      itemCount: viewModel.premiumList?.length == null
+          ? 0
+          : viewModel.premiumList!.length,
       scrollDirection: Axis.horizontal,
     );
   }
@@ -355,7 +460,7 @@ class _HomeSfw extends State<HomeSfw> {
   }
 
   Widget buildCategory() {
-    return SizedBox(
+    return const SizedBox(
       width: 50,
       height: 50,
       //child: Image.asset('assets/images/noimage.png'),

@@ -38,11 +38,10 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     CommunityModel(idx: null, position: 1, title: '문의하기')
   ];
 
-  CommunityModel selectedTypeModel = CommunityModel(
-      idx: null, position: 0, title: '사진리뷰');
-  CommunityModel selectedTargetModel = CommunityModel(
-      idx: null, position: null, title: '');
-
+  CommunityModel selectedTypeModel =
+      CommunityModel(idx: null, position: 0, title: '사진리뷰');
+  CommunityModel selectedTargetModel =
+      CommunityModel(idx: null, position: null, title: '');
 
   /*late Pair<int, String> selectedTypeDropDown =
       Pair(typeDropdownList[0].position!, typeDropdownList[0].title);
@@ -148,9 +147,9 @@ class _CommunityResisterSfw extends State<CommunityResister> {
                           ),
                           Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: buildPhotoList(),
-                              ))
+                            padding: const EdgeInsets.only(right: 5),
+                            child: buildPhotoList(),
+                          ))
                         ],
                       ),
                     )),
@@ -180,7 +179,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   }
 
   void insertReview(int accountIdx) async {
-
     int? contentIdx = selectedTargetModel.idx;
     String title = titleEditController.text;
     String description = descriptionEditController.text;
@@ -219,16 +217,27 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       return;
     }
 
-    final savedList = await viewModel.saveFiles2(
-        photoImageList, Singleton().getAccountIdx()!);
+    if (photoImageList.isNotEmpty) {
+      final savedList = await viewModel.saveFiles2(
+          photoImageList, Singleton().getAccountIdx()!);
 
-    if (savedList == null) {
-      return;
+      if (savedList == null) {
+        return;
+      }
+
+      final imageSaved = await viewModel.insertReviewImages(savedList, result);
+
+      if (imageSaved != null && imageSaved > 0) {
+        showToast("리뷰가 등록되었습니다.");
+        Navigator.pop(context);
+        return;
+      } else {
+        showToast("리뷰 이미지 등록을 실패했습니다.");
+        return;
+      }
     }
 
-    final imageSaved =
-        await viewModel.insertReviewImages(savedList, result);
-    if (imageSaved != null && imageSaved > 0) {
+    if (result > 0) {
       showToast("리뷰가 등록되었습니다.");
       Navigator.pop(context);
     }
@@ -238,8 +247,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
     int? idx = selectedTargetModel.idx;
     int? accountIdx = Singleton().getAccountIdx();
 
-    if(idx == null || accountIdx == null) {
-      print('???????');
+    if (idx == null || accountIdx == null) {
       return;
     }
 
@@ -256,18 +264,35 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       return;
     }
 
-    int? result = await viewModel.insertInquiry(idx, accountIdx, title, description);
+    List<String>? savedList;
+
+    if(photoImageList.isNotEmpty) {
+      savedList = await viewModel.saveFiles2(photoImageList, Singleton().getAccountIdx()!);
+
+      if (savedList == null) {
+        return;
+      }
+    }
+
+
+
+
+
+    int? result = await viewModel.insertInquiry(idx, accountIdx, title, description, savedList);
+
     if (result == null || result < 1) {
       showToast('문의사항 등록을 실패했습니다.');
+      Navigator.pop(context);
       return;
     }
-    showToast('문의사항 등록을 완료했습니다.');
 
+    showToast('문의사항 등록을 완료했습니다.');
+    Navigator.pop(context);
   }
 
   Widget buildResisterButton() {
     return TextButton(
-      onPressed: ()  {
+      onPressed: () {
         int? accountIdx = Singleton().getAccountIdx();
 
         if (accountIdx == null) {
@@ -275,16 +300,14 @@ class _CommunityResisterSfw extends State<CommunityResister> {
           return;
         }
 
-        if(selectedTypeModel.position == 0) {
+        if (selectedTypeModel.position == 0) {
           insertReview(accountIdx);
-        } else if(selectedTypeModel.position == 1) {
+        } else if (selectedTypeModel.position == 1) {
           insertInquiry(accountIdx);
         }
 
         print(selectedTypeModel.position);
         return;
-
-
       },
       style: ButtonStyle(
           shape: MaterialStateProperty.all(
@@ -380,7 +403,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
           });
         } else {
           viewModel.subCategoryList?.forEach((element) {
-
             final title =
                 '${element.category_name}·${element.sub_category_name}';
             list.add(CommunityModel(
@@ -400,7 +422,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
               idx: targetDropDownList[0].idx,
               position: 0,
               title: targetDropDownList[0].title);
-
         });
       },
     );
@@ -431,8 +452,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             for (int i = 0; i < length; i++) {
               final model = viewModel.purchaseList?[i];
               if (value == model?.content_title) {
-                selectedTargetModel = CommunityModel(idx: model?.content_idx, position: 0, title: value);
-
+                selectedTargetModel = CommunityModel(
+                    idx: model?.content_idx, position: 0, title: value);
               }
             }
           } else {
@@ -451,8 +472,8 @@ class _CommunityResisterSfw extends State<CommunityResister> {
               print('iValue is $iValue');
 
               if (value == iValue) {
-                selectedTargetModel = CommunityModel(idx: model?.sub_category_idx, position: 1, title: value);
-
+                selectedTargetModel = CommunityModel(
+                    idx: model?.sub_category_idx, position: 1, title: value);
               }
             }
           }
@@ -537,7 +558,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
 
   Future<void> getGalleryImage() async {
     final XFile? file =
-    await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     print('after await getGalleryImage');
     setState(() {
       if (file == null) {
@@ -616,11 +637,11 @@ class _CommunityResisterSfw extends State<CommunityResister> {
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(radius),
                 borderSide:
-                BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
+                    BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(radius),
                 borderSide:
-                BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
+                    BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
             hintText: hint,
             isDense: true,
             contentPadding: EdgeInsets.all(padding)),

@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../category/reservation_viewmodel.dart';
 import '../model/content_model.dart';
+import '../model/premium_model.dart';
 import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
@@ -278,14 +279,16 @@ class ApiService {
     return null;
   }
 
-  Future<int> insertInquiry(int sub_category_idx, int account_idx, String inquiry_title, String inquiry_description) async {
-
+  Future<int> insertInquiry(int sub_category_idx, int account_idx, String inquiry_title, String inquiry_description, List<String>? names) async {
     Uri uri = Uri.parse('${BASE_URL}insertInquiry');
+    String inquirt_images = names.toString();
+
     final response = await http.post(uri, body: {
       'sub_category_idx': sub_category_idx.toString(),
       'account_idx' : account_idx.toString(),
       'inquiry_title' : inquiry_title,
-      'inquiry_description' : inquiry_description
+      'inquiry_description' : inquiry_description,
+      'inquirt_images' : inquirt_images
     });
 
     if(response.statusCode == 200) {
@@ -293,6 +296,22 @@ class ApiService {
     } else {
       return -1;
     }
+
+  }
+
+
+  Future<List<PremiumModel>?> selectPremium(int accountIdx) async {
+    final param = {'account_idx': accountIdx.toString()};
+    Uri uri = Uri.parse('${BASE_URL}selectPremium').replace(queryParameters: param);
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      print('selectPremium response.statusCode == 200');
+      List responseJson = json.decode(response.body);
+      print('responseJson $responseJson');
+      return responseJson.map((json) => PremiumModel.fromJson(json)).toList();
+    }
+
+    return null;
 
   }
 }
