@@ -2,19 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grip/home/home.dart';
-import 'package:grip/category/category.dart';
-import 'package:grip/community/community.dart';
-import 'package:grip/myinfo/account_repository.dart';
-import 'package:grip/myinfo/myinfo.dart';
-import 'package:grip/promotion/promotion.dart';
-import 'package:grip/sample.dart';
-import 'package:grip/util/bottom_navigation.dart';
+import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/screen/category/category.dart';
+import 'package:grip/screen/community/community.dart';
+import 'package:grip/screen/home/home.dart';
+import 'package:grip/screen/myinfo/account_repository.dart';
+import 'package:grip/screen/myinfo/myinfo.dart';
+import 'package:grip/screen/promotion/promotion.dart';
 import 'package:grip/util/menu_item.dart';
 import 'package:grip/util/tap_item.dart';
-import 'package:grip/myinfo/login.dart';
 import 'package:provider/provider.dart';
-import 'category/category_viewmodel.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -132,7 +129,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
                         type: BottomNavigationBarType.fixed,
                         items: menuItemList
                             .map((MenuItem menuItem) => BottomNavigationBarItem(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: AppColors.black,
                                   icon: menuItem.iconData,
                                   //SvgPicture.asset('assets/images/home.svg'),
                                   //Image.asset('assets/images/sample2.png'),//Icon(menuItem.iconData),
@@ -146,7 +143,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
                             _navbarNotifier.index = index;
                           }
                         },
-                        unselectedItemColor: Colors.black,
+                        unselectedItemColor: AppColors.black,
                         selectedItemColor: Colors.blue,
                         currentIndex: _navbarNotifier.index,
                         unselectedFontSize: 8,

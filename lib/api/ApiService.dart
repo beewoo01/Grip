@@ -7,19 +7,20 @@ import 'package:grip/model/content_image_model.dart';
 import 'package:grip/model/inquiry_model.dart';
 import 'package:http/http.dart' as http;
 
-import '../category/reservation_viewmodel.dart';
+import '../common/url/grip_url.dart';
 import '../model/content_model.dart';
 import '../model/premium_model.dart';
 import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
+import '../screen/home/vo/vo_event.dart';
 
 class ApiService {
-  String BASE_URL = "http://192.168.0.137:8080/project/";
+  String BASE_URL = GripUrl.localUrl;
 
   Future<http.Response> login(String id, String pw) async {
-    Uri uri = Uri.parse('${BASE_URL}login');
+    Uri uri = Uri.parse('${GripUrl}login');
 
     var response = await http
         .post(uri, body: {'account_email': id, 'account_password': pw});
@@ -312,6 +313,43 @@ class ApiService {
     }
 
     return null;
-
   }
+
+  Future<int> insertLike(int contentIdx, int accountIdx) async {
+    final param = {"contentIdx" : contentIdx ,"accountIdx" : accountIdx};
+    Uri uri = Uri.parse('${BASE_URL}insertLike').replace(queryParameters: param);
+    final response = await http.post(uri, body: param);
+    if(response.statusCode == 200) {
+      return int.parse(response.body);
+    }
+
+    return -1;
+  }
+
+  Future<int> deleteLike(int likeIdx) async {
+    final param = {"likeIdx" : likeIdx};
+    Uri uri = Uri.parse('${BASE_URL}deleteLike').replace(queryParameters: param);
+    final response = await http.post(uri, body: param);
+    if(response.statusCode == 200) {
+      return int.parse(response.body);
+    }
+
+    return -1;
+  }
+
+
+  Future<List<Event>?> selectEvent() async {
+    Uri uri = Uri.parse('${BASE_URL}selectEvent');
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print('selectEvent responseJson $responseJson');
+      return responseJson.map((json) => Event.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+
+
 }

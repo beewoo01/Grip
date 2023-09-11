@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/util/tap_item.dart';
 
 class BottomNavigation extends StatelessWidget {
@@ -25,8 +26,8 @@ class BottomNavigation extends StatelessWidget {
       currentIndex: currentTab.index,
       unselectedFontSize: 8,
       selectedFontSize: 8,
-      selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.black,
+      selectedItemColor: AppColors.black,
+      unselectedItemColor: AppColors.black,
     );
   }
 

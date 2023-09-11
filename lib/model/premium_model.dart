@@ -7,7 +7,7 @@ class PremiumModel {
   String content_latitude;
   String content_longitude;
   String? content_img_url;
-  int? like_idx;
+  int like_idx = 0;
 
   PremiumModel({required this.premium_idx,
     required this.content_idx,
@@ -20,6 +20,8 @@ class PremiumModel {
     required this.like_idx});
 
   factory PremiumModel.fromJson(Map<String, dynamic> json) {
+    print('json[like_idx]');
+    print(json['like_idx']);
     return PremiumModel(
       premium_idx: json['premium_idx'],
       content_idx: json['content_idx'],
@@ -29,7 +31,7 @@ class PremiumModel {
       content_latitude: json['content_latitude'],
       content_longitude: json['content_longitude'],
       content_img_url: json['content_img_url'],
-      like_idx: json['like_idx'],
+      like_idx: json['like_idx'] ?? 0,
     );
   }
 }
