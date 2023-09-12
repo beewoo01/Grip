@@ -201,6 +201,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
       review_title: title,
       review_description: description,
       account_idx: accountIdx,
+      account_name: null,
       content_idx: contentIdx,
       sub_category_idx: null,
       sub_category_name: null,

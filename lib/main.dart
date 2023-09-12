@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     print('build');
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -42,9 +43,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<void> navigate(
-    BuildContext context, String route, {bool isDialog = false, bool isRootNavigator = true, Map<String, dynamic>? arguments}
-    ) => Navigator.of(context, rootNavigator: isRootNavigator).pushNamed(route, arguments: arguments);
+Future<void> navigate(BuildContext context, String route,
+        {bool isDialog = false,
+        bool isRootNavigator = true,
+        Map<String, dynamic>? arguments}) =>
+    Navigator.of(context, rootNavigator: isRootNavigator)
+        .pushNamed(route, arguments: arguments);
 
 final homeKey = GlobalKey<NavigatorState>();
 final categoryKey = GlobalKey<NavigatorState>();

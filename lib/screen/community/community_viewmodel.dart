@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -19,8 +20,8 @@ import '../../model/sub_category_model.dart';
 
 class CommunityViewModel {
   final ApiService apiService = ApiService();
-  List<ReviewModel>? reviewList;
-  List<InquiryModel>? inquiryList;
+  List<ReviewModel> reviewList = [];
+  List<InquiryModel>? inquiryList = [];
   ContentDetailModel? contentDetailModel;
 
   List<ContentImageModel> contentImageList = [];
@@ -28,15 +29,14 @@ class CommunityViewModel {
   List<PurchaseModel>? purchaseList = [];
   List<SubCategoryModel>? subCategoryList = [];
 
-  Future<List<ReviewModel>?> selectReview() async {
+  Future<void> selectReview() async {
     List<ReviewModel>? reviewList = await apiService.selectReview();
-    this.reviewList = reviewList;
-    if (reviewList != null) {
+    if(reviewList != null) {
+      this.reviewList = reviewList;
       print('reviewList');
       print(reviewList);
-      return reviewList;
     }
-    return null;
+
   }
 
   Future<ContentDetailModel?> selectContentDetail(int contentIdx) async {
@@ -180,9 +180,12 @@ class CommunityViewModel {
 
   Future<List<InquiryModel>?> selectInquiry() async {
     List<InquiryModel>? list = await apiService.selectInquiry();
-    print('selectInquiry');
-    inquiryList = list;
-    print(inquiryList.toString());
+    if(list != null) {
+      inquiryList = list;
+      print('selectInquiry');
+      print(inquiryList.toString());
+    }
+
     return list;
   }
 

@@ -5,6 +5,8 @@ import 'dart:ffi';
 import 'package:grip/model/content_detail_model.dart';
 import 'package:grip/model/content_image_model.dart';
 import 'package:grip/model/inquiry_model.dart';
+import 'package:grip/screen/home/dto/dto_sub_category.dart';
+import 'package:grip/screen/home/dto/dto_wedding.dart';
 import 'package:http/http.dart' as http;
 
 import '../common/url/grip_url.dart';
@@ -14,6 +16,7 @@ import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
+import '../screen/home/dto/dto_picture_by_category.dart';
 import '../screen/home/vo/vo_event.dart';
 
 class ApiService {
@@ -345,6 +348,44 @@ class ApiService {
       List responseJson = json.decode(response.body);
       print('selectEvent responseJson $responseJson');
       return responseJson.map((json) => Event.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+
+  Future<List<WeddingDTO>?> selectWeddingPhoto() async {
+    Uri uri = Uri.parse('${BASE_URL}selectWeddingPhoto');
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print('selectWeddingPhoto responseJson $responseJson');
+      return responseJson.map((json) => WeddingDTO.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+  Future<List<PictureByCategoryDTO>?> selectPicturesByCategory(int category_idx) async {
+    Uri uri = Uri.parse('${BASE_URL}selectPicturesByCategory').replace(queryParameters: { "category_idx" : category_idx});
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print('selectPicturesByCategory responseJson $responseJson');
+      return responseJson.map((json) => PictureByCategoryDTO.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+
+  Future<List<SubCategoryDTO>?> selectSubCategory(int category_idx) async {
+    Uri uri = Uri.parse('${BASE_URL}selectSubCategory').replace(queryParameters: {"category_idx" : category_idx});
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print('selectSubCategory responseJson $responseJson');
+      return responseJson.map((json) => SubCategoryDTO.fromJson(json)).toList();
     }
 
     return null;

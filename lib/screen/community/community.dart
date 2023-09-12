@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/inquiry_model.dart';
 import 'package:grip/model/review_model.dart';
 import 'package:grip/screen/community/community_register.dart';
 import 'package:grip/screen/community/community_viewmodel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/url/grip_url.dart';
 
@@ -71,19 +73,20 @@ class CommunitySfw extends State<Community> {
   @override
   void initState() {
     super.initState();
-    print('initState');
+    print('CommunitySfw initState');
     getData();
   }
 
   void getData() async {
-    await viewModel.selectReview();
-    await viewModel.selectInquiry();
+    /*await viewModel.selectReview();
+    await viewModel.selectInquiry();*/
+
+    print("CommunitySfw getData ${viewModel.reviewList.length}");
   }
 
   @override
   Widget build(BuildContext context) {
-    print('_CommunitySfw');
-
+    print('_CommunitySfw build');
     return buildAppScaffold();
   }
 
@@ -97,6 +100,8 @@ class CommunitySfw extends State<Community> {
   }
 
   Scaffold buildAppScaffold() {
+    print("buildAppScaffold");
+    print("buildAppScaffold reviewList.count ${viewModel.reviewList.count}");
     return Scaffold(
       appBar: buildAppBar(),
       body: Stack(
@@ -115,10 +120,12 @@ class CommunitySfw extends State<Community> {
                 Container(
                   child: buildMiddleCategory(),
                 ),
-                Padding(
+
+                const Line().pSymmetric(h: 10, v: 10),
+                /*Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
                   child: buildDivider(1.5, 1),
-                ),
+                ),*/
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
                   child: buildBottomCategory(),
@@ -211,27 +218,25 @@ class CommunitySfw extends State<Community> {
   }
 
   Widget buildBottomCategory() {
-    return Container(
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.only(right: 5),
-              child: buildBottomCategoryItem(
-                  AppColors.black, AppColors.white, AppColors.black, '카테고리'),
-            ),
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: buildBottomCategoryItem(
+                AppColors.black, AppColors.white, AppColors.black, '카테고리'),
           ),
-          GestureDetector(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5),
-              child: buildBottomCategoryItem(
-                  AppColors.black, AppColors.black, AppColors.white, '세부 카테고리'),
-            ),
-          )
-        ],
-      ),
+        ),
+        GestureDetector(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.only(left: 5, right: 5),
+            child: buildBottomCategoryItem(
+                AppColors.black, AppColors.black, AppColors.white, '세부 카테고리'),
+          ),
+        )
+      ],
     );
   }
 
@@ -392,71 +397,66 @@ class PhotoReviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: viewModel.reviewList?.length,
-        itemBuilder: (BuildContext context, int position) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 100,
-                        padding: const EdgeInsets.only(left: 5),
-                        child: buildContent(position),
-                      ),
-                    ),
-                    SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.grey,
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: buildCoverImage(viewModel
-                                  .reviewList?[position].review_img_url),
+    return FutureBuilder(
+        future: viewModel.selectReview(),
+        builder: (context, snapShot) {
+          return ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: viewModel.reviewList?.length,
+              itemBuilder: (BuildContext context, int position) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 100,
+                              padding: const EdgeInsets.only(left: 5),
+                              child: buildContent(position),
                             ),
                           ),
-                        )),
-                  ],
-                ),
-                buildDivider(1, 1)
-              ],
-            ),
-          );
+                          SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.grey,
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: buildCoverImage(viewModel
+                                        .reviewList?[position].review_img_url),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                      buildDivider(1, 1)
+                    ],
+                  ),
+                );
+              });
         });
   }
 
   Widget buildContent(int position) {
-    ReviewModel? model = viewModel.reviewList?[position];
-    if (model == null) {
-      return const Center(
-        child: Text(''),
-      );
-    } else {
-      return Column(
-        children: [
-          buildListText('${model.category_name} * ${model.sub_category_name}',
-              10, FontWeight.bold, 1),
-          buildListText(model.review_title, 14, FontWeight.bold, 1),
-          Padding(
-            padding: const EdgeInsets.only(top: 1),
-            child: buildListText(
-                model.review_description, 10, FontWeight.normal, 3),
-          )
-        ],
-      );
-    }
+    ReviewModel model = viewModel.reviewList[position];
+    return Column(
+      children: [
+        buildListText("${model.category_name} * ${model.sub_category_name}", 10,
+            FontWeight.bold, 1),
+        buildListText(model.review_title, 14, FontWeight.bold, 1),
+        buildListText(model.review_description, 10, FontWeight.normal, 3)
+            .pOnly(top: 1)
+      ],
+    );
   }
 
   Widget buildListText(
@@ -486,7 +486,10 @@ class PhotoReviewWidget extends StatelessWidget {
           'assets/images/noimage.png',
           fit: BoxFit.fill,
         )
-      : Image.network('${GripUrl.imageUrl}$url',fit: BoxFit.cover,);
+      : Image.network(
+          '${GripUrl.imageUrl}$url',
+          fit: BoxFit.cover,
+        );
 }
 
 class InquiryListWidget extends StatelessWidget {
@@ -496,51 +499,49 @@ class InquiryListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('InquiryListWidget build ${viewModel.inquiryList?.length}');
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        itemCount: viewModel.inquiryList?.length,
-        itemBuilder: (BuildContext context, int position) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-            child: Column(
-              children: [
-                Row(
+    return FutureBuilder(
+        future: viewModel.selectInquiry(),
+        builder: (builder, context) {
+          return ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: viewModel.inquiryList?.length,
+              itemBuilder: (BuildContext context, int position) {
+                return Column(
                   children: [
-                    Expanded(
-                      child: Container(
-                        height: 100,
-                        padding: const EdgeInsets.only(left: 5),
-                        child: buildContent(position),
-                      ),
-                    ),
-                    SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                    Row(
+                      children: [
+                        Expanded(
                           child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: Colors.grey,
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: buildCoverImage(
-                                  //    viewModel.inquiryList![position].
-                                  viewModel.inquiryList?[position]
-                                      .inquiry_image_url),
-                            ),
+                            height: 100,
+                            padding: const EdgeInsets.only(left: 5),
+                            child: buildContent(position),
                           ),
-                        )),
+                        ),
+                        SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                color: Colors.grey,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: buildCoverImage(
+                                  //    viewModel.inquiryList![position].
+                                    viewModel.inquiryList?[position]
+                                        .inquiry_image_url),
+                              ),
+                            ).pSymmetric(v: 8, h: 8)
+                          ),
+                      ],
+                    ),
+                    buildDivider(1, 1)
                   ],
-                ),
-                buildDivider(1, 1)
-              ],
-            ),
-          );
+                ).pOnly(top: 10, left: 10, right: 10);
+              });
         });
   }
 
@@ -564,11 +565,8 @@ class InquiryListWidget extends StatelessWidget {
       children: [
         buildListText(model.sources, 10, FontWeight.bold, 1),
         buildListText(model.inquiry_title, 14, FontWeight.bold, 1),
-        Padding(
-          padding: const EdgeInsets.only(top: 1),
-          child: buildListText(
-              model.inquiry_description, 10, FontWeight.normal, 3),
-        )
+        buildListText(
+            model.inquiry_description, 10, FontWeight.normal, 3).pOnly(top: 1)
       ],
     );
   }
