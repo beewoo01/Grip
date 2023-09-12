@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/screen/category/vo/vo_category_content.dart';
 
 
 import '../../model/content_model.dart';
@@ -69,7 +70,7 @@ class _CategoryWideBodySfw extends State<CategoryWideBodySfw> {
     );
   }
 
-  Widget buildList(List<ContentModel>? list) {
+  Widget buildList(List<CategoryContentVO>? list) {
     if (list == null || list.isEmpty) {
       return const Center(
         child: Text(

@@ -1,18 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:grip/api/ApiService.dart';
 import 'package:grip/model/content_model.dart';
+import 'package:grip/screen/category/vo/vo_category_content.dart';
 
 import '../../model/pair.dart';
 import '../../model/sub_category_model.dart';
-
+import 'dto/dto_category_content.dart';
 
 class CategoryViewModel {
   final ApiService apiService = ApiService();
 
   Map<int, String>? categoryMap;
   Map<int, List<Pair<int, String>>>? subCategoryMap;
-  List<ContentModel>? premiumContentList;
-  List<ContentModel>? contentList;
+  List<CategoryContentVO> premiumContentList = [];
+  List<CategoryContentVO> contentList = [];
 
   Future<List<SubCategoryModel>?> selectCategory() async {
     List<SubCategoryModel>? list = await apiService.selectCategory();
@@ -38,21 +39,38 @@ class CategoryViewModel {
     }
   }
 
-  Future<List<ContentModel>?> selectContent(int subCategoryIdx) async {
+  Future<List<CategoryContentDTO>?> selectContent(int subCategoryIdx, int accountIdx) async {
     print(' selectContent');
-    print(' categoryIdx is $subCategoryIdx');
-    premiumContentList = [];
-    contentList = [];
-    List<ContentModel>? list = await apiService.selectContent(subCategoryIdx);
+    print(' selectContent categoryIdx is $subCategoryIdx');
+    print(' selectContent accountIdx is $accountIdx');
+
+    List<CategoryContentDTO> list =
+        await apiService.selectCategoryContent(subCategoryIdx, accountIdx) ?? [];
+    List<CategoryContentVO> res = [];
+    List<CategoryContentVO> resPro = [];
     print('selectContent $list');
-    contentList = list;
-    if (list != null) {
-      for (var model in list) {
-        if (model.content_ispro == 1) {
-          premiumContentList!.add(model);
-        }
+    for (var model in list) {
+      res.add(CategoryContentVO(
+         model.content_idx,
+         model.content_title,
+         model.content_description,
+         model.content_img_url,
+      ));
+
+      if (model.content_ispro == 1) {
+        resPro.add(CategoryContentVO(
+            model.content_idx,
+            model.content_title,
+            model.content_description,
+            model.content_img_url));
       }
     }
+    premiumContentList.clear();
+    contentList.clear();
+    contentList.addAll(res);
+    premiumContentList.addAll(resPro);
+
+    for (var model in list) {}
 
     return list;
   }

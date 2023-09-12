@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/pair.dart';
 import 'package:grip/screen/category/category_primium_wide.dart';
 import 'package:grip/screen/category/content_detail.dart';
+import 'package:grip/util/Singleton.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import 'category_viewmodel.dart';
 
@@ -25,8 +28,8 @@ class CategoryWatch extends StatefulWidget {
   static const String route = '/category/watch/detail';
 
   @override
-  State createState() => CategoryWatchState(categoryIdx, subCategoryIdx, categoryName);
-
+  State createState() =>
+      CategoryWatchState(categoryIdx, subCategoryIdx, categoryName);
 }
 
 class CategoryWatchState extends State<CategoryWatch> {
@@ -42,7 +45,8 @@ class CategoryWatchState extends State<CategoryWatch> {
   Widget build(BuildContext context) {
     print('CategoryWatchState $subCategoryIdx');
     return FutureBuilder(
-        future: viewModel.selectContent(subCategoryIdx),
+        future: viewModel.selectContent(
+            subCategoryIdx, Singleton().getAccountIdx()!),
         builder: (context, snapShot) {
           if (snapShot.hasData) {
             return buildAppScaffold(categoryIdx);
@@ -115,8 +119,8 @@ class CategoryWatchState extends State<CategoryWatch> {
                     isRootNavigator: false,
                     arguments: {
                       'root':
-                          '$categoryName > ${viewModel.contentList![index].content_title}',
-                      'content_idx': viewModel.contentList![index].content_idx
+                          '$categoryName > ${viewModel.contentList[index].content_title}',
+                      'content_idx': viewModel.contentList[index].content_idx
                     });
               },
               child: Container(
@@ -156,8 +160,8 @@ class CategoryWatchState extends State<CategoryWatch> {
                               padding:
                                   const EdgeInsets.only(top: 10, bottom: 10),
                               child: Center(
-                                child: Text(viewModel
-                                    .contentList![index].content_title),
+                                child: Text(
+                                    viewModel.contentList[index].content_title),
                               ),
                             )
                           ],
@@ -175,7 +179,7 @@ class CategoryWatchState extends State<CategoryWatch> {
             ),
           );
         },
-        childCount: viewModel.contentList?.length,
+        childCount: viewModel.contentList.length,
       ),
     );
   }
@@ -192,8 +196,8 @@ class CategoryWatchState extends State<CategoryWatch> {
                     isRootNavigator: false,
                     arguments: {
                       'root':
-                          '$categoryName > ${viewModel.contentList![index].content_title}',
-                      'content_idx': viewModel.contentList![index].content_idx
+                          '$categoryName > ${viewModel.contentList[index].content_title}',
+                      'content_idx': viewModel.contentList[index].content_idx
                     });
               },
               child: Container(
@@ -219,21 +223,19 @@ class CategoryWatchState extends State<CategoryWatch> {
                             children: [
                               Expanded(
                                   flex: 8,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 5, right: 5, top: 5),
-                                    child: Container(
-                                      color: AppColors.grey,
-                                    ),
-                                  )),
+                                  child: Container(
+                                    child: context.buildImage(viewModel
+                                        .contentList[index].content_img_url),
+                                  ).pOnly(left: 10, right: 10, top: 5)),
                               Expanded(
                                   flex: 2,
                                   child: Container(
                                     width: double.infinity,
                                     color: AppColors.white,
                                     child: Center(
-                                      child: Text(viewModel
-                                          .contentList![index].content_title),
+                                      child: viewModel
+                                          .contentList[index].content_title.text
+                                          .make(),
                                     ),
                                   ))
                             ],
@@ -251,7 +253,7 @@ class CategoryWatchState extends State<CategoryWatch> {
               ),
             ),
           );
-        }, childCount: viewModel.contentList!.length),
+        }, childCount: viewModel.contentList.length),
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2));
   }
@@ -290,6 +292,8 @@ class CategoryWatchState extends State<CategoryWatch> {
   }
 
   Widget buildHorizontalCategory(List<Pair<int, String>> list) {
+    Singleton().setAccountIdx(2);
+    int accountIdx = Singleton().getAccountIdx()!;
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,
@@ -302,7 +306,8 @@ class CategoryWatchState extends State<CategoryWatch> {
                       onPressed: () {
                         setState(() {
                           selectedPosition = index;
-                          viewModel.selectContent(list[index].first);
+                          viewModel.selectContent(
+                              list[index].first, Singleton().getAccountIdx()!);
                           subCategoryIdx = list[index].first;
                         });
                         //onCategoryButtonClicked(false);

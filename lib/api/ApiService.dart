@@ -5,6 +5,7 @@ import 'dart:ffi';
 import 'package:grip/model/content_detail_model.dart';
 import 'package:grip/model/content_image_model.dart';
 import 'package:grip/model/inquiry_model.dart';
+import 'package:grip/screen/category/dto/dto_category_content.dart';
 import 'package:grip/screen/home/dto/dto_sub_category.dart';
 import 'package:grip/screen/home/dto/dto_wedding.dart';
 import 'package:http/http.dart' as http;
@@ -16,11 +17,12 @@ import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
+import '../screen/category/vo/vo_category_content.dart';
 import '../screen/home/dto/dto_picture_by_category.dart';
 import '../screen/home/vo/vo_event.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl;
+  String BASE_URL = GripUrl.localUrl2;
 
   Future<http.Response> login(String id, String pw) async {
     Uri uri = Uri.parse('${GripUrl}login');
@@ -120,11 +122,33 @@ class ApiService {
   Future<List<ContentModel>?> selectContent(int subCategoryIdx) async {
     Map<String, String> param = {'sub_category_idx': subCategoryIdx.toString()};
     Uri uri =
-    Uri.parse('${BASE_URL}selectContent').replace(queryParameters: param);
+        Uri.parse('${BASE_URL}selectContent').replace(queryParameters: param);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       return responseJson.map((json) => ContentModel.fromJson(json)).toList();
+    }
+
+    return null;
+  }
+
+  Future<List<CategoryContentDTO>?> selectCategoryContent(
+      int subCategoryIdx, int accountIdx) async {
+    print("apiService selectCategoryContent ");
+    print("$subCategoryIdx}");
+    print("$accountIdx}");
+    final param = {'sub_category_idx': subCategoryIdx.toString(), 'account_idx' : accountIdx.toString()};
+    Uri uri = Uri.parse('${BASE_URL}selectCategoryContent')
+        .replace(queryParameters: param);
+
+    print(uri.toString());
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      print('response.statusCode == 200');
+      List responseJson = json.decode(response.body);
+      return responseJson
+          .map((json) => CategoryContentDTO.fromJson(json))
+          .toList();
     }
 
     return null;
@@ -202,12 +226,11 @@ class ApiService {
     return null;
   }
 
-
   Future<List<PurchaseModel>?> selectPurchaseList(int accountIdx) async {
     print('apiService selectPurchaseList111');
     var param = {'account_idx': accountIdx.toString()};
-    Uri uri = Uri.parse('${BASE_URL}selectPurchaseList').replace(
-        queryParameters: param);
+    Uri uri = Uri.parse('${BASE_URL}selectPurchaseList')
+        .replace(queryParameters: param);
     print('apiService selectPurchaseList222');
     final response = await http.get(uri);
 
@@ -218,24 +241,22 @@ class ApiService {
     return null;
   }
 
-
   Future<int?> insertReview(ReviewModel reviewModel) async {
     var param = {
       'review_title': reviewModel.review_title,
       'review_description': reviewModel.review_description,
-      'account_account_idx' : reviewModel.account_idx.toString(),
-      'content_idx' : reviewModel.content_idx.toString()
+      'account_account_idx': reviewModel.account_idx.toString(),
+      'content_idx': reviewModel.content_idx.toString()
     };
 
     Uri uri = Uri.parse('${BASE_URL}insertReview');
 
     var response = await http.post(uri, body: param);
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       print('insertReview 200');
       print(response.body);
       return int.parse(response.body);
-
     } else {
       return -1;
     }
@@ -245,12 +266,11 @@ class ApiService {
     String namesStr = names.toString();
     print(namesStr);
     final Map<String, String> param = {
-      'images' : namesStr,
-      'reviewIdx' : reviewIdx.toString()
+      'images': namesStr,
+      'reviewIdx': reviewIdx.toString()
     };
 
     final headers = {
-
       'Content-Type': 'application/json',
     };
 
@@ -258,7 +278,7 @@ class ApiService {
 
     final response = await http.post(uri, body: param);
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       print('POST요청 성공');
 
       return int.parse(response.body);
@@ -266,7 +286,6 @@ class ApiService {
       print('POST요청 실패');
       return null;
     }
-
   }
 
   Future<List<InquiryModel>?> selectInquiry() async {
@@ -274,7 +293,7 @@ class ApiService {
     final response = await http.get(uri);
     print('selectInquiry statusCode is ${response.statusCode}');
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print(responseJson);
       return responseJson.map((json) => InquiryModel.fromJson(json)).toList();
@@ -283,30 +302,34 @@ class ApiService {
     return null;
   }
 
-  Future<int> insertInquiry(int sub_category_idx, int account_idx, String inquiry_title, String inquiry_description, List<String>? names) async {
+  Future<int> insertInquiry(
+      int sub_category_idx,
+      int account_idx,
+      String inquiry_title,
+      String inquiry_description,
+      List<String>? names) async {
     Uri uri = Uri.parse('${BASE_URL}insertInquiry');
     String inquirt_images = names.toString();
 
     final response = await http.post(uri, body: {
       'sub_category_idx': sub_category_idx.toString(),
-      'account_idx' : account_idx.toString(),
-      'inquiry_title' : inquiry_title,
-      'inquiry_description' : inquiry_description,
-      'inquirt_images' : inquirt_images
+      'account_idx': account_idx.toString(),
+      'inquiry_title': inquiry_title,
+      'inquiry_description': inquiry_description,
+      'inquirt_images': inquirt_images
     });
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return int.parse(response.body);
     } else {
       return -1;
     }
-
   }
-
 
   Future<List<PremiumModel>?> selectPremium(int accountIdx) async {
     final param = {'account_idx': accountIdx.toString()};
-    Uri uri = Uri.parse('${BASE_URL}selectPremium').replace(queryParameters: param);
+    Uri uri =
+        Uri.parse('${BASE_URL}selectPremium').replace(queryParameters: param);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       print('selectPremium response.statusCode == 200');
@@ -319,10 +342,11 @@ class ApiService {
   }
 
   Future<int> insertLike(int contentIdx, int accountIdx) async {
-    final param = {"contentIdx" : contentIdx ,"accountIdx" : accountIdx};
-    Uri uri = Uri.parse('${BASE_URL}insertLike').replace(queryParameters: param);
+    final param = {"contentIdx": contentIdx, "accountIdx": accountIdx};
+    Uri uri =
+        Uri.parse('${BASE_URL}insertLike').replace(queryParameters: param);
     final response = await http.post(uri, body: param);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return int.parse(response.body);
     }
 
@@ -330,21 +354,21 @@ class ApiService {
   }
 
   Future<int> deleteLike(int likeIdx) async {
-    final param = {"likeIdx" : likeIdx};
-    Uri uri = Uri.parse('${BASE_URL}deleteLike').replace(queryParameters: param);
+    final param = {"likeIdx": likeIdx};
+    Uri uri =
+        Uri.parse('${BASE_URL}deleteLike').replace(queryParameters: param);
     final response = await http.post(uri, body: param);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return int.parse(response.body);
     }
 
     return -1;
   }
 
-
   Future<List<Event>?> selectEvent() async {
     Uri uri = Uri.parse('${BASE_URL}selectEvent');
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectEvent responseJson $responseJson');
       return responseJson.map((json) => Event.fromJson(json)).toList();
@@ -353,11 +377,10 @@ class ApiService {
     return null;
   }
 
-
   Future<List<WeddingDTO>?> selectWeddingPhoto() async {
     Uri uri = Uri.parse('${BASE_URL}selectWeddingPhoto');
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectWeddingPhoto responseJson $responseJson');
       return responseJson.map((json) => WeddingDTO.fromJson(json)).toList();
@@ -366,23 +389,27 @@ class ApiService {
     return null;
   }
 
-  Future<List<PictureByCategoryDTO>?> selectPicturesByCategory(int category_idx) async {
-    Uri uri = Uri.parse('${BASE_URL}selectPicturesByCategory').replace(queryParameters: { "category_idx" : category_idx});
+  Future<List<PictureByCategoryDTO>?> selectPicturesByCategory(
+      int category_idx) async {
+    Uri uri = Uri.parse('${BASE_URL}selectPicturesByCategory')
+        .replace(queryParameters: {"category_idx": category_idx});
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectPicturesByCategory responseJson $responseJson');
-      return responseJson.map((json) => PictureByCategoryDTO.fromJson(json)).toList();
+      return responseJson
+          .map((json) => PictureByCategoryDTO.fromJson(json))
+          .toList();
     }
 
     return null;
   }
 
-
   Future<List<SubCategoryDTO>?> selectSubCategory(int category_idx) async {
-    Uri uri = Uri.parse('${BASE_URL}selectSubCategory').replace(queryParameters: {"category_idx" : category_idx});
+    Uri uri = Uri.parse('${BASE_URL}selectSubCategory')
+        .replace(queryParameters: {"category_idx": category_idx});
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectSubCategory responseJson $responseJson');
       return responseJson.map((json) => SubCategoryDTO.fromJson(json)).toList();
@@ -390,7 +417,4 @@ class ApiService {
 
     return null;
   }
-
-
-
 }

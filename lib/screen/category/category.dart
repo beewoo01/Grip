@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/screen/category/reservation.dart';
 import 'package:grip/screen/category/content_detail.dart';
 import 'package:provider/provider.dart';
+import 'package:velocity_x/velocity_x.dart';
 import '../../model/pair.dart';
 import 'category_viewmodel.dart';
 import 'category_watch.dart';
 import 'package:grip/main.dart';
-
-
 
 class Category extends StatelessWidget {
   const Category({super.key});
@@ -49,7 +49,10 @@ class Category extends StatelessWidget {
                   final root = (settings.arguments as Map)['root'];
                   final idx = (settings.arguments as Map)['content_idx'];
                   print('SpaceRentalDetail.route root $root');
-                  return  ContentDetail(path: '$root', contentIdx: idx,);
+                  return ContentDetail(
+                    path: '$root',
+                    contentIdx: idx,
+                  );
                 };
                 break;
 
@@ -78,7 +81,6 @@ class CategoryStf extends StatefulWidget {
 }
 
 class CategoryState extends State<CategoryStf> {
-
   CategoryViewModel categoryViewModel = CategoryViewModel();
 
   @override
@@ -162,14 +164,12 @@ class CategoryState extends State<CategoryStf> {
         ));
   }
 
-  Widget buildBox(
-      int idx, String title, bool isShowAllWatchButton, List<Pair<int, String>> list) {
-
+  Widget buildBox(int idx, String title, bool isShowAllWatchButton,
+      List<Pair<int, String>> list) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-              width: 1, color: AppColors.grey),
+          border: Border.all(width: 1, color: AppColors.grey),
           color: AppColors.grey),
       child: Column(
         children: [
@@ -186,11 +186,14 @@ class CategoryState extends State<CategoryStf> {
                 ),
                 TextButton(
                     onPressed: () {
-                      print('subIdx');
-                      print(list.first.first);
                       navigate(context, CategoryWatch.route,
                           isRootNavigator: false,
-                          arguments: {'idx': idx, 'subIdx' : list.first.first ,'title': title, 'list': list});
+                          arguments: {
+                            'idx': idx,
+                            'subIdx': list.first.first,
+                            'title': title,
+                            'list': list
+                          });
                     },
                     child: const Text(
                       '전체보기',
@@ -220,13 +223,11 @@ class CategoryState extends State<CategoryStf> {
                                 //color: const Color.fromARGB(255, 235, 235, 235)
                               ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Text(
-                                list[j].secend,
-                                style: TextStyle(color: AppColors.black),
-                              ),
-                            ),
+                            child: list[j]
+                                .secend
+                                .text
+                                .color(AppColors.black)
+                                .make().pSymmetric(h: 5),
                           )
                         ]
                       ]
@@ -249,16 +250,9 @@ class CategoryState extends State<CategoryStf> {
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                     width: 1,
-                                    color: const Color.fromARGB(
-                                        255, 235, 235, 235)),
+                                    color: AppColors.white),
                                 color: Colors.transparent),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Text(
-                                list[j].secend,
-                                style: TextStyle(color: AppColors.black),
-                              ),
-                            ),
+                            child: list[j].secend.text.color(AppColors.black).make().pSymmetric(h: 5),
                           )
                           //Text('This is not /3')
                         ]
@@ -268,7 +262,7 @@ class CategoryState extends State<CategoryStf> {
                 ),
               ]
             ],
-            const Padding(padding: EdgeInsets.only(bottom: 20)),
+            height20,
           ]),
         ],
       ),
