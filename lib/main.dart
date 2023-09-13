@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/screen/category/category.dart';
+import 'package:grip/screen/category/newer/f_category.dart';
 import 'package:grip/screen/community/community.dart';
 import 'package:grip/screen/home/home.dart';
 import 'package:grip/screen/myinfo/account_repository.dart';
@@ -68,7 +69,8 @@ class NavBarHandler extends StatefulWidget {
 class _NavBarHandlerState extends State<NavBarHandler>
     with SingleTickerProviderStateMixin {
   final _buildBody = <Widget>[
-    const Category(),
+    ///const Category(),
+    const NewerCategoryStw(),
     const Promotion(),
     const Home(),
     const CommunityMenu(),

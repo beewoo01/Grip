@@ -1,7 +1,7 @@
 class WeddingDTO {
   int content_idx;
   String content_title;
-  int content_img_idx;
+  int? content_img_idx;
   String content_img_url;
 
   WeddingDTO(

@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
+import 'package:grip/common/widget/w_container_image.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 
 import 'package:grip/main.dart';
 import 'package:grip/screen/home/vm_home.dart';
+import 'package:grip/screen/home/vo/vo_wedding.dart';
+import 'package:grip/screen/home/widget/w_content_title.dart';
+import 'package:grip/screen/home/widget/w_find_model.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/url/grip_url.dart';
-//final homeKey = GlobalKey<NavigatorState>();
+import '../../common/widget/w_separator_container.dart';
+import '../../common/widget/w_test.dart';
+import 'widget/w_chip_horizontal_list.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -66,13 +72,14 @@ class _HomeSfw extends State<HomeSfw> {
       Singleton().setAccountIdx(2);
     }
 
-    viewModel.selectPremiumModel(Singleton().getAccountIdx()!);
-    viewModel.selectEvent();
+    /*viewModel.selectPremiumModel(Singleton().getAccountIdx()!);
+    viewModel.selectEvent();*/
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: buildAppBar(),
       body: SingleChildScrollView(
         child: Column(
@@ -114,80 +121,112 @@ class _HomeSfw extends State<HomeSfw> {
               color: AppColors.grey,
               child: buildPromotionBanner(),
             ),
-            buildListContainer('웨딩 사진 촬영', 'weding')
-                .pOnly(top: 10, left: 10, right: 10),
-            buildListContainer('최근 핫한 공간!!', 'studio')
-                .pOnly(top: 10, left: 10, right: 10),
-            buildChipListAndContentList(
-                    '이달의 인기 스냅촬영',
-                    [
-                      '웨딩작가',
-                      '스냅작가',
-                      '바디프로필',
-                      '유니버셜',
-                      'flutter',
-                      'android',
-                      'ios'
-                    ],
-                    [
-                      'image1',
-                      'image2',
-                      'image3',
-                      'image4',
-                    ],
-                    200.0,
-                    300.0,
-                    'snap')
-                .pOnly(top: 10, left: 10, right: 10),
-            buildChipListAndContentList(
-                    '이달의 인기 영상촬영',
-                    [
-                      '바이럴영상',
-                      '제품영상',
-                      '브랜드필름',
-                      '유니버셜',
-                      'flutter',
-                      'android',
-                      'ios'
-                    ],
-                    [
-                      'image1',
-                      'image2',
-                      'image3',
-                      'image4',
-                    ],
-                    250.0,
-                    200.0,
-                    'bodyprofile')
-                .pOnly(top: 10, left: 10, right: 10),
-            buildChipListAndContentList(
-                    '우리가 찾는 모델',
-                    ['뷰티모델', '시니어모델', '일반인', 'MTOM', 'SG워너비', 'V.O.S', '먼데이키즈'],
-                    [
-                      'image1',
-                      'image2',
-                      'image3',
-                      'image4',
-                    ],
-                    250.0,
-                    200.0,
-                    'model')
-                .pOnly(top: 10, left: 10, right: 10),
-            buildChipListAndContentList(
-                    '이달의 인기 공간',
-                    ['스튜디오', '대형공간', '상영관', '영화관', '무대', '노래방', '술집'],
-                    [
-                      'image1',
-                      'image2',
-                      'image3',
-                      'image4',
-                    ],
-                    250.0,
-                    200.0,
-                    'studio')
-                .pOnly(top: 10, left: 10, right: 10),
-            buildPhotoReview().pOnly(top: 10, left: 10, right: 10),
-            buildFooter().pOnly(top: 10, left: 10, right: 10),
+            Column(
+              children: [
+                const ContentTitleWidget("웨딩 사진 촬영"),
+                buildWeddingListContainer(),
+              ],
+            ).pSymmetric(h: 10),
+            height20,
+            Column(
+              children: [
+                const ContentTitleWidget("최근 핫한 공간!!"),
+                buildHotPlaceListContainer()
+              ],
+            ).pSymmetric(h: 10),
+            height20,
+            Column(
+              children: [
+                const ContentTitleWidget("이달의 인기 스냅촬영"),
+                height5,
+                SizedBox(
+                  width: double.infinity,
+                  height: 30,
+                  child: ChipHorizontalList(viewModel, 1),
+                ),
+                height20,
+                SizedBox(
+                    width: double.infinity,
+                    height: 300,
+                    child: FutureBuilder(
+                      future: viewModel.selectPicturesByCategory(1),
+                      builder: (builder, snapShot) {
+                        return FindModelWidget(snapShot.data ?? [], 250);
+                      },
+                    ))
+              ],
+            ).pSymmetric(h: 10),
+            height20,
+            Column(
+              children: [
+                const ContentTitleWidget("이달의 인기 영상촬영"),
+                height5,
+                SizedBox(
+                  width: double.infinity,
+                  height: 30,
+                  child: ChipHorizontalList(viewModel, 1),
+                ),
+                height20,
+                SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: FutureBuilder(
+                      future: viewModel.selectPicturesByCategory(2),
+                      builder: (builder, snapShot) {
+                        return FindModelWidget(snapShot.data ?? [], 250);
+                      },
+                    ))
+              ],
+            ).pSymmetric(h: 10),
+            height30,
+            Column(
+              children: [
+                const ContentTitleWidget("우리가 찾는 모델"),
+                height5,
+                SizedBox(
+                  width: double.infinity,
+                  height: 30,
+                  child: ChipHorizontalList(viewModel, 1),
+                ),
+                height20,
+                SizedBox(
+                    width: double.infinity,
+                    height: 250,
+                    child: FutureBuilder(
+                      future: viewModel.selectFindModel(),
+                      builder: (builder, snapShot) {
+                        return FindModelWidget(snapShot.data ?? [], 200);
+                      },
+                    ))
+              ],
+            ).pSymmetric(h: 10),
+            height30,
+            Column(
+              children: [
+                const ContentTitleWidget("이달의 인기 공간"),
+                height5,
+                SizedBox(
+                  width: double.infinity,
+                  height: 30,
+                  child: ChipHorizontalList(viewModel, 1),
+                ),
+                height20,
+                SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                    child: FutureBuilder(
+                      future: viewModel.selectPicturesByCategory(4),
+                      builder: (builder, snapShot) {
+                        return FindModelWidget(snapShot.data ?? [], 250);
+                      },
+                    ))
+              ],
+            ).pSymmetric(h: 10),
+            height10,
+            buildPhotoReview().pSymmetric(h: 10),
+            height10,
+            buildFooter().pOnly(bottom: 60, left: 10, right: 10),
+
           ],
         ),
       ),
@@ -271,19 +310,7 @@ class _HomeSfw extends State<HomeSfw> {
                               color: AppColors.black,
                               child: context.buildImage(
                                 viewModel.eventList[index].event_img_url,
-                              )
-
-                              /*CachedNetworkImage(
-                                imageUrl:
-                                "${GripUrl.imageUrl}${viewModel.eventList[index]
-                                    .event_img_url}",
-                                placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                                fit: BoxFit.fill,
-                              )*/
-                              );
+                              ));
                         }),
                   ),
                   Center(
@@ -408,9 +435,9 @@ class _HomeSfw extends State<HomeSfw> {
                 ),
               );
             },
-            separatorBuilder: (context, index) => Container(
-              height: 10,
-              width: 10,
+            separatorBuilder: (context, index) => const SeparatorContainer(
+              10,
+              10,
               color: AppColors.black,
             ),
             itemCount: viewModel.premiumList?.length == null
@@ -485,129 +512,78 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
-  Widget buildListContainer(String title, String folder) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 25,
-                  height: 25,
-                  child: Image.asset('assets/images/noimage.png'),
-                ),
-                width10,
-                title.text.size(18).bold.make(),
-              ],
-            ),
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
-          ],
-        ),
-        SizedBox(
-          width: double.infinity,
-          height: 350,
-          child: FutureBuilder(
-            future: viewModel.selectWeddingPhoto(),
-            builder: (builder, context) {
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        width: 250,
-                        height: 320,
-                        color: AppColors.grey,
-                        child: context.buildImage(
-                            "weding/${viewModel.weddingList[index].content_img_url}"),
-                      ),
-                      viewModel.weddingList[index].content_title.text.make()
-                    ],
-                  );
-                },
-                separatorBuilder: (context, index) => Container(
-                  height: 10,
-                  width: 10,
-                  color: AppColors.white,
-                ),
-                itemCount: viewModel.weddingList.length,
-                scrollDirection: Axis.horizontal,
-              );
-            },
-          ),
-        )
-      ],
+  Widget buildHotPlaceListContainer() {
+    return SizedBox(
+      width: double.infinity,
+      height: 350,
+      child: FutureBuilder(
+        future: viewModel.selectHotSpace(),
+        builder: (builder, snapShot) {
+          return buildContentList(snapShot.data);
+        },
+      ),
     );
   }
 
-  Widget buildChipListAndContentList(
-      String title,
-      List<String> chipList,
-      List<String> contentList,
-      double contentWidth,
-      double contentHeight,
-      String folder) {
+  Widget buildWeddingListContainer() {
+    return SizedBox(
+      width: double.infinity,
+      height: 350,
+      child: FutureBuilder(
+        future: viewModel.selectWeddingPhoto(),
+        builder: (builder, snapShot) {
+          return buildContentList(snapShot.data);
+        },
+      ),
+    );
+  }
+
+  ListView buildContentList(List<WeddingVO>? list) {
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        print("buildContentList");
+        print("${list?[index].content_img_url}");
+        return Column(
+          children: [
+            ContainerImageWidget(250, 320, "${list?[index].content_img_url}"),
+            "${list?[index].content_title}".text.make()
+          ],
+        );
+      },
+      separatorBuilder: (context, index) => separator10,
+      itemCount: list?.length ?? 0,
+      scrollDirection: Axis.horizontal,
+    );
+  }
+
+  Widget buildChipListAndContentList(String title, double contentWidth,
+      double contentHeight, String folder, int categoryIdx) {
     return Column(
       children: [
         Align(
             alignment: Alignment.centerLeft,
             child: title.text.size(18).bold.make()),
-        const Padding(padding: EdgeInsets.only(top: 10)),
+        height10,
         SizedBox(
           width: double.infinity,
           height: 30,
-          child: ListView.separated(
-            itemBuilder: (context, index) {
-              return Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: AppColors.grey),
-                  child: Text(chipList[index],).pSymmetric(h: 5),
-                ),
-              );
+          child: FutureBuilder(
+            future: viewModel.selectFindModel(),
+            builder: (builder, context) {
+              return ChipHorizontalList(viewModel, categoryIdx);
             },
-            separatorBuilder: (context, index) => Container(
-              height: 10,
-              width: 10,
-              color: AppColors.white,
-            ),
-            itemCount: chipList.length,
-            scrollDirection: Axis.horizontal,
           ),
         ),
-        const Padding(padding: EdgeInsets.only(top: 20)),
+        height20,
         SizedBox(
-          width: double.infinity,
-          height: contentHeight,
-          child: ListView.separated(
-            itemBuilder: (context, index) {
-              return Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: contentWidth,
-                        height: contentHeight - 30,
-                        color: AppColors.grey,
-                        //child: Image.asset('assets/images/$folder/$index.jpg', fit: BoxFit.fill,),
-                      ),
-                      Text('item ${contentList[index]}')
-                    ],
-                  ));
-            },
-            separatorBuilder: (context, index) => Container(
-              width: 10,
-              height: 10,
-              color: AppColors.white,
-            ),
-            itemCount: contentList.length,
-            scrollDirection: Axis.horizontal,
-          ),
-        ),
+            width: double.infinity,
+            height: contentHeight,
+            child: FutureBuilder(
+              future: viewModel.selectFindModel(),
+              builder: (builder, snapShot) {
+                return FindModelWidget(snapShot.data ?? [], 250);
+              },
+            )),
       ],
     );
   }
@@ -615,85 +591,51 @@ class _HomeSfw extends State<HomeSfw> {
   Widget buildPhotoReview() {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              '사진리뷰',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.add_circle_outline))
-          ],
-        ),
-        SizedBox(
+        const ContentTitleWidget("사진 리뷰"),
+        Container(
           width: double.infinity,
-          height: 250,
+          height: 200,
+          color: Colors.white,
           child: FutureBuilder(
             future: viewModel.selectReview(),
-            builder: (builder, context) {
+            builder: (builder, snapShot) {
               return ListView.separated(
+                shrinkWrap: false,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Container(
-                        width: 150,
-                        padding: const EdgeInsets.only(bottom: 10),
-                        decoration: const BoxDecoration(
-                            color: AppColors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: AppColors.black,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 0.1,
-                                  spreadRadius: 0.1),
-                            ]),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity - 5,
-                              height: 120,
-                              color: AppColors.grey,
-                            ).pSymmetric(v: 8, h: 8),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: ClipOval(
-                                      child: CachedNetworkImage(
-                                    imageUrl:
-                                        "${GripUrl.imageUrl}${viewModel.reviewList[index].review_img_url}",
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                    fit: BoxFit.fill,
-                                  )),
-                                ),
-                                (viewModel.reviewList[index].account_name ?? "")
-                                    .text
-                                    .size(10)
-                                    .make()
-                                    .pSymmetric(v: 4, h: 4),
-                              ],
-                            ).pSymmetric(v: 8, h: 8),
-                            Text(
-                              viewModel.reviewList[index].review_title,
-                              style: const TextStyle(fontSize: 10),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ).pSymmetric(v: 4, h: 4)
-                          ],
+                  return Container(
+                    width: 150,
+                    height: 180,
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration:
+                        const BoxDecoration(color: AppColors.white, boxShadow: [
+                      BoxShadow(
+                          color: AppColors.black,
+                          offset: Offset(1, 1),
+                          blurRadius: 0.1,
+                          spreadRadius: 0.1),
+                    ]),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Container(),
                         ),
-                      ).pOnly(left: 10, right: 10, top: 0),
-                    ],
-                  );
+                        Expanded(
+                            flex: 8,
+                            child: ContainerImageWidget(
+                                    double.infinity,
+                                    double.infinity,
+                                    "${snapShot.data?[index].review_img_url}")
+                                .pSymmetric(h: 5, v: 5)),
+                        Expanded(
+                          flex: 3,
+                          child: Container(),
+                        ),
+                      ],
+                    ),
+                  ).pOnly(left: 10, right: 10, top: 0, bottom: 10);
                 },
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 10,
-                  width: 10,
-                ),
+                separatorBuilder: (context, index) => separator10,
                 itemCount: viewModel.reviewList.length,
                 scrollDirection: Axis.horizontal,
               );

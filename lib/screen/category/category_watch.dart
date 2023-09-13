@@ -28,8 +28,7 @@ class CategoryWatch extends StatefulWidget {
   static const String route = '/category/watch/detail';
 
   @override
-  State createState() =>
-      CategoryWatchState(categoryIdx, subCategoryIdx, categoryName);
+  State createState() => CategoryWatchState(categoryIdx, subCategoryIdx, categoryName);
 }
 
 class CategoryWatchState extends State<CategoryWatch> {
@@ -44,19 +43,7 @@ class CategoryWatchState extends State<CategoryWatch> {
   @override
   Widget build(BuildContext context) {
     print('CategoryWatchState $subCategoryIdx');
-    return FutureBuilder(
-        future: viewModel.selectContent(
-            subCategoryIdx, Singleton().getAccountIdx()!),
-        builder: (context, snapShot) {
-          if (snapShot.hasData) {
-            return buildAppScaffold(categoryIdx);
-          } else if (snapShot.hasError) {
-            print('${snapShot.error}');
-            return buildNoDataAppScaffold('데이터 조회 중 에러가 발생했습니다.');
-          } else {
-            return buildNoDataAppScaffold('');
-          }
-        });
+    return buildAppScaffold(categoryIdx);
   }
 
   Scaffold buildNoDataAppScaffold(String massage) {
@@ -106,82 +93,88 @@ class CategoryWatchState extends State<CategoryWatch> {
     );
   }
 
-  SliverList buildCategoryList() {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return Padding(
-            padding:
-                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            child: GestureDetector(
-              onTap: () {
-                navigate(context, ContentDetail.route,
-                    isRootNavigator: false,
-                    arguments: {
-                      'root':
-                          '$categoryName > ${viewModel.contentList[index].content_title}',
-                      'content_idx': viewModel.contentList[index].content_idx
-                    });
+  Widget buildCategoryList() {
+    return FutureBuilder(
+        future: viewModel.selectContent(
+            subCategoryIdx, Singleton().getAccountIdx()!),
+        builder: (builder, snapshot) {
+          return SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                return Padding(
+                  padding:
+                  const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                  child: GestureDetector(
+                    onTap: () {
+                      navigate(context, ContentDetail.route,
+                          isRootNavigator: false,
+                          arguments: {
+                            'root':
+                            '$categoryName > ${viewModel.contentList[index].content_title}',
+                            'content_idx': viewModel.contentList[index].content_idx
+                          });
+                    },
+                    child: Container(
+                      width: 300,
+                      height: 270,
+                      decoration:
+                      const BoxDecoration(color: AppColors.white, boxShadow: [
+                        BoxShadow(
+                            color: AppColors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 0.1,
+                            spreadRadius: 0.0)
+                      ]),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                              top: 0,
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10, left: 10, right: 10),
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      color: AppColors.grey,
+                                      child: Image.asset(
+                                        'assets/images/movie/$index.jpg',
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
+                                    child: Center(
+                                      child: Text(
+                                          viewModel.contentList[index].content_title),
+                                    ),
+                                  )
+                                ],
+                              )),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                                onPressed: () {},
+                                icon: SvgPicture.asset('assets/images/heart.svg')),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               },
-              child: Container(
-                width: 300,
-                height: 270,
-                decoration:
-                    const BoxDecoration(color: AppColors.white, boxShadow: [
-                  BoxShadow(
-                      color: AppColors.black,
-                      offset: Offset(1, 1),
-                      blurRadius: 0.1,
-                      spreadRadius: 0.0)
-                ]),
-                child: Stack(
-                  children: [
-                    Positioned(
-                        top: 0,
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10, left: 10, right: 10),
-                              child: Container(
-                                width: double.infinity,
-                                height: 200,
-                                color: AppColors.grey,
-                                child: Image.asset(
-                                  'assets/images/movie/$index.jpg',
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 10),
-                              child: Center(
-                                child: Text(
-                                    viewModel.contentList[index].content_title),
-                              ),
-                            )
-                          ],
-                        )),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                          onPressed: () {},
-                          icon: SvgPicture.asset('assets/images/heart.svg')),
-                    )
-                  ],
-                ),
-              ),
+              childCount: viewModel.contentList.length,
             ),
           );
-        },
-        childCount: viewModel.contentList.length,
-      ),
-    );
+        });
+
   }
 
   SliverGrid buildCategoryGrid() {
@@ -224,8 +217,10 @@ class CategoryWatchState extends State<CategoryWatch> {
                               Expanded(
                                   flex: 8,
                                   child: Container(
-                                    child: context.buildImage(viewModel
-                                        .contentList[index].content_img_url),
+                                    child: context.buildImage(
+                                        viewModel
+                                            .contentList[index].content_img_url,
+                                        fit: BoxFit.fitHeight),
                                   ).pOnly(left: 10, right: 10, top: 5)),
                               Expanded(
                                   flex: 2,
@@ -245,9 +240,10 @@ class CategoryWatchState extends State<CategoryWatch> {
                         top: 0,
                         right: 0,
                         child: IconButton(
-                          onPressed: () {},
-                          icon: SvgPicture.asset('assets/images/category.svg'),
-                        ))
+                            onPressed: () {},
+                            icon: const Icon(Icons.favorite_border_outlined)
+                            //SvgPicture.asset('assets/images/category.svg'),
+                            ))
                   ],
                 ),
               ),
@@ -293,15 +289,13 @@ class CategoryWatchState extends State<CategoryWatch> {
 
   Widget buildHorizontalCategory(List<Pair<int, String>> list) {
     Singleton().setAccountIdx(2);
-    int accountIdx = Singleton().getAccountIdx()!;
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,
         itemBuilder: (context, index) {
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
-                  alignment: Alignment.center,
+              child: Center(
                   child: TextButton(
                       onPressed: () {
                         setState(() {

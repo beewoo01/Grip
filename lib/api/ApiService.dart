@@ -17,12 +17,10 @@ import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
-import '../screen/category/vo/vo_category_content.dart';
-import '../screen/home/dto/dto_picture_by_category.dart';
 import '../screen/home/vo/vo_event.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl2;
+  String BASE_URL = GripUrl.localUrl;
 
   Future<http.Response> login(String id, String pw) async {
     Uri uri = Uri.parse('${GripUrl}login');
@@ -389,32 +387,67 @@ class ApiService {
     return null;
   }
 
-  Future<List<PictureByCategoryDTO>?> selectPicturesByCategory(
-      int category_idx) async {
+  Future<List<WeddingDTO>?> selectPicturesByCategory(int categoryIdx) async {
     Uri uri = Uri.parse('${BASE_URL}selectPicturesByCategory')
-        .replace(queryParameters: {"category_idx": category_idx});
+        .replace(queryParameters: {"category_idx": categoryIdx.toString()});
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectPicturesByCategory responseJson $responseJson');
       return responseJson
-          .map((json) => PictureByCategoryDTO.fromJson(json))
+          .map((json) => WeddingDTO.fromJson(json))
           .toList();
     }
 
     return null;
   }
 
-  Future<List<SubCategoryDTO>?> selectSubCategory(int category_idx) async {
+  Future<List<SubCategoryDTO>?> selectSubCategory(int categoryIdx) async {
     Uri uri = Uri.parse('${BASE_URL}selectSubCategory')
-        .replace(queryParameters: {"category_idx": category_idx});
+        .replace(queryParameters: {"category_idx": categoryIdx.toString()});
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectSubCategory responseJson $responseJson');
       return responseJson.map((json) => SubCategoryDTO.fromJson(json)).toList();
+    } else {
+
     }
 
     return null;
   }
+
+  Future<List<WeddingDTO>?> selectFindModel() async {
+    Uri uri = Uri.parse("${BASE_URL}selectFindModel");
+
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      print("apiService selectFindModel");
+      List responseJson = json.decode(response.body);
+      print("apiService selectFindModel $responseJson");
+      return responseJson.map((json) => WeddingDTO.fromJson(json)).toList();
+    }
+
+    return null;
+
+  }
+
+  Future<List<WeddingDTO>?> selectHotSpace() async {
+    Uri uri = Uri.parse("${BASE_URL}selectHotSpace");
+
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      print("apiService selectHotspace");
+      List responseJson = json.decode(response.body);
+      print("apiService selectHotspace $responseJson");
+      return responseJson.map((json) => WeddingDTO.fromJson(json)).toList();
+    }
+
+    return null;
+
+  }
+
+
+
+
 }

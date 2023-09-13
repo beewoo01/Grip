@@ -1,6 +1,6 @@
 class SubCategoryDTO {
   int category_idx;
-  String category_name;
+  String? category_name;
   int sub_category_idx;
   String sub_category_name;
 

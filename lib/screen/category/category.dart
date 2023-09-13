@@ -173,67 +173,55 @@ class CategoryState extends State<CategoryStf> {
           color: AppColors.grey),
       child: Column(
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                TextButton(
-                    onPressed: () {
-                      navigate(context, CategoryWatch.route,
-                          isRootNavigator: false,
-                          arguments: {
-                            'idx': idx,
-                            'subIdx': list.first.first,
-                            'title': title,
-                            'list': list
-                          });
-                    },
-                    child: const Text(
-                      '전체보기',
-                      style: TextStyle(color: AppColors.black),
-                    ))
-              ],
-            ),
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              title.text.bold.size(15).make(),
+              TextButton(
+                  onPressed: () {
+                    navigate(context, CategoryWatch.route,
+                        isRootNavigator: false,
+                        arguments: {
+                          'idx': idx,
+                          'subIdx': list.first.first,
+                          'title': title,
+                          'list': list
+                        });
+                  },
+                  child: '전체보기'.text.color(AppColors.black).make())
+            ],
+          ).pSymmetric(v: 5, h: 20),
           Column(children: [
             if (list.length % 3 == 0) ...[
               for (int i = 0; i < (list.length / 3); i++) ...[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5, left: 20, right: 20, bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      for (int j = i * 3; j < (i * 3 + 3); j++) ...[
-                        if (j < list.length) ...[
-                          Container(
-                            decoration: BoxDecoration(
+                height5,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    for (int j = i * 3; j < (i * 3 + 3); j++) ... [
+                      if (j < list.length) ... [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              width: 1,
                               color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.transparent,
-                                //color: const Color.fromARGB(255, 235, 235, 235)
-                              ),
+                              //color: const Color.fromARGB(255, 235, 235, 235)
                             ),
-                            child: list[j]
-                                .secend
-                                .text
-                                .color(AppColors.black)
-                                .make().pSymmetric(h: 5),
-                          )
-                        ]
+                          ),
+                          child: list[j]
+                              .secend
+                              .text
+                              .color(AppColors.black)
+                              .make()
+                              .pSymmetric(h: 5),
+                        )
                       ]
-                    ],
-                  ),
-                ),
+                    ]
+                  ],
+                ).pSymmetric(h: 20),
+                height10,
               ]
             ] else ...[
               for (int i = 0; i < (list.length / 3) + 1; i++) ...[
@@ -249,10 +237,14 @@ class CategoryState extends State<CategoryStf> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
-                                    width: 1,
-                                    color: AppColors.white),
+                                    width: 1, color: AppColors.white),
                                 color: Colors.transparent),
-                            child: list[j].secend.text.color(AppColors.black).make().pSymmetric(h: 5),
+                            child: list[j]
+                                .secend
+                                .text
+                                .color(AppColors.black)
+                                .make()
+                                .pSymmetric(h: 5),
                           )
                           //Text('This is not /3')
                         ]

@@ -12,7 +12,10 @@ extension ContextExtention on BuildContext {
     return CachedNetworkImage(
       imageUrl: "${GripUrl.imageUrl}$url",
       placeholder: placeholder ?? (context, url) => const CircularProgressIndicator(),
-      errorWidget: errorWidget ?? (context, url, error) => const Icon(Icons.error),
+      errorWidget: errorWidget ?? (context, url, error)  {
+        print("error URL IS $url");
+        return const Icon(Icons.error);
+      },
       fit: fit,
     );
   }
