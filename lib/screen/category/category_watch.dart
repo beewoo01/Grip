@@ -65,31 +65,28 @@ class CategoryWatchState extends State<CategoryWatch> {
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: createToolbar(widget.categoryName),
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 60),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 50,
-                child: buildHorizontalCategory(widget.categoryList),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 50,
+              child: buildHorizontalCategory(widget.categoryList),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              width: double.infinity,
+              height: 370,
+              child: CategoryWideBody(
+                viewModel: viewModel,
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                width: double.infinity,
-                height: 370,
-                child: CategoryWideBody(
-                  viewModel: viewModel,
-                ),
-              ),
-            ),
-            Container(
-              child: isOdd ? buildCategoryGrid() : buildCategoryList(),
-            )
-          ],
-        ),
-      ),
+          ),
+          Container(
+            child: isOdd ? buildCategoryGrid() : buildCategoryList(),
+          )
+        ],
+      ).pOnly(bottom: 60),
     );
   }
 
@@ -134,26 +131,17 @@ class CategoryWatchState extends State<CategoryWatch> {
                               left: 0,
                               child: Column(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 10, left: 10, right: 10),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 200,
-                                      color: AppColors.grey,
-                                      child: Image.asset(
-                                        'assets/images/movie/$index.jpg',
-                                        fit: BoxFit.fill,
-                                      ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 200,
+                                    color: AppColors.grey,
+                                    child: Image.asset(
+                                      'assets/images/movie/$index.jpg',
+                                      fit: BoxFit.fill,
                                     ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.only(top: 10, bottom: 10),
-                                    child: Center(
-                                      child: Text(
-                                          viewModel.contentList[index].content_title),
-                                    ),
+                                  ).pOnly(top: 10, left: 10, right: 10),
+                                  Center(
+                                    child: viewModel.contentList[index].content_title.text.make().pSymmetric(v: 10),
                                   )
                                 ],
                               )),
@@ -287,38 +275,37 @@ class CategoryWatchState extends State<CategoryWatch> {
     );
   }
 
+
+
+
   Widget buildHorizontalCategory(List<Pair<int, String>> list) {
     Singleton().setAccountIdx(2);
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,
         itemBuilder: (context, index) {
-          return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Center(
-                  child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedPosition = index;
-                          viewModel.selectContent(
-                              list[index].first, Singleton().getAccountIdx()!);
-                          subCategoryIdx = list[index].first;
-                        });
-                        //onCategoryButtonClicked(false);
-                      },
-                      style: TextButton.styleFrom(
-                          backgroundColor: selectedPosition == index
-                              ? AppColors.black
-                              : Colors.transparent),
-                      child: Text(
-                        list[index].secend,
-                        style: TextStyle(
-                            color: selectedPosition == index
-                                ? AppColors.white
-                                : AppColors.black),
-                      )))
-              //Text(list[index]),
-              );
+          return Center(
+              child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedPosition = index;
+                      viewModel.selectContent(
+                          list[index].first, Singleton().getAccountIdx()!);
+                      subCategoryIdx = list[index].first;
+                    });
+                    //onCategoryButtonClicked(false);
+                  },
+                  style: TextButton.styleFrom(
+                      backgroundColor: selectedPosition == index
+                          ? AppColors.black
+                          : Colors.transparent),
+                  child: Text(
+                    list[index].secend,
+                    style: TextStyle(
+                        color: selectedPosition == index
+                            ? AppColors.white
+                            : AppColors.black),
+                  ))).pSymmetric(h: 8);
         });
   }
 }

@@ -69,8 +69,8 @@ class NavBarHandler extends StatefulWidget {
 class _NavBarHandlerState extends State<NavBarHandler>
     with SingleTickerProviderStateMixin {
   final _buildBody = <Widget>[
-    ///const Category(),
-    const NewerCategoryStw(),
+    const Category(),
+    //const NewerCategoryStw(),
     const Promotion(),
     const Home(),
     const CommunityMenu(),

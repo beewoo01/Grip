@@ -20,7 +20,7 @@ import '../model/sub_category_model.dart';
 import '../screen/home/vo/vo_event.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl;
+  String BASE_URL = GripUrl.localUrl2;
 
   Future<http.Response> login(String id, String pw) async {
     Uri uri = Uri.parse('${GripUrl}login');
@@ -397,6 +397,8 @@ class ApiService {
       return responseJson
           .map((json) => WeddingDTO.fromJson(json))
           .toList();
+    } else {
+      print('selectPicturesByCategory responseJson else');
     }
 
     return null;

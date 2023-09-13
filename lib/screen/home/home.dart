@@ -78,6 +78,7 @@ class _HomeSfw extends State<HomeSfw> {
 
   @override
   Widget build(BuildContext context) {
+    print("HOME BUILD");
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: buildAppBar(),
@@ -290,7 +291,7 @@ class _HomeSfw extends State<HomeSfw> {
   Widget buildPageView() {
     return FutureBuilder(
         future: viewModel.selectEvent(),
-        builder: (builder, context) {
+        builder: (builder, snapShot) {
           return Container(
               width: double.infinity,
               height: 400,
@@ -302,14 +303,15 @@ class _HomeSfw extends State<HomeSfw> {
                     height: 400,
                     child: PageView.builder(
                         controller: PageController(initialPage: 0),
-                        itemCount: viewModel.eventList.length,
+                        itemCount: snapShot.data?.length ?? 0,
+                        //viewModel.eventList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Container(
                               width: double.infinity,
                               height: 400,
                               color: AppColors.black,
                               child: context.buildImage(
-                                viewModel.eventList[index].event_img_url,
+                                snapShot.data?[index].event_img_url ?? "",
                               ));
                         }),
                   ),
@@ -334,10 +336,11 @@ class _HomeSfw extends State<HomeSfw> {
   Widget buildPremiumList() {
     return FutureBuilder(
         future: viewModel.selectPremiumModel(Singleton().getAccountIdx()!),
-        builder: (builder, context) {
+        builder: (builder, snapShot) {
           return ListView.separated(
             itemBuilder: (context, index) {
-              final model = viewModel.premiumList?[index];
+              final model = snapShot.data?[index];
+              //viewModel.premiumList?[index];
               if (model == null) {
                 return Container();
               }
@@ -440,9 +443,7 @@ class _HomeSfw extends State<HomeSfw> {
               10,
               color: AppColors.black,
             ),
-            itemCount: viewModel.premiumList?.length == null
-                ? 0
-                : viewModel.premiumList!.length,
+            itemCount: snapShot.data?.length ?? 0,
             scrollDirection: Axis.horizontal,
           );
         });
@@ -636,7 +637,8 @@ class _HomeSfw extends State<HomeSfw> {
                   ).pOnly(left: 10, right: 10, top: 0, bottom: 10);
                 },
                 separatorBuilder: (context, index) => separator10,
-                itemCount: viewModel.reviewList.length,
+                itemCount:  snapShot.data?.length ?? 0,
+                //viewModel.reviewList.length,
                 scrollDirection: Axis.horizontal,
               );
             },

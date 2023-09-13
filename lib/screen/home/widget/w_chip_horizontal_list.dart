@@ -32,7 +32,7 @@ class ChipHorizontalList extends StatelessWidget {
                     child: snapShot.data?[index].sub_category_name.text
                         .color(AppColors.white)
                         .make()
-                        .pSymmetric(h: 10)),
+                        .pSymmetric(h: 10, v: 6)),
               );
             },
             separatorBuilder: (context, index) => separator10,

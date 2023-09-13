@@ -48,7 +48,9 @@ class CategoryViewModel {
         await apiService.selectCategoryContent(subCategoryIdx, accountIdx) ?? [];
     List<CategoryContentVO> res = [];
     List<CategoryContentVO> resPro = [];
+
     print('selectContent $list');
+
     for (var model in list) {
       res.add(CategoryContentVO(
          model.content_idx,
@@ -69,8 +71,6 @@ class CategoryViewModel {
     contentList.clear();
     contentList.addAll(res);
     premiumContentList.addAll(resPro);
-
-    for (var model in list) {}
 
     return list;
   }

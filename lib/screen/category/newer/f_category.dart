@@ -122,7 +122,6 @@ class _NewerCategoryState extends State<NewerCategory> {
           height: 1,
           color: AppColors.black,
         ).pSymmetric(h: 20, v: 10),
-
         height30,
         buildCategory()
       ],
@@ -137,13 +136,36 @@ class _NewerCategoryState extends State<NewerCategory> {
       child: Column(
         children: [
           height20,
-          Center(child: "카테고리".text.color(AppColors.white).bold.size(20).make()),
+          Center(
+              child: "카테고리".text.color(AppColors.white).bold.size(20).make()),
+          height10,
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: "스냅촬영".text.bold.color(AppColors.white).make(), flex: 1,),
-              Expanded(child: "영상촬영".text.bold.color(AppColors.white).make(), flex: 1,),
-              Expanded(child: "모델".text.bold.color(AppColors.white).make(), flex: 1,),
-              Expanded(child: "공간대여".text.bold.color(AppColors.white).make(), flex: 1,)
+              Expanded(
+                flex: 1,
+                child: Align(
+                    alignment: Alignment.center,
+                    child: "스냅촬영".text.bold.color(AppColors.white).size(18).make()),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                    alignment: Alignment.center,
+                    child: "영상촬영".text.bold.color(AppColors.white).size(18).make()),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                    alignment: Alignment.center,
+                    child: "모델".text.bold.color(AppColors.white).size(18).make()),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                    alignment: Alignment.center,
+                    child: "공간대여".text.bold.color(AppColors.white).size(18).make()),
+              )
             ],
           ),
           TextButton(
@@ -155,23 +177,22 @@ class _NewerCategoryState extends State<NewerCategory> {
   }
 }
 
-
 class SubCategoryListWidget extends StatelessWidget {
   CategoryViewModel viewModel;
+
   SubCategoryListWidget(this.viewModel, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: viewModel.selectCategory(), builder: (builder, snapShot) {
-          return ListView.builder(itemBuilder: (BuildContext context, int position) {
+        future: viewModel.selectCategory(),
+        builder: (builder, snapShot) {
+          return ListView.builder(
+              itemBuilder: (BuildContext context, int position) {
             return Row(
-              children: [
-
-              ],
+              children: [],
             );
           });
-    });
+        });
   }
 }
-
