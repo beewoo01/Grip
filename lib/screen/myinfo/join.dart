@@ -7,7 +7,9 @@ import 'package:grip/api/ApiService.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/util/util.dart';
 import 'package:provider/provider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
+import '../../common/widget/w_height_and_width.dart';
 import 'account_repository.dart';
 
 class Join extends StatefulWidget {
@@ -19,133 +21,91 @@ class Join extends StatefulWidget {
 }
 
 class JoinState extends State<Join> {
-
+  AccountRepository accountRepository = AccountRepository();
 
   @override
   void initState() {
-    //AccountRepository accountRepository = Provider.of<AccountRepository>(context, listen: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    //var viewModel = Provider.of<AccountRepository>(context);
-    //AccountRepository accountRepository = context.watch<AccountRepository>();
-
-
-    AccountRepository accountRepository = Provider.of<AccountRepository>(context);
-
-
-    //Provider.of<AccountRepository>(context, listen: true);
-    //accountRepository.duplicateMap
-
     TextField emailTextField =
-    makeTextField('@까지 정확하게 입력하세요', 20, TextInputType.emailAddress, false);
+        makeTextField('@까지 정확하게 입력하세요', 20, TextInputType.emailAddress, false);
     TextField nameTextField =
-    makeTextField('이용자 본인의 이름을 입력하세요', 10, TextInputType.name, false);
+        makeTextField('이용자 본인의 이름을 입력하세요', 10, TextInputType.name, false);
     TextField passwordTextField =
-    makeTextField('비밀번호를 입력하세요', 20, TextInputType.visiblePassword, true);
+        makeTextField('비밀번호를 입력하세요', 20, TextInputType.visiblePassword, true);
     TextField passwordConfirmTextField = makeTextField(
         '비밀번호를 다시 입력하세요', 20, TextInputType.visiblePassword, true);
     TextField phoneTextField =
-    makeTextField('- 없이 휴대전화번호만 입력하세요', 11, TextInputType.phone, false);
+        makeTextField('- 없이 휴대전화번호만 입력하세요', 11, TextInputType.phone, false);
     TextField birthTextField =
-    makeIdentifyTextField('', 6, TextInputType.number, false);
+        makeIdentifyTextField('', 6, TextInputType.number, false);
     TextField identifyTextField =
-    makeIdentifyTextField('', 7, TextInputType.number, true);
+        makeIdentifyTextField('', 7, TextInputType.number, true);
 
     return Scaffold(
       appBar: buildAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildJoinTitle(),
-            ),
+            buildJoinTitle().pSymmetric(v: 10),
             buildDivider(),
-            Padding(
-                padding: const EdgeInsets.only(top: 30, left: 30, right: 30),
-                child: makeTextFieldWidget('이메일', emailTextField)),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: makeTextFieldWidget('이름', nameTextField),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: makeTextFieldWidget('비밀번호', passwordTextField),
-            ),
-            Padding(
-                padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: buildIconText('영문'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: buildIconText('숫자'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: buildIconText('특수문자'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: buildIconText('8자 이상 20자 이하'),
-                    ),
-                  ],
-                )),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: makeTextFieldWidget('비밀번호 확인', passwordConfirmTextField),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: buildSSNTextField(birthTextField, identifyTextField),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: buildPhoneContainer(phoneTextField),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: buildExpansion(),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 10, left: 30, right: 30, bottom: 100),
-              child: OutlinedButton(
-                onPressed: () {
-                  print('OutlinedButton');
-                  String identify =
-                      "${birthTextField.controller!.text}-${identifyTextField
-                      .controller!.text}";
+            height30,
+            makeTextFieldWidget('이메일', emailTextField).pSymmetric(h: 30),
+            height10,
+            makeTextFieldWidget('이름', nameTextField).pSymmetric(h: 30),
+            height10,
+            makeTextFieldWidget('비밀번호', passwordTextField).pSymmetric(h: 30),
+            height10,
+            Row(
+              children: [
+                buildIconText('영문').pOnly(left: 10),
+                buildIconText('숫자').pOnly(left: 10),
+                buildIconText('특수문자').pOnly(left: 10),
+                buildIconText('8자 이상 20자 이하').pOnly(left: 10),
+              ],
+            ).pSymmetric(h: 30),
+            height10,
+            makeTextFieldWidget('비밀번호 확인', passwordConfirmTextField)
+                .pSymmetric(h: 30),
+            height10,
+            buildSSNTextField(birthTextField, identifyTextField)
+                .pSymmetric(h: 30),
+            height10,
+            buildPhoneContainer(phoneTextField).pSymmetric(h: 30),
+            height10,
+            buildExpansion().pSymmetric(h: 30),
+            height10,
+            OutlinedButton(
+              onPressed: () {
+                print('OutlinedButton');
+                String identify =
+                    "${birthTextField.controller!.text}-${identifyTextField.controller!.text}";
 
-                  join(
-                      emailTextField.controller!.text.toString(),
-                      nameTextField.controller!.text.toString(),
-                      passwordTextField.controller!.text.toString(),
-                      passwordConfirmTextField.controller!.text.toString(),
-                      identify,
-                      phoneTextField.controller!.text.toString(),
-                      accountRepository);
-                  //ApiService().join(email, name, password, identify, phone)
-                },
-                style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: AppColors.black,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                    ),
-                    side: const BorderSide(color: AppColors.black, width: 0.8)),
-                child: const Text(
-                  '회원가입',
-                  style: TextStyle(color: AppColors.black, fontSize: 20),
-                ),
-              ),
-            ),
+                join(
+                    emailTextField.controller!.text.toString(),
+                    nameTextField.controller!.text.toString(),
+                    passwordTextField.controller!.text.toString(),
+                    passwordConfirmTextField.controller!.text.toString(),
+                    identify,
+                    phoneTextField.controller!.text.toString(),
+                    accountRepository);
+                //ApiService().join(email, name, password, identify, phone)
+              },
+              style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: AppColors.black,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                  side: const BorderSide(color: AppColors.black, width: 0.8)),
+              child: "회원가입".text.color(AppColors.white).size(20).make(),
+            ).pSymmetric(h: 30),
+            height30,
+            height30,
+            height30,
           ],
         ),
       ),
@@ -190,7 +150,6 @@ class JoinState extends State<Join> {
         if (viewModel.duplicateMap != null) {
           onListener(viewModel.duplicateMap!);
         }
-
       });
     }
   }
@@ -263,7 +222,7 @@ class JoinState extends State<Join> {
           color: HexColor.fromHex('#EBEBEB'),
           borderRadius: BorderRadius.circular(12)),
       child:
-      Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         const Padding(
           padding: EdgeInsets.only(left: 10, right: 10, top: 10),
           child: Align(
@@ -317,8 +276,8 @@ class JoinState extends State<Join> {
     );
   }
 
-  Widget buildSSNTextField(TextField birthTextField,
-      TextField identifyTextField) {
+  Widget buildSSNTextField(
+      TextField birthTextField, TextField identifyTextField) {
     // TextField birthTextField = makeIdentifyTextField('', 6, TextInputType.number, false);
     // TextField identifyTextField = makeIdentifyTextField('', 7, TextInputType.number, true);
 
@@ -365,8 +324,8 @@ class JoinState extends State<Join> {
     );
   }
 
-  TextField makeTextField(String hint, int maxLength, TextInputType type,
-      bool obscureText) {
+  TextField makeTextField(
+      String hint, int maxLength, TextInputType type, bool obscureText) {
     TextEditingController controller = TextEditingController();
     return TextField(
         style: const TextStyle(fontSize: 10, color: AppColors.black),
@@ -388,8 +347,8 @@ class JoinState extends State<Join> {
             contentPadding: const EdgeInsets.all(5)));
   }
 
-  TextField makeIdentifyTextField(String hint, int maxLength,
-      TextInputType type, bool obscureText) {
+  TextField makeIdentifyTextField(
+      String hint, int maxLength, TextInputType type, bool obscureText) {
     TextEditingController controller = TextEditingController();
     return TextField(
       textAlign: TextAlign.center,
@@ -425,7 +384,7 @@ class JoinState extends State<Join> {
               child: Text(
                 name,
                 style:
-                const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -440,7 +399,7 @@ class JoinState extends State<Join> {
   AppBar buildAppBar() {
     return AppBar(
       elevation: 0,
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.white,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(4.0),
         child: Divider(
@@ -454,7 +413,9 @@ class JoinState extends State<Join> {
         child: const Text(
           'GRIP',
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.black),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppColors.black),
         ),
       ),
       actions: [
@@ -475,7 +436,9 @@ class JoinState extends State<Join> {
         Text(
           'JOIN',
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 25, color: AppColors.black),
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: AppColors.black),
         ),
         Text(
           '회원가입',

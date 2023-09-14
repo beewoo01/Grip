@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grip/api/ApiService.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
+import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
+import 'package:grip/screen/myinfo/vo/vo_account.dart';
+import 'package:grip/util/Singleton.dart';
 import 'package:grip/util/util.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/color/AppColors.dart';
+import 'account_repository.dart';
 import 'find_account.dart';
+import 'join.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -16,104 +24,157 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController pswController = TextEditingController();
+  AccountRepository accountRepository = AccountRepository();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       appBar: buildAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildLoginTitle(),
+            height20,
+            "L O G I N".text.bold.size(25).color(AppColors.black).make(),
+            "로그인".text.size(17).color(AppColors.black).make(),
+            height20,
+            const Line(
+              height: 1,
+              color: AppColors.black,
             ),
-            buildDivider(),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 30, right: 30),
-              child: buildTextField('이메일 아이디'),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: buildTextField('비밀번호'),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                right: 30,
-              ),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
+            height30,
+            TextField(
+              controller: emailController,
+              maxLines: 1,
+              maxLength: 20,
+              decoration: buildTextFieldDecoration("이메일 아이디"),
+            ).pSymmetric(h: 30),
+            height10,
+            TextField(
+              controller: pswController,
+              obscureText: true,
+              maxLength: 20,
+              maxLines: 1,
+              decoration: buildTextFieldDecoration("비밀번호"),
+            ).pSymmetric(h: 30),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
                   onPressed: () {
                     navigate(context, FindAccount.route,
                         isRootNavigator: false, arguments: {});
                   },
-                  child: const Text(
-                    '아이디/비밀번호 찾기',
-                    style: TextStyle(color: AppColors.black, fontSize: 12),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: OutlinedButton(
-                onPressed: () {
-                  ApiService().login('test@test.com', '1234');
-                },
-                style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                    ),
-                    side: const BorderSide(color: AppColors.black, width: 0.8)),
-                child: const Text(
-                  '로그인',
-                  style: TextStyle(color: AppColors.black, fontSize: 20),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: AppColors.black,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                    ),
-                    side: const BorderSide(color: AppColors.black, width: 0.8)),
-                child: const Text(
-                  '회원가입',
-                  style: TextStyle(color: AppColors.black, fontSize: 20),
-                ),
-              ),
-            )
+                  child: "아이디/비밀번호 찾기"
+                      .text
+                      .color(AppColors.black)
+                      .size(12)
+                      .make()),
+            ).pOnly(right: 30),
+            height20,
+            OutlinedButton(
+              onPressed: () {
+                String email = emailController.text.toString();
+                String psw = pswController.text.toString();
+                login(email, psw);
+              },
+              style: buildOutlineButtonStyle(Colors.white),
+              child: "로그인".text.color(AppColors.black).size(20).make(),
+            ).pSymmetric(h: 30),
+            height10,
+            OutlinedButton(
+                    onPressed: () {
+                      navigate(context, Join.route,
+                          isRootNavigator: false, arguments: {});
+                    },
+                    style: buildOutlineButtonStyle(AppColors.black),
+                    child: "회원가입".text.color(AppColors.white).size(20).make())
+                .pSymmetric(h: 30),
           ],
         ),
       ),
     );
   }
 
-  TextField buildTextField(String hint) {
-    return TextField(
-      decoration: InputDecoration(
-          filled: true,
-          fillColor: HexColor.fromHex('#EBEBEB'),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              borderSide:
-                  BorderSide(width: 0.0, color: HexColor.fromHex('#EBEBEB'))),
-          hintText: hint,
-          isDense: true,
-          contentPadding: const EdgeInsets.all(15)),
-    );
+  void hideKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  void login(String email, String password) async {
+    hideKeyboard();
+    if (email.length < 4) {
+      showToast("이메일을 정확하게 입력해주세요.");
+      return;
+    }
+
+    if (password.length < 4) {
+      showToast("비밀번호를 정확하게 입력해주세요.");
+      return;
+    }
+
+    print("email is $email");
+    print("password is $password");
+
+    int result = await accountRepository.login(email, password);
+    if (result > 0) {
+      AccountVO? accountVO =
+          await accountRepository.getAccountInfo(email, password);
+
+      if(accountVO != null) {
+        Singleton().setAccountIdx(accountVO.account_idx);
+        Singleton().setAccountName(accountVO.account_name);
+        myInfoKey.currentState!.pop();
+        //navigate(context, "/");
+        showToast("로그인을 성공했습니다.");
+      } else {
+        showToast("로그인에 실패하셨습니다.");
+      }
+
+    }
+  }
+
+  void showToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0);
+  }
+
+  ButtonStyle buildOutlineButtonStyle(Color backgroundColor) {
+    return OutlinedButton.styleFrom(
+        minimumSize: const Size(double.infinity, 50),
+        backgroundColor: backgroundColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        side: const BorderSide(color: AppColors.black, width: 0.8));
+  }
+
+  InputDecoration buildTextFieldDecoration(String hint) {
+    return InputDecoration(
+        filled: true,
+        counterText: "",
+        fillColor: AppColors.grey,
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50.0),
+            borderSide: const BorderSide(width: 0.0, color: AppColors.grey)),
+        hintText: hint,
+        isDense: true,
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50.0),
+            borderSide: const BorderSide(width: 0.0, color: AppColors.grey)),
+        contentPadding: const EdgeInsets.all(15));
   }
 
   AppBar buildAppBar() {
     return AppBar(
       elevation: 0,
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.white,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(4.0),
         child: Divider(
@@ -123,13 +184,8 @@ class LoginState extends State<Login> {
         ),
       ),
       leading: Container(
-        alignment: Alignment.center,
-        child: const Text(
-          'GRIP',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.black),
-        ),
-      ),
+          alignment: Alignment.center,
+          child: "GRIP".text.bold.black.size(15).make().pOnly(left: 10)),
       actions: [
         IconButton(
           icon: SvgPicture.asset('assets/images/category.svg'),
@@ -139,30 +195,6 @@ class LoginState extends State<Login> {
           },
         )
       ],
-    );
-  }
-
-  Widget buildLoginTitle() {
-    return const Column(
-      children: [
-        Text(
-          'LOGIN',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 25, color: AppColors.black),
-        ),
-        Text(
-          '로그인',
-          style: TextStyle(fontSize: 17, color: AppColors.black),
-        )
-      ],
-    );
-  }
-
-  Divider buildDivider() {
-    return const Divider(
-      thickness: 1,
-      height: 1,
-      color: AppColors.black,
     );
   }
 }

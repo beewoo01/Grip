@@ -1,6 +1,7 @@
 class Singleton {
   static Singleton? _instance;
   int? _accountIdx;
+  String? _accountName;
 
   Singleton._();
 
@@ -15,5 +16,13 @@ class Singleton {
 
   int? getAccountIdx() {
     return _accountIdx;
+  }
+
+  void setAccountName(String value) {
+    _accountName = value;
+  }
+
+  String? getAccountName() {
+    return _accountName;
   }
 }

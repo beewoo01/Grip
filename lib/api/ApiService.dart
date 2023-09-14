@@ -8,6 +8,7 @@ import 'package:grip/model/inquiry_model.dart';
 import 'package:grip/screen/category/dto/dto_category_content.dart';
 import 'package:grip/screen/home/dto/dto_sub_category.dart';
 import 'package:grip/screen/home/dto/dto_wedding.dart';
+import 'package:grip/screen/myinfo/dto/dto_account.dart';
 import 'package:http/http.dart' as http;
 
 import '../common/url/grip_url.dart';
@@ -18,12 +19,13 @@ import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
 import '../screen/home/vo/vo_event.dart';
+import '../screen/myinfo/vo/vo_account.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl2;
+  String BASE_URL = GripUrl.localUrl;
 
-  Future<http.Response> login(String id, String pw) async {
-    Uri uri = Uri.parse('${GripUrl}login');
+  Future<int> login(String id, String pw) async {
+    Uri uri = Uri.parse('${BASE_URL}login');
 
     var response = await http
         .post(uri, body: {'account_email': id, 'account_password': pw});
@@ -39,11 +41,24 @@ class ApiService {
     if (response.statusCode == 200) {
       print('statusCode == 200');
       print(response.body);
-    } else {
-      print(response.statusCode);
+      return int.parse(response.body);
     }
 
-    return response;
+    return -1;
+  }
+
+  Future<AccountDTO?> getAccountInfo(String id, String pw) async {
+    Uri uri = Uri.parse("${BASE_URL}getAccountInfo");
+    
+    var response = await http.post(uri, body: {'account_email': id, 'account_password': pw});
+
+    if(response.statusCode == 200) {
+      print(response.body);
+      return AccountDTO.fromJson(json.decode(response.body));
+    }
+    else {
+      return null;
+    }
   }
 
   Future<int> join(String email, String name, String password, String identify,

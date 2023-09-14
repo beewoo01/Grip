@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/image/grip_image.dart';
+import 'package:grip/common/widget/w_container_image.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/screen/category/vo/vo_category_content.dart';
+import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../model/content_model.dart';
@@ -19,95 +23,86 @@ class CategoryWideBody extends StatelessWidget {
       color: AppColors.black,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, left: 10),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'GRIP 프리미엄 pro',
-                style: TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-            ),
-          ),
+          height10,
           Container(
-            padding: const EdgeInsets.only(top: 10),
+                  alignment: Alignment.centerLeft,
+                  child: "GRIP 프리미엄 pro"
+                      .text
+                      .color(AppColors.white)
+                      .bold
+                      .size(16)
+                      .make())
+              .pOnly(left: 10),
+          height10,
+          SizedBox(
             width: double.infinity,
             height: 300,
-            child: buildList(viewModel.premiumContentList),
+            child: buildList(),
           )
         ],
       ),
     );
   }
 
-  Widget buildList(List<CategoryContentVO>? list) {
-    if (list == null || list.isEmpty) {
-      return const Center(
-        child: Text(
-          '조회된 데이터가 없습니다.',
-          style: TextStyle(color: AppColors.black),
-        ),
-      );
-    } else {
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: list.length,
-        itemBuilder: (BuildContext context, int position) {
-          return Container(
-            width: 300,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                border: Border.all(width: 2.0)),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Column(
-                children: [
-                  Flexible(
-                    flex: 3,
-                    child: Container(
-                      height: double.infinity,
-                      color: Colors.grey,
-                      child: Image.asset(
-                        'assets/images/movie/$position.jpg',
-                        fit: BoxFit.fill,
+  Widget buildList() {
+    return FutureBuilder(
+        future: viewModel.selectPremium(Singleton().getAccountIdx()!),
+        builder: (builder, snapShot) {
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: snapShot.data?.length,
+            itemBuilder: (BuildContext context, int position) {
+              return Container(
+                width: 230,
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(width: 2.0)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Column(
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: Container(
+                          height: double.infinity,
+                          color: Colors.grey,
+                          child: ContainerImageWidget(
+                              double.infinity,
+                              double.infinity,
+                              "${snapShot.data?[position].content_img_url}"),
+                        ),
                       ),
-                    ),
+                      Flexible(
+                        flex: 1,
+                        child: Container(
+                          width: double.infinity,
+                          color: AppColors.white,
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: snapShot
+                                    .data?[position].content_title.text.bold
+                                    .make(),
+                              ).pOnly(left: 10),
+                              SizedBox(
+                                width: double.infinity,
+                                child: snapShot.data?[position]
+                                    .content_description.text.bold
+                                    .make(),
+                              ).pOnly(left: 10)
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      width: double.infinity,
-                      color: AppColors.white,
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child:
-                                list[position].content_title.text.bold.make(),
-                          ).pOnly(left: 10),
-                          SizedBox(
-                            width: double.infinity,
-                            child: list[position]
-                                .content_description
-                                .text
-                                .bold
-                                .make(),
-                          ).pOnly(left: 10)
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ).pSymmetric(h: 10, v: 10);
-        },
-      );
-    }
+                ),
+              ).pSymmetric(h: 10, v: 10);
+            },
+          );
+        });
   }
 }

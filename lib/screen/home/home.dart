@@ -11,6 +11,7 @@ import 'package:grip/screen/home/vm_home.dart';
 import 'package:grip/screen/home/vo/vo_wedding.dart';
 import 'package:grip/screen/home/widget/w_content_title.dart';
 import 'package:grip/screen/home/widget/w_find_model.dart';
+import 'package:grip/screen/myinfo/alarm/fragment/f_alarm.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -43,6 +44,10 @@ class Home extends StatelessWidget {
               );
             };
             break;*/
+              /*case AlarmFragment.route :
+                builder = (BuildContext _) => const AlarmFragment();
+                break;
+                */
               default:
                 builder = (BuildContext _) => const HomeSfw();
             }

@@ -2,6 +2,9 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:grip/api/ApiService.dart';
+import 'package:grip/screen/myinfo/dto/dto_account.dart';
+import 'package:grip/screen/myinfo/vo/vo_account.dart';
+import 'package:grip/util/Singleton.dart';
 import 'package:http/http.dart' as http;
 
 class AccountRepository extends ChangeNotifier {
@@ -12,8 +15,20 @@ class AccountRepository extends ChangeNotifier {
   Map<String, dynamic>? get duplicateMap => _duplicateMap;
   String? get duplicateResult => _duplicateResult;
 
-  Future<http.Response> login(String id, String pw) {
+  Future<int> login(String id, String pw) async {
     return apiService.login(id, pw);
+  }
+
+  Future<AccountVO?> getAccountInfo(String id, String pw) async {
+    AccountDTO? accountDTO = await apiService.getAccountInfo(id, pw);
+    if(accountDTO != null) {
+      Singleton().setAccountIdx(accountDTO.account_idx!);
+      int idx = accountDTO.account_idx ?? 0;
+      String name = accountDTO.account_name ?? "";
+      return AccountVO(idx, name);
+    }
+
+    return null;
   }
 
   Future<HashMap<String, dynamic>?>? duplicateCheck(String email, String name, String password,

@@ -4,6 +4,7 @@ import 'package:grip/model/content_model.dart';
 import 'package:grip/screen/category/vo/vo_category_content.dart';
 
 import '../../model/pair.dart';
+import '../../model/premium_model.dart';
 import '../../model/sub_category_model.dart';
 import 'dto/dto_category_content.dart';
 
@@ -12,7 +13,7 @@ class CategoryViewModel {
 
   Map<int, String>? categoryMap;
   Map<int, List<Pair<int, String>>>? subCategoryMap;
-  List<CategoryContentVO> premiumContentList = [];
+  //List<CategoryContentVO> premiumContentList = [];
   List<CategoryContentVO> contentList = [];
 
   Future<List<SubCategoryModel>?> selectCategory() async {
@@ -37,6 +38,7 @@ class CategoryViewModel {
 
       return list;
     }
+    return null;
   }
 
   Future<List<CategoryContentDTO>?> selectContent(int subCategoryIdx, int accountIdx) async {
@@ -47,7 +49,6 @@ class CategoryViewModel {
     List<CategoryContentDTO> list =
         await apiService.selectCategoryContent(subCategoryIdx, accountIdx) ?? [];
     List<CategoryContentVO> res = [];
-    List<CategoryContentVO> resPro = [];
 
     print('selectContent $list');
 
@@ -58,20 +59,18 @@ class CategoryViewModel {
          model.content_description,
          model.content_img_url,
       ));
-
-      if (model.content_ispro == 1) {
-        resPro.add(CategoryContentVO(
-            model.content_idx,
-            model.content_title,
-            model.content_description,
-            model.content_img_url));
-      }
     }
-    premiumContentList.clear();
+
     contentList.clear();
     contentList.addAll(res);
-    premiumContentList.addAll(resPro);
 
+
+    return list;
+  }
+
+
+  Future<List<PremiumModel>> selectPremium(int accountIdx) async {
+    List<PremiumModel> list = await apiService.selectPremium(accountIdx) ?? [];
     return list;
   }
 }
