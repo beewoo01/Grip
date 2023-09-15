@@ -135,7 +135,7 @@ class CategoryWatchState extends State<CategoryWatch> {
   }
 
   Widget buildHorizontalCategory(List<Pair<int, String>> list) {
-    Singleton().setAccountIdx(2);
+    //Singleton().setAccountIdx(2);
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,

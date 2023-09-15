@@ -73,9 +73,9 @@ class _HomeSfw extends State<HomeSfw> {
   @override
   void initState() {
     super.initState();
-    if (Singleton().getAccountIdx() == null) {
+    /*if (Singleton().getAccountIdx() == null) {
       Singleton().setAccountIdx(2);
-    }
+    }*/
 
     /*viewModel.selectPremiumModel(Singleton().getAccountIdx()!);
     viewModel.selectEvent();*/
@@ -267,15 +267,9 @@ class _HomeSfw extends State<HomeSfw> {
                 flex: 3,
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       flex: 1,
-                      child: Text(
-                        '000님',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.black),
-                      ),
+                      child: (Singleton().getAccountName() ?? "").text.size(13).bold.color(AppColors.black).make()
                     ),
                     Expanded(
                       flex: 1,
@@ -340,7 +334,7 @@ class _HomeSfw extends State<HomeSfw> {
 
   Widget buildPremiumList() {
     return FutureBuilder(
-        future: viewModel.selectPremiumModel(Singleton().getAccountIdx()!),
+        future: viewModel.selectPremiumModel(Singleton().getAccountIdx()),
         builder: (builder, snapShot) {
           return ListView.separated(
             itemBuilder: (context, index) {

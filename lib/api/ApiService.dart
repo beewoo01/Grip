@@ -22,7 +22,7 @@ import '../screen/home/vo/vo_event.dart';
 import '../screen/myinfo/vo/vo_account.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl;
+  String BASE_URL = GripUrl.serverUrl;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');

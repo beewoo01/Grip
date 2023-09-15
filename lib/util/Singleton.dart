@@ -1,6 +1,6 @@
 class Singleton {
   static Singleton? _instance;
-  int? _accountIdx;
+  int _accountIdx = 0;
   String? _accountName;
 
   Singleton._();
@@ -14,7 +14,7 @@ class Singleton {
     _accountIdx = idx;
   }
 
-  int? getAccountIdx() {
+  int getAccountIdx() {
     return _accountIdx;
   }
 

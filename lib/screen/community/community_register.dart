@@ -56,7 +56,7 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   @override
   void initState() {
     super.initState();
-    Singleton().setAccountIdx(2);
+    //Singleton().setAccountIdx(2);
     fetchData();
   }
 

@@ -4,6 +4,9 @@ import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/main.dart';
 import 'package:grip/screen/promotion/promotion_detail.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:velocity_x/velocity_x.dart';
+
+import '../../util/Singleton.dart';
 
 class Promotion extends StatelessWidget {
   const Promotion({super.key});
@@ -296,15 +299,9 @@ class PromotionState extends State<PromotionSfw> {
                 flex: 3,
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       flex: 1,
-                      child: Text(
-                        '000님',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.black),
-                      ),
+                      child: (Singleton().getAccountName() ?? "").text.size(13).bold.color(AppColors.black).make()
                     ),
                     Expanded(
                       flex: 1,

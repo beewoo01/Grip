@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/inquiry_model.dart';
@@ -11,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/url/grip_url.dart';
+import '../../util/Singleton.dart';
 
 class CommunityMenu extends StatelessWidget {
   const CommunityMenu({Key? key}) : super(key: key);
@@ -122,10 +124,7 @@ class CommunitySfw extends State<Community> {
                 ),
 
                 const Line().pSymmetric(h: 10, v: 10),
-                /*Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-                  child: buildDivider(1.5, 1),
-                ),*/
+
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
                   child: buildBottomCategory(),
@@ -176,15 +175,10 @@ class CommunitySfw extends State<Community> {
                 flex: 3,
                 child: Row(
                   children: [
-                    const Expanded(
+                     Expanded(
                       flex: 1,
-                      child: Text(
-                        '000님',
-                        style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.black),
-                      ),
+                      child: (Singleton().getAccountName() ?? "").text.size(13).bold.color(AppColors.black).make()
+
                     ),
                     Expanded(
                       flex: 1,
@@ -333,13 +327,13 @@ class CommunitySfw extends State<Community> {
                   borderRadius: BorderRadius.circular(10.0),
                   color: AppColors.grey,
                 ),
-                child: ClipRRect(
+                /*child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
                     'assets/images/$path',
                     fit: BoxFit.fill,
                   ),
-                ),
+                ),*/
               )),
           Padding(
             padding: const EdgeInsets.only(left: 10, right: 10),
@@ -431,8 +425,11 @@ class PhotoReviewWidget extends StatelessWidget {
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: buildCoverImage(viewModel
-                                        .reviewList?[position].review_img_url),
+                                    child: context.buildImage("${viewModel
+                    .reviewList[position].review_img_url}")
+
+                                    /*buildCoverImage(viewModel
+                                        .reviewList?[position].review_img_url),*/
                                   ),
                                 ),
                               )),

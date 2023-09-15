@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
+import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -34,21 +35,13 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
         height20,
         buildReservation().pSymmetric(h: 20),
         height20,
-        buildLabelContainer("취소 환불 내역", () {
-
-        }),
+        buildLabelContainer("취소 환불 내역", () {}),
         height10,
-        buildLabelContainer("쿠폰함", () {
-
-        }),
+        buildLabelContainer("쿠폰함", () {}),
         height10,
-        buildLabelContainer("내 정보 관리", () {
-
-        }),
+        buildLabelContainer("내 정보 관리", () {}),
         height10,
-        buildLabelContainer("찜 목록", () {
-
-        }),
+        buildLabelContainer("찜 목록", () {}),
       ],
     );
   }
@@ -60,11 +53,16 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(onPressed: backCallback, icon: const Icon(Icons.arrow_back_ios_new),),
-            IconButton(onPressed: alarmCallback, icon: const Icon(Icons.circle_notifications),),
+            IconButton(
+              onPressed: backCallback,
+              icon: const Icon(Icons.arrow_back_ios_new),
+            ),
+            IconButton(
+              onPressed: alarmCallback,
+              icon: const Icon(Icons.circle_notifications),
+            ),
           ],
-        )
-    );
+        ));
   }
 
   Widget buildMyInfoContainer() {
@@ -90,31 +88,31 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
             width10,
             Expanded(
                 child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: "${Singleton().getAccountName()}"
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: "${Singleton().getAccountName()}"
+                      .text
+                      .bold
+                      .size(18)
+                      .make(),
+                ).pSymmetric(h: 10),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                      onPressed: () {},
+                      style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(5),
+                          backgroundColor: AppColors.grey),
+                      child: "내 정보 관리 >"
                           .text
-                          .bold
-                          .size(18)
-                          .make(),
-                    ).pSymmetric(h: 10),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(5),
-                              backgroundColor: AppColors.grey),
-                          child: "내 정보 관리 >"
-                              .text
-                              .color(AppColors.black)
-                              .size(8)
-                              .make()),
-                    ).pSymmetric(h: 10)
-                  ],
-                ))
+                          .color(AppColors.black)
+                          .size(8)
+                          .make()),
+                ).pSymmetric(h: 10)
+              ],
+            ))
           ],
         ),
         height20,
@@ -128,6 +126,7 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
   Widget buildReservation() {
     return Column(
       children: [
+
         Container(
           decoration: const BoxDecoration(
               color: AppColors.black,
@@ -145,7 +144,9 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
                 ],
               ),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    navigate(context, ReservationHistory.route, isRootNavigator: false);
+                  },
                   icon: const Icon(
                     Icons.add_circle,
                     color: AppColors.white,
@@ -176,33 +177,33 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
               ),
               Expanded(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: "000작가".text.color(AppColors.black).bold.make(),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: "[프로모션] 2월 커플 스냅 촬영"
-                            .text
-                            .color(AppColors.black)
-                            .bold
-                            .make(),
-                      ),
-                      height10,
-                      SizedBox(
-                        width: double.infinity,
-                        child: "2023-02-12 / 2인 / 제주 / 보정0 /..."
-                            .text
-                            .color(AppColors.black)
-                            .maxLines(1)
-                            .size(8)
-                            .ellipsis
-                            .make(),
-                      ),
-                    ],
-                  ).pSymmetric(h: 10))
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: "000작가".text.color(AppColors.black).bold.make(),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: "[프로모션] 2월 커플 스냅 촬영"
+                        .text
+                        .color(AppColors.black)
+                        .bold
+                        .make(),
+                  ),
+                  height10,
+                  SizedBox(
+                    width: double.infinity,
+                    child: "2023-02-12 / 2인 / 제주 / 보정0 /..."
+                        .text
+                        .color(AppColors.black)
+                        .maxLines(1)
+                        .size(8)
+                        .ellipsis
+                        .make(),
+                  ),
+                ],
+              ).pSymmetric(h: 10))
             ],
           ).pSymmetric(h: 10, v: 20),
         )

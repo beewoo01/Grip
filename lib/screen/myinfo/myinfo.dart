@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/url/grip_url.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
@@ -13,6 +14,7 @@ import 'package:grip/util/tap_item.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'alarm/fragment/f_alarm.dart';
+import 'widget/myinfo/reservation/f_reservation_history.dart';
 
 //final myInfoKey = GlobalKey<NavigatorState>();
 class MyInfo extends StatelessWidget {
@@ -68,6 +70,12 @@ class MyInfo extends StatelessWidget {
                 builder = (BuildContext _) {
                   print("AlarmFragment.route AlarmFragment.route AlarmFragment.route");
                   return const AlarmFragment();
+                };
+                break;
+
+              case ReservationHistory.route :
+                builder = (BuildContext _) {
+                  return const ReservationHistory();
                 };
                 break;
 
@@ -189,7 +197,7 @@ class MyInfoState extends State<MyInfoSfw> with WidgetsBindingObserver {
                   isRootNavigator: false, arguments: {});
             }),
           ],
-        )
+        ),
       ],
     );
   }
