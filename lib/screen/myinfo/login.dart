@@ -16,10 +16,14 @@ import 'find_account.dart';
 import 'join.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  Login({required this.voidCallback, Key? key}) : super(key: key);
+  VoidCallback voidCallback;
 
   @override
-  State createState() => LoginState();
+  State createState() {
+    return LoginState();
+  }
+
   static const String route = '/myinfo/login';
 }
 
@@ -27,6 +31,7 @@ class LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController pswController = TextEditingController();
   AccountRepository accountRepository = AccountRepository();
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,15 +122,33 @@ class LoginState extends State<Login> {
     print("password is $password");
 
     int result = await accountRepository.login(email, password);
+    print("login result $result");
+
     if (result > 0) {
       AccountVO? accountVO =
           await accountRepository.getAccountInfo(email, password);
 
       if(accountVO != null) {
-        Singleton().setAccountIdx(accountVO.account_idx);
-        Singleton().setAccountName(accountVO.account_name);
-        myInfoKey.currentState!.pop();
-        //navigate(context, "/");
+        setState(() {
+          Singleton().setAccountIdx(accountVO.account_idx);
+          Singleton().setAccountName(accountVO.account_name);
+          /*myInfoKey.currentState!.pop();
+          myInfoKey.currentState!.pushNamed("/");*/
+
+          /*myInfoKey.currentState!.popUntil((route) => false);*/
+          //myInfoKey.currentState!.popAndPushNamed("/");
+          myInfoKey.currentState!.pop();
+          widget.voidCallback();
+
+
+          //initState();
+          //myInfoKey.currentState!.pushReplacement(newRoute)
+          //myInfoKey.currentState!.replaceRouteBelow(anchorRoute: anchorRoute, newRoute: newRoute)
+          //navigate(context, "/");
+        });
+
+
+
         showToast("로그인을 성공했습니다.");
       } else {
         showToast("로그인에 실패하셨습니다.");

@@ -25,9 +25,8 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
     return Column(
       children: [
         height30,
-        buildAlarm(() {
+        buildAppbar(() {
           navigate(context, "/");
-          Navigator.pop(context);
         }, () {
           navigate(context, AlarmFragment.route, isRootNavigator: false);
         }),
@@ -46,7 +45,7 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
     );
   }
 
-  Widget buildAlarm(VoidCallback backCallback, VoidCallback alarmCallback) {
+  Widget buildAppbar(VoidCallback backCallback, VoidCallback alarmCallback) {
     return Container(
         alignment: Alignment.center,
         height: 50,

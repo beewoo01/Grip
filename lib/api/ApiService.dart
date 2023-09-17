@@ -22,7 +22,7 @@ import '../screen/home/vo/vo_event.dart';
 import '../screen/myinfo/vo/vo_account.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.serverUrl;
+  String BASE_URL = GripUrl.localUrl2;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');
@@ -48,11 +48,13 @@ class ApiService {
   }
 
   Future<AccountDTO?> getAccountInfo(String id, String pw) async {
+    print("getAccountInfo");
     Uri uri = Uri.parse("${BASE_URL}getAccountInfo");
     
     var response = await http.post(uri, body: {'account_email': id, 'account_password': pw});
 
     if(response.statusCode == 200) {
+      print("getAccountInfo 200");
       print(response.body);
       return AccountDTO.fromJson(json.decode(response.body));
     }
@@ -76,21 +78,22 @@ class ApiService {
     if (response.statusCode == 200) {
       print('Join 200');
       print(response.body);
-      return response.body as int;
+      return int.parse(response.body);
     } else {
       print('Join not 200');
-      print(response.statusCode);
+      var statusCode = response.statusCode;
+      var responseHeaders = response.headers;
+      var responseBody = response.body;
+      print("stautsCode: ${statusCode}");
+      print("responseHeaders: ${responseHeaders}");
+      print("responseBody: ${responseBody}");
+
+      return -5;
     }
 
-    var statusCode = response.statusCode;
-    var responseHeaders = response.headers;
-    var responseBody = response.body;
 
-    print("stautsCode: ${statusCode}");
-    print("responseHeaders: ${responseHeaders}");
-    print("responseBody: ${responseBody}");
 
-    return -1;
+
   }
 
   Future<Map<String, dynamic>?> duplicateCheck(String email, String name,

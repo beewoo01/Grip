@@ -9,6 +9,7 @@ import 'package:grip/screen/community/community.dart';
 import 'package:grip/screen/home/home.dart';
 import 'package:grip/screen/myinfo/account_repository.dart';
 import 'package:grip/screen/myinfo/myinfo.dart';
+import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
 import 'package:grip/screen/promotion/promotion.dart';
 import 'package:grip/util/menu_item.dart';
 import 'package:grip/util/tap_item.dart';
@@ -74,7 +75,8 @@ class _NavBarHandlerState extends State<NavBarHandler>
     const Promotion(),
     const Home(),
     const CommunityMenu(),
-    const MyInfo(),
+    ReservationHistory()
+    //MyInfo(),
   ];
 
   final menuItemList = <MenuItem>[
@@ -137,8 +139,6 @@ class _NavBarHandlerState extends State<NavBarHandler>
                             .map((MenuItem menuItem) => BottomNavigationBarItem(
                                   backgroundColor: AppColors.black,
                                   icon: menuItem.iconData,
-                                  //SvgPicture.asset('assets/images/home.svg'),
-                                  //Image.asset('assets/images/sample2.png'),//Icon(menuItem.iconData),
                                   label: menuItem.text,
                                 ))
                             .toList(),
@@ -255,7 +255,10 @@ class NavbarNotifier extends ChangeNotifier {
         return;
       case 4:
         if (myInfoKey.currentState!.canPop()) {
-          myInfoKey.currentState!.popUntil((route) => route.isFirst);
+          myInfoKey.currentState!.popUntil((route) {
+            print("myInfoKey.currentWidget?.key.toString()");
+            return route.isFirst;
+          });
         }
         return;
       default:

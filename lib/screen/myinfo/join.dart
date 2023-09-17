@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grip/api/ApiService.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/main.dart';
 import 'package:grip/util/util.dart';
 import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -126,31 +127,61 @@ class JoinState extends State<Join> {
   }
 
   void join(String email, String name, String password, String passwordConfirm,
-      String identify, String phone, AccountRepository viewModel) {
-    if (email.length < 10) {
-      print('이메일을 올바르게 입력해주세요.');
-      showMessage('이메일을 올바르게 입력해주세요.');
-    } else if (name.length < 2) {
-      print('이름을 올바르게 입력해주세요.');
-      showMessage('이름을 올바르게 입력해주세요.');
-    } else if (password.length < 4) {
-      print('비밀번호를 올바르게 입력해주세요.');
-      showMessage('비밀번호를 올바르게 입력해주세요.');
-    } else if (password != passwordConfirm) {
-      showMessage('비밀번호가 일치하지 않습니다.');
-    } else if (identify.length < 13) {
-      showMessage('주민등록번호를 올바르게 입력해주세요.');
-    } else if (phone.length < 11) {
-      print('휴대폰 번호를 올바르게 입력해주세요.');
-      showMessage('휴대폰 번호를 올바르게 입력해주세요.');
-    } else {
-      viewModel.duplicateCheck(email, name, password, identify, phone);
+      String identify, String phone, AccountRepository viewModel) async {
 
-      viewModel.addListener(() {
-        if (viewModel.duplicateMap != null) {
-          onListener(viewModel.duplicateMap!);
-        }
-      });
+    if(email.length < 8) {
+      showMessage("이메일을 올바르게 입력해주세요.");
+      return;
+    }
+
+    if(name.length < 2) {
+      showMessage("이름을 올바르게 입력해주세요.");
+      return;
+    }
+
+    if(password.length < 4) {
+      showMessage("비밀번호를 올바르게 입력해주세요.");
+      return;
+    }
+
+    if(password != passwordConfirm) {
+      showMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if(identify.length < 13) {
+      showMessage('주민등록번호를 올바르게 입력해주세요.');
+      return;
+    }
+
+    if (phone.length < 11) {
+      showMessage('휴대폰 번호를 올바르게 입력해주세요.');
+      return;
+    }
+
+    int joinResult = await viewModel.duplicateCheck(email, name, password, identify, phone);
+
+    switch(joinResult) {
+      case -1 : showMessage("이미 가입된 정보 입니다.");
+        break;
+
+      case -2 : showMessage("이미 가입된 이메일 입니다.");
+      break;
+
+      case -3 : showMessage("이미 가입된 휴대폰번호 입니다.");
+      break;
+
+      case -4 :
+      case -5 :
+
+      case 0 : showMessage("회원가입중 오류가 발생했습니다.");
+        break;
+
+      default : {
+        showMessage("회원가입에 성공했습니다.");
+        myInfoKey.currentState!.pop();
+      }
+
     }
   }
 
