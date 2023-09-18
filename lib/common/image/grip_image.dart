@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import '../url/grip_url.dart';
 
 extension ContextExtention on BuildContext {
+
+  static const double appbarTitleSize = 15;
+
   CachedNetworkImage buildImage(String url,
       {PlaceholderWidgetBuilder? placeholder,
       LoadingErrorWidgetBuilder? errorWidget,

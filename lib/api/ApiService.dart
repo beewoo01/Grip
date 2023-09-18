@@ -9,6 +9,7 @@ import 'package:grip/screen/category/dto/dto_category_content.dart';
 import 'package:grip/screen/home/dto/dto_sub_category.dart';
 import 'package:grip/screen/home/dto/dto_wedding.dart';
 import 'package:grip/screen/myinfo/dto/dto_account.dart';
+import 'package:grip/screen/myinfo/widget/review/dto/dto_remaining_review.dart';
 import 'package:http/http.dart' as http;
 
 import '../common/url/grip_url.dart';
@@ -23,7 +24,7 @@ import '../screen/myinfo/vo/vo_account.dart';
 import '../screen/myinfo/widget/myinfo/reservation/dto/dto_revervation_history.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl;
+  String BASE_URL = GripUrl.localUrl2;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');
@@ -480,7 +481,7 @@ class ApiService {
   Future<int?> updateUserinfo(String account_email, String identity_num,
       String account_phone, int account_idx) async {
     Uri uri = Uri.parse("${BASE_URL}updateUserinfo");
-    var response = await http.post(uri, body: {
+    final response = await http.post(uri, body: {
       'account_email': account_email,
       'identity_num': identity_num,
       'account_phone': account_phone,
@@ -490,5 +491,33 @@ class ApiService {
     if (response.statusCode == 200) {
       return int.parse(response.body);
     }
+    return 0;
+  }
+
+  Future<int?> deleteAccount(int accountIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}deleteAccount");
+    final response =
+        await http.post(uri, body: {"accountIdx": accountIdx.toString()});
+    if (response.statusCode == 200) {
+      return int.parse(response.body);
+    }
+
+    return 0;
+  }
+
+  Future<List<RemainingReviewDTO>?> selectPossibleWriteReview(
+      int accountIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}selectPossibleWriteReview")
+        .replace(queryParameters: {"accountIdx": accountIdx.toString()});
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      print("response.statusCode == 200");
+      List responseJson = json.decode(response.body);
+      return responseJson
+          .map((json) => RemainingReviewDTO.fromJson(json))
+          .toList();
+    }
+    return null;
   }
 }

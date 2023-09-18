@@ -74,7 +74,7 @@ class MyInfo extends StatelessWidget {
 
               case ReservationHistory.route :
                 builder = (BuildContext _) {
-                  return ReservationHistory();
+                  return const ReservationHistory();
                 };
                 break;
 

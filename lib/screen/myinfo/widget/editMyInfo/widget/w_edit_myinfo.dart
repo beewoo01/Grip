@@ -57,7 +57,7 @@ class _EditMyInfoState extends State<EditMyInfo> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            height30,
+            //height30,
             const Line(
               height: 1,
               color: AppColors.black,
@@ -210,7 +210,9 @@ class _EditMyInfoState extends State<EditMyInfo> {
                 padding: const EdgeInsets.all(5),
                 child: "회원 정보 수정하기".text.color(AppColors.black).size(18).make(),
               ),
-            )
+            ),
+
+            height20
           ],
         ),
       ),
@@ -283,10 +285,12 @@ class _EditMyInfoState extends State<EditMyInfo> {
   AppBar buildAppbar() {
     return AppBar(
       leading: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
         icon: const Icon(Icons.arrow_back_ios_new),
       ),
-      title: "내 정보 관리".text.color(AppColors.black).make(),
+      title: "내 정보 관리".text.color(AppColors.black).size(ContextExtention.appbarTitleSize).make(),
     );
   }
 
