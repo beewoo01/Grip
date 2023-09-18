@@ -20,9 +20,10 @@ import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
 import '../screen/home/vo/vo_event.dart';
 import '../screen/myinfo/vo/vo_account.dart';
+import '../screen/myinfo/widget/myinfo/reservation/dto/dto_revervation_history.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl2;
+  String BASE_URL = GripUrl.localUrl;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');
@@ -50,15 +51,15 @@ class ApiService {
   Future<AccountDTO?> getAccountInfo(String id, String pw) async {
     print("getAccountInfo");
     Uri uri = Uri.parse("${BASE_URL}getAccountInfo");
-    
-    var response = await http.post(uri, body: {'account_email': id, 'account_password': pw});
 
-    if(response.statusCode == 200) {
+    var response = await http
+        .post(uri, body: {'account_email': id, 'account_password': pw});
+
+    if (response.statusCode == 200) {
       print("getAccountInfo 200");
       print(response.body);
       return AccountDTO.fromJson(json.decode(response.body));
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -90,10 +91,6 @@ class ApiService {
 
       return -5;
     }
-
-
-
-
   }
 
   Future<Map<String, dynamic>?> duplicateCheck(String email, String name,
@@ -153,7 +150,10 @@ class ApiService {
     print("apiService selectCategoryContent ");
     print("$subCategoryIdx}");
     print("$accountIdx}");
-    final param = {'sub_category_idx': subCategoryIdx.toString(), 'account_idx' : accountIdx.toString()};
+    final param = {
+      'sub_category_idx': subCategoryIdx.toString(),
+      'account_idx': accountIdx.toString()
+    };
     Uri uri = Uri.parse('${BASE_URL}selectCategoryContent')
         .replace(queryParameters: param);
 
@@ -412,9 +412,7 @@ class ApiService {
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectPicturesByCategory responseJson $responseJson');
-      return responseJson
-          .map((json) => WeddingDTO.fromJson(json))
-          .toList();
+      return responseJson.map((json) => WeddingDTO.fromJson(json)).toList();
     } else {
       print('selectPicturesByCategory responseJson else');
     }
@@ -430,9 +428,7 @@ class ApiService {
       List responseJson = json.decode(response.body);
       print('selectSubCategory responseJson $responseJson');
       return responseJson.map((json) => SubCategoryDTO.fromJson(json)).toList();
-    } else {
-
-    }
+    } else {}
 
     return null;
   }
@@ -441,7 +437,7 @@ class ApiService {
     Uri uri = Uri.parse("${BASE_URL}selectFindModel");
 
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       print("apiService selectFindModel");
       List responseJson = json.decode(response.body);
       print("apiService selectFindModel $responseJson");
@@ -449,14 +445,13 @@ class ApiService {
     }
 
     return null;
-
   }
 
   Future<List<WeddingDTO>?> selectHotSpace() async {
     Uri uri = Uri.parse("${BASE_URL}selectHotSpace");
 
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       print("apiService selectHotspace");
       List responseJson = json.decode(response.body);
       print("apiService selectHotspace $responseJson");
@@ -464,10 +459,36 @@ class ApiService {
     }
 
     return null;
-
   }
 
+  Future<List<ReservationHistoryDTO>?> selectReservationList(
+      int accountIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}selectReservationList")
+        .replace(queryParameters: {"accountIdx": accountIdx.toString()});
 
+    final response = await http.get(uri);
 
+    if (response.statusCode == 200) {
+      print("selectReservationList response.statusCode == 200");
+      List responseJson = json.decode(response.body);
+      return responseJson
+          .map((json) => ReservationHistoryDTO.fromJson(json))
+          .toList();
+    }
+  }
 
+  Future<int?> updateUserinfo(String account_email, String identity_num,
+      String account_phone, int account_idx) async {
+    Uri uri = Uri.parse("${BASE_URL}updateUserinfo");
+    var response = await http.post(uri, body: {
+      'account_email': account_email,
+      'identity_num': identity_num,
+      'account_phone': account_phone,
+      'account_idx': account_idx.toString()
+    });
+
+    if (response.statusCode == 200) {
+      return int.parse(response.body);
+    }
+  }
 }

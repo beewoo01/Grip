@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/widget/w_line.dart';
+import 'package:grip/screen/category/reservation_viewmodel.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../../../../common/widget/w_height_and_width.dart';
@@ -17,6 +18,7 @@ class ReservationHistory extends StatefulWidget {
 class _ReservationHistoryState extends State<ReservationHistory>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  final ReservationViewModel viewModel = ReservationViewModel();
 
   int selectedPosition = 0;
 
@@ -51,6 +53,7 @@ class _ReservationHistoryState extends State<ReservationHistory>
           const Line(
             height: 1,
           ),
+          height20,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -62,7 +65,7 @@ class _ReservationHistoryState extends State<ReservationHistory>
                         selectedPosition = 0;
                       });
                     },
-                    style: buildTextButtonStyle(0),
+                    style: buildTextButtonStyle(0, 10, 0, 10, 0),
                     child: "사진작가"
                         .text
                         .color(selectedPosition == 0
@@ -72,33 +75,33 @@ class _ReservationHistoryState extends State<ReservationHistory>
                         .make()),
               ),
               SizedBox(
-                  width: 100,
-                  child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          selectedPosition = 1;
-                          print("111");
-                        });
-                      },
-                      style: buildTextButtonStyle(1),
-                      child: "장소대여"
-                          .text
-                          .color(selectedPosition == 1
-                              ? AppColors.black
-                              : AppColors.white)
-                          .bold
-                          .make())).pOnly(left: 1, right: 1),
+                      width: 100,
+                      child: TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedPosition = 1;
+                              print("111");
+                            });
+                          },
+                          style: buildTextButtonStyle(1, 0, 0, 0, 0),
+                          child: "장소대여"
+                              .text
+                              .color(selectedPosition == 1
+                                  ? AppColors.black
+                                  : AppColors.white)
+                              .bold
+                              .make()))
+                  .pOnly(left: 1, right: 1),
               SizedBox(
                   width: 100,
                   child: TextButton(
                       onPressed: () {
-
                         setState(() {
                           selectedPosition = 2;
                           print("222");
                         });
                       },
-                      style: buildTextButtonStyle(2),
+                      style: buildTextButtonStyle(2, 0, 10, 0, 10),
                       child: "모델"
                           .text
                           .color(selectedPosition == 2
@@ -113,18 +116,25 @@ class _ReservationHistoryState extends State<ReservationHistory>
     );
   }
 
-  ButtonStyle buildTextButtonStyle(int position) {
+  ButtonStyle buildTextButtonStyle(
+      int position,
+      double topLeftRadius,
+      double topRightRadius,
+      double bottomLeftRadius,
+      double bottomRightRadius) {
     return ButtonStyle(
-      backgroundColor: position == selectedPosition
-          ? MaterialStateProperty.all(AppColors.white)
-          : MaterialStateProperty.all(AppColors.black),
-      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-          side: const BorderSide(
-            color: Colors.black,
-            width: 1,
-          ),
-          borderRadius: BorderRadius.circular(0))),
-    );
+        backgroundColor: position == selectedPosition
+            ? MaterialStateProperty.all(AppColors.white)
+            : MaterialStateProperty.all(AppColors.black),
+        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(topLeftRadius),
+          topRight: Radius.circular(topRightRadius),
+          bottomLeft: Radius.circular(bottomLeftRadius),
+          bottomRight: Radius.circular(bottomRightRadius),
+        ))),
+        side: MaterialStateProperty.all(
+            const BorderSide(color: AppColors.black, width: 1.0)));
   }
 
   AppBar buildToolbar(BuildContext context) {

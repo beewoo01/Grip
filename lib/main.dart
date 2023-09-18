@@ -8,7 +8,9 @@ import 'package:grip/screen/category/newer/f_category.dart';
 import 'package:grip/screen/community/community.dart';
 import 'package:grip/screen/home/home.dart';
 import 'package:grip/screen/myinfo/account_repository.dart';
+import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/screen/myinfo/myinfo.dart';
+import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
 import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
 import 'package:grip/screen/promotion/promotion.dart';
 import 'package:grip/util/menu_item.dart';
@@ -75,7 +77,8 @@ class _NavBarHandlerState extends State<NavBarHandler>
     const Promotion(),
     const Home(),
     const CommunityMenu(),
-    ReservationHistory()
+    const EditMyInfo()
+    //const Join()
     //MyInfo(),
   ];
 

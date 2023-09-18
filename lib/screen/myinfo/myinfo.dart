@@ -6,7 +6,7 @@ import 'package:grip/main.dart';
 import 'package:grip/screen/myinfo/find_account.dart';
 import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/screen/myinfo/login.dart';
-import 'package:grip/screen/myinfo/widget/myinfo/w_myinfo.dart';
+import 'package:grip/screen/myinfo/widget/myinfo/w_my_info.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
