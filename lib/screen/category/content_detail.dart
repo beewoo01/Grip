@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/content_detail_model.dart';
 import 'package:grip/util/util.dart';
@@ -54,30 +55,34 @@ class ContentDetailState extends State<ContentDetail> {
         //future: viewModel.selectContentDetail(contentIdx!),
         builder: (context, snapShot) {
           if (snapShot.hasData) {
-            return buildScaffold();
+            return buildScaffold(context);
           } else if (snapShot.hasError) {
             print('${snapShot.hasError}');
-            return buildNoDataAppScaffold('데이터 조회중 에러가 발생했습니다.');
+            return const SizedBox(
+              height: 200.0,
+              width: 200.0,
+              child: Center(
+                  child: CircularProgressIndicator()
+              ),
+            );
           } else {
-            return buildNoDataAppScaffold('조회된 데이터가 없습니다.');
+            return const SizedBox(
+              height: 200.0,
+              width: 200.0,
+              child: Center(
+                  child: CircularProgressIndicator()
+              ),
+            );
+            //buildNoDataAppScaffold('조회된 데이터가 없습니다.');
           }
         });
   }
 
-  Scaffold buildNoDataAppScaffold(String massage) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: buildAppBar(),
-      body: Center(
-        child: Text(
-          massage,
-          style: const TextStyle(color: AppColors.black),
-        ),
-      ),
-    );
+  Widget buildNoDataAppScaffold(String massage) {
+    return const SizedBox(width: 50, height: 50, child: CircularProgressIndicator());
   }
 
-  Scaffold buildScaffold() {
+  Scaffold buildScaffold(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.white,
         appBar: buildAppBar(),
@@ -99,7 +104,7 @@ class ContentDetailState extends State<ContentDetail> {
               buildDivider(),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: buildPageView(),
+                child: buildPageView(context),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
@@ -123,8 +128,8 @@ class ContentDetailState extends State<ContentDetail> {
                                 width: 80,
                                 height: 80,
                                 alignment: Alignment.center,
-                                child: Image.network(
-                                    'https://picsum.photos/${viewModel.contentImageList[index].content_img_url}')),
+                                child: context.buildImage(viewModel.contentImageList[index].content_img_url, fit: BoxFit.cover))
+                                //Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}')),
                           ),
                         ),
                       );
@@ -434,7 +439,7 @@ class ContentDetailState extends State<ContentDetail> {
     );
   }
 
-  Widget buildPageView() {
+  Widget buildPageView(BuildContext context) {
     print('buildPageView + ${viewModel.contentImageList.length}');
     if (viewModel.contentImageList.isNotEmpty) {
       return SizedBox(
@@ -443,8 +448,7 @@ class ContentDetailState extends State<ContentDetail> {
         child: PageView.builder(
           itemCount: viewModel.contentImageList.length,
           itemBuilder: (_, index) {
-            return Image.network(
-                'https://picsum.photos/${viewModel.contentImageList[index].content_img_url}');
+            return context.buildImage(viewModel.contentImageList[index].content_img_url, fit: BoxFit.cover);
           },
           controller: _pageController,
         ),
@@ -468,7 +472,6 @@ class ContentDetailState extends State<ContentDetail> {
         SizedBox(
             height: 350,
             child: Container(
-              color: Colors.pink,
               child: ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                 return buildInquiryItem();
@@ -489,7 +492,6 @@ class ContentDetailState extends State<ContentDetail> {
             ),
         Expanded(
           child: Container(
-            color: Colors.green,
           ),
           //child: Text('공간 벽쪽에 있는 테이블 크기 문의 드립니다.'),
           flex: 8,
@@ -511,7 +513,7 @@ class ContentDetailState extends State<ContentDetail> {
       backgroundColor: AppColors.white,
       leading: IconButton(
         icon: const Icon(
-          Icons.chevron_left,
+          Icons.arrow_back_ios_new,
           color: AppColors.black,
         ),
         onPressed: () {

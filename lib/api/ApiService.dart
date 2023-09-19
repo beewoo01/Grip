@@ -19,12 +19,16 @@ import '../model/purchase_model.dart';
 import '../model/reservation_model.dart';
 import '../model/review_model.dart';
 import '../model/sub_category_model.dart';
+
 import '../screen/home/vo/vo_event.dart';
 import '../screen/myinfo/vo/vo_account.dart';
 import '../screen/myinfo/widget/myinfo/reservation/dto/dto_revervation_history.dart';
+import '../screen/myinfo/widget/review/dto/dto_remaining_review.dart';
+//import '../screen/myinfo/widget/review/dto/dto_wrote_review.dart.dart';
+import 'package:grip/screen/myinfo/widget/review/dto/dto_wrote_review.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl2;
+  String BASE_URL = GripUrl.localUrl;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');
@@ -517,6 +521,33 @@ class ApiService {
       return responseJson
           .map((json) => RemainingReviewDTO.fromJson(json))
           .toList();
+    }
+    return null;
+  }
+
+
+  Future<List<WroteReviewDto>?> selectWroteReview(int accountIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}selectWroteReview").replace(queryParameters: {"accountIdx" : accountIdx.toString()});
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      print("response.statusCode == 200");
+      List responseJson = json.decode(response.body);
+      return responseJson
+          .map((json) => WroteReviewDto.fromJson(json))
+          .toList();
+    }
+    return null;
+  }
+
+  Future<List<String>?> selectReviewImg(int reviewIdx) async{
+    Uri uri = Uri.parse("${BASE_URL}selectReviewImg").replace(queryParameters: {"reviewIdx" : reviewIdx.toString()});
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      print("apiService selectReviewImg");
+      print("response.body");
+      print("${response.body}");
+      List responseJson = json.decode(response.body);
+      return responseJson.map((e) => e.toString()).toList();
     }
     return null;
   }

@@ -12,7 +12,9 @@ import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/screen/myinfo/myinfo.dart';
 import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
 import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
-import 'package:grip/screen/myinfo/widget/review/w_review_management.dart';
+import 'package:grip/screen/myinfo/widget/review/widget/detail/w_review_detail.dart';
+//import 'package:grip/screen/myinfo/widget/review/w_review_management.dart';
+import 'package:grip/screen/myinfo/widget/review/widget/w_review_management.dart';
 import 'package:grip/screen/myinfo/widget/signout/w_sign_out.dart';
 import 'package:grip/screen/promotion/promotion.dart';
 import 'package:grip/util/menu_item.dart';
@@ -79,7 +81,8 @@ class _NavBarHandlerState extends State<NavBarHandler>
     const Promotion(),
     const Home(),
     const CommunityMenu(),
-    const ReviewManagement()
+    ReviewDetail()
+    //const ReviewManagement()
     //const SignOut()
     //const EditMyInfo()
     //const Join()

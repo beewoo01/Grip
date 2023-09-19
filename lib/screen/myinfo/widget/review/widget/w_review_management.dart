@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/screen/myinfo/widget/review/viewModel/vm_review.dart';
+import 'package:grip/screen/myinfo/widget/review/widget/w_will_write_review.dart';
+import 'package:grip/screen/myinfo/widget/review/widget/w_wrote_review.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../../../common/color/AppColors.dart';
-import '../../../../common/image/grip_image.dart';
-import 'widget/w_will_write_review.dart';
+import '../../../../../common/color/AppColors.dart';
+import '../../../../../common/image/grip_image.dart';
 
 class ReviewManagement extends StatefulWidget {
   const ReviewManagement({super.key});
+
+  static const String route = '/reviewManagement';
 
   @override
   State<ReviewManagement> createState() => _ReviewManagementState();
@@ -48,10 +51,15 @@ class _ReviewManagementState extends State<ReviewManagement> {
               ),
             ],
           ),
-
           height10,
 
-          WillWriteReview(viewModel)
+          Expanded(
+            //child: WroteReview(viewModel),
+            child: selectedPosition == 0 ? WillWriteReview(viewModel) : WroteReview(viewModel),
+          ),
+
+          height30,
+          height30,
         ],
       ),
     );

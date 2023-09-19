@@ -15,75 +15,125 @@ class WillWriteReview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future:
-            viewModel.selectPossibleWriteReview(Singleton().getAccountIdx()),
+        //future: viewModel.selectPossibleWriteReview(Singleton().getAccountIdx()),
+        future: viewModel.selectPossibleWriteReview(2),
         builder: (builder, snapShot) {
+          print("WillWriteReview FutureBuilder");
+          print(snapShot.data?.length);
           return ListView.builder(
               itemCount: snapShot.data?.length ?? 0,
               itemBuilder: (BuildContext context, int position) {
                 return Container(
-                  width: double.infinity,
-                  height: 200,
-                  color: AppColors.grey,
-                  child: Row(
-                    children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 150,
-                                height: 150,
-                                color: AppColors.grey,
+                    decoration: BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Column(
+                      children: [
+                        height30,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Row(
+                                  children: [
+                                    width20,
+                                    Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                          color: AppColors.darkGrey,
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: context.buildImage("${snapShot.data?[position].content_img_url}",
+                                            errorWidget: (context, url, error){return Container();}
+                                        ),
+                                      ),
+                                    ),
+                                    width10,
+                                    Expanded(
+                                        child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child:
+                                              "${snapShot.data?[position].content_title}"
+                                                  .text
+                                                  .maxLines(1)
+                                                  .ellipsis
+                                                  .color(AppColors.black)
+                                                  .bold
+                                                  .bold
+                                                  .make(),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child:
+                                              "${snapShot.data?[position].content_description}"
+                                                  .text
+                                                  .maxLines(1)
+                                                  .ellipsis
+                                                  .color(AppColors.black)
+                                                  .bold
+                                                  .make(),
+                                        ),
+                                        height5,
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: "${snapShot.data?[position].reservation_date ?? ""}/"
+                                                  "${snapShot.data?[position].reservation_name ?? ""}/"
+                                                  "${snapShot.data?[position].reservation_etc ?? ""}"
+                                              .text
+                                              .maxLines(1)
+                                              .ellipsis
+                                              .color(AppColors.black)
+                                              .size(10)
+                                              .make(),
+                                        )
+                                      ],
+                                    ))
+                                  ],
+                                ),
                               ),
-                              Column(
-                                children: [
-                                  (snapShot.data?[position].content_title ?? "")
-                                      .text
-                                      .color(AppColors.black)
-                                      .bold
-                                      .make(),
-                                  (snapShot.data?[position].reservation_name ??
-                                          "")
-                                      .text
-                                      .color(AppColors.black)
-                                      .bold
-                                      .make(),
-                                  height5,
-                                  (snapShot.data?[position].reservation_etc ??
-                                          "")
-                                      .text
-                                      .color(AppColors.black)
-                                      .make(),
-                                ],
-                              )
-                            ],
-                          ),
-                          Center(
-                            child: TextButton(
-                              onPressed: () {},
-                              child: "리뷰 작성하기"
-                                  .text
-                                  .color(AppColors.white)
-                                  .size(15)
-                                  .make(),
                             ),
-                          )
-                        ],
-                      ),
-                      Center(
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.arrow_circle_right),
+                            SizedBox(
+                              width: 50,
+                              child: IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.arrow_circle_right_rounded,
+                                  color: AppColors.black,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        height20,
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            width: 150,
+                            height: 30,
+                            decoration: BoxDecoration(
+                                color: AppColors.black,
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Center(
+                                child: "리뷰 작성하기"
+                                    .text
+                                    .color(AppColors.white)
+                                    .size(10)
+                                    .bold
+                                    .make()),
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ).pSymmetric(h: 20, v: 10);
+                        height20
+                      ],
+                    )).pSymmetric(h: 20, v: 10);
               });
         });
   }

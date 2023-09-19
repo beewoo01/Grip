@@ -42,9 +42,9 @@ class CommunityViewModel {
   Future<ContentDetailModel?> selectContentDetail(int contentIdx) async {
     print('CommunityViewModel selectContentDetail');
     ContentDetailModel? contentDetailModel =
-        await apiService.selectContentDetail(2);
+        await apiService.selectContentDetail(contentIdx);
     List<ContentImageModel>? contentImageList =
-        await apiService.selectContentImage(2);
+        await apiService.selectContentImage(contentIdx);
     if (contentDetailModel != null) {
       print('contentDetailModel != null');
       this.contentDetailModel = contentDetailModel;
