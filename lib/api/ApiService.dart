@@ -9,6 +9,7 @@ import 'package:grip/screen/category/dto/dto_category_content.dart';
 import 'package:grip/screen/home/dto/dto_sub_category.dart';
 import 'package:grip/screen/home/dto/dto_wedding.dart';
 import 'package:grip/screen/myinfo/dto/dto_account.dart';
+import 'package:grip/screen/myinfo/widget/like/dto/dto_my_like_content.dart';
 import 'package:grip/screen/myinfo/widget/review/dto/dto_remaining_review.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,11 +25,12 @@ import '../screen/home/vo/vo_event.dart';
 import '../screen/myinfo/vo/vo_account.dart';
 import '../screen/myinfo/widget/myinfo/reservation/dto/dto_revervation_history.dart';
 import '../screen/myinfo/widget/review/dto/dto_remaining_review.dart';
+
 //import '../screen/myinfo/widget/review/dto/dto_wrote_review.dart.dart';
 import 'package:grip/screen/myinfo/widget/review/dto/dto_wrote_review.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl;
+  String BASE_URL = GripUrl.localUrl2;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');
@@ -525,30 +527,45 @@ class ApiService {
     return null;
   }
 
-
   Future<List<WroteReviewDto>?> selectWroteReview(int accountIdx) async {
-    Uri uri = Uri.parse("${BASE_URL}selectWroteReview").replace(queryParameters: {"accountIdx" : accountIdx.toString()});
+    Uri uri = Uri.parse("${BASE_URL}selectWroteReview")
+        .replace(queryParameters: {"accountIdx": accountIdx.toString()});
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       print("response.statusCode == 200");
       List responseJson = json.decode(response.body);
-      return responseJson
-          .map((json) => WroteReviewDto.fromJson(json))
-          .toList();
+      return responseJson.map((json) => WroteReviewDto.fromJson(json)).toList();
     }
     return null;
   }
 
-  Future<List<String>?> selectReviewImg(int reviewIdx) async{
-    Uri uri = Uri.parse("${BASE_URL}selectReviewImg").replace(queryParameters: {"reviewIdx" : reviewIdx.toString()});
+  Future<List<String>?> selectReviewImg(int reviewIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}selectReviewImg")
+        .replace(queryParameters: {"reviewIdx": reviewIdx.toString()});
     final response = await http.get(uri);
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       print("apiService selectReviewImg");
       print("response.body");
       print("${response.body}");
       List responseJson = json.decode(response.body);
       return responseJson.map((e) => e.toString()).toList();
     }
+    return null;
+  }
+
+  Future<List<MyLikeContentDTO>?> selectMyLike(
+      int categoryIdx, int accountIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}selectMyLike").replace(queryParameters: {
+      "categoryIdx": categoryIdx.toString(),
+      "accountIdx": accountIdx.toString()
+    });
+
+    final response = await http.get(uri);
+    if (response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson.map((e) => MyLikeContentDTO.fromJson(e)).toList();
+    }
+
     return null;
   }
 }

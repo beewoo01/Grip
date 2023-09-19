@@ -11,6 +11,7 @@ import 'package:grip/screen/myinfo/account_repository.dart';
 import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/screen/myinfo/myinfo.dart';
 import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
+import 'package:grip/screen/myinfo/widget/like/w_my_like_content.dart';
 import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
 import 'package:grip/screen/myinfo/widget/review/widget/detail/w_review_detail.dart';
 //import 'package:grip/screen/myinfo/widget/review/w_review_management.dart';
@@ -81,7 +82,8 @@ class _NavBarHandlerState extends State<NavBarHandler>
     const Promotion(),
     const Home(),
     const CommunityMenu(),
-    ReviewDetail()
+    const MyLikeContent()
+    //ReviewDetail()
     //const ReviewManagement()
     //const SignOut()
     //const EditMyInfo()
