@@ -19,18 +19,16 @@ import 'community_viewmodel.dart';
 class CommunityResister extends StatefulWidget {
   const CommunityResister({Key? key}) : super(key: key);
 
+  static const String route = '/community/write';
+  static const String routeOnMyPage = '/reviewManagement/write';
+
   @override
   State createState() => _CommunityResisterSfw();
-  static const String route = '/community/write';
 }
 
 class _CommunityResisterSfw extends State<CommunityResister> {
   List<int> photoList = [];
   List<XFile> photoImageList = [];
-
-  /*List<PurchaseModel>? photoDetailTypeDropdownList;
-  List<SubCategoryModel>? inquiryTypeDropdownList;*/
-
   List<CommunityModel> targetDropDownList = [];
 
   List<CommunityModel> typeDropdownList = [
@@ -43,11 +41,6 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   CommunityModel selectedTargetModel =
       CommunityModel(idx: null, position: null, title: '');
 
-  /*late Pair<int, String> selectedTypeDropDown =
-      Pair(typeDropdownList[0].position!, typeDropdownList[0].title);
-
-  Pair<int?, String?>? selectedDetailDropDown;*/
-
   TextEditingController titleEditController = TextEditingController();
   TextEditingController descriptionEditController = TextEditingController();
 
@@ -56,14 +49,13 @@ class _CommunityResisterSfw extends State<CommunityResister> {
   @override
   void initState() {
     super.initState();
-    //Singleton().setAccountIdx(2);
     fetchData();
   }
 
   Future<void> fetchData() async {
     int? accountIdx = Singleton().getAccountIdx();
 
-    if (accountIdx == null || accountIdx == 0) {
+    if (accountIdx == 0) {
       showToast('로그인을 해주세요.');
     } else {
       setState(() async {

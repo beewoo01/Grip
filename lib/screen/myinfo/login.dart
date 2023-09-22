@@ -118,11 +118,7 @@ class LoginState extends State<Login> {
       return;
     }
 
-    print("email is $email");
-    print("password is $password");
-
     int result = await accountRepository.login(email, password);
-    print("login result $result");
 
     if (result > 0) {
       AccountVO? accountVO =
@@ -132,19 +128,8 @@ class LoginState extends State<Login> {
         setState(() {
           Singleton().setAccountIdx(accountVO.account_idx);
           Singleton().setAccountName(accountVO.account_name);
-          /*myInfoKey.currentState!.pop();
-          myInfoKey.currentState!.pushNamed("/");*/
-
-          /*myInfoKey.currentState!.popUntil((route) => false);*/
-          //myInfoKey.currentState!.popAndPushNamed("/");
           myInfoKey.currentState!.pop();
           widget.voidCallback();
-
-
-          //initState();
-          //myInfoKey.currentState!.pushReplacement(newRoute)
-          //myInfoKey.currentState!.replaceRouteBelow(anchorRoute: anchorRoute, newRoute: newRoute)
-          //navigate(context, "/");
         });
 
 
@@ -154,6 +139,8 @@ class LoginState extends State<Login> {
         showToast("로그인에 실패하셨습니다.");
       }
 
+    } else {
+      showToast("로그인에 실패하셨습니다.");
     }
   }
 

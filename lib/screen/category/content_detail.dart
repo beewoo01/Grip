@@ -19,15 +19,10 @@ class ContentDetail extends StatefulWidget {
   static const String route = '/promotion/detail';
 
   @override
-  State<StatefulWidget> createState() =>
-      ContentDetailState(path: path, contentIdx: contentIdx);
+  State<StatefulWidget> createState() => ContentDetailState();
 }
 
 class ContentDetailState extends State<ContentDetail> {
-  final String? path;
-  final int? contentIdx;
-
-  ContentDetailState({required this.path, required this.contentIdx});
 
   final PageController _pageController = PageController(initialPage: 0);
   final PageController _pageController2 =
@@ -51,7 +46,7 @@ class ContentDetailState extends State<ContentDetail> {
     print('ContentDetailState build');
 
     return FutureBuilder(
-        future: viewModel.selectContentDetail(contentIdx!),
+        future: viewModel.selectContentDetail(widget.contentIdx!),
         //future: viewModel.selectContentDetail(contentIdx!),
         builder: (context, snapShot) {
           if (snapShot.hasData) {
@@ -94,7 +89,7 @@ class ContentDetailState extends State<ContentDetail> {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 12, bottom: 12, left: 10),
                   child: Text(
-                    '카테고리 > $path',
+                    "${widget.path}",
                     style: const TextStyle(
                         fontSize: 13, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.left,
@@ -226,7 +221,7 @@ class ContentDetailState extends State<ContentDetail> {
                             onPressed: () {
                               navigate(context, Reservation.route,
                                   isRootNavigator: false,
-                                  arguments: {'content_idx': contentIdx});
+                                  arguments: {'content_idx': widget.contentIdx});
                             },
                             style: OutlinedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 50),

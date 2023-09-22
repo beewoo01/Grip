@@ -42,15 +42,10 @@ class CategoryViewModel {
   }
 
   Future<List<CategoryContentDTO>?> selectContent(int subCategoryIdx, int accountIdx) async {
-    print(' selectContent');
-    print(' selectContent categoryIdx is $subCategoryIdx');
-    print(' selectContent accountIdx is $accountIdx');
-
     List<CategoryContentDTO> list =
         await apiService.selectCategoryContent(subCategoryIdx, accountIdx) ?? [];
     List<CategoryContentVO> res = [];
 
-    print('selectContent $list');
 
     for (var model in list) {
       res.add(CategoryContentVO(

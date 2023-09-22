@@ -13,6 +13,8 @@ import '../../../../common/widget/w_height_and_width.dart';
 class SignOut extends StatelessWidget {
   const SignOut({super.key});
 
+  static const String route = '/edit/signOut';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

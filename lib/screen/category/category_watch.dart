@@ -81,13 +81,14 @@ class CategoryWatchState extends State<CategoryWatch> {
               width: double.infinity,
               height: 370,
               child: CategoryWideBody(
+                widget.categoryName,
                 viewModel: viewModel,
               ),
             ),
           ),
           FutureBuilder(
               future: viewModel.selectContent(
-                  subCategoryIdx, Singleton().getAccountIdx()!),
+                  subCategoryIdx, Singleton().getAccountIdx()),
               builder: (builder, snapShot) {
                 return Container(
                   //child: isOdd ? buildCategoryGrid() : buildCategoryList(),
@@ -146,7 +147,7 @@ class CategoryWatchState extends State<CategoryWatch> {
                     setState(() {
                       selectedPosition = index;
                       viewModel.selectContent(
-                          list[index].first, Singleton().getAccountIdx()!);
+                          list[index].first, Singleton().getAccountIdx());
                       subCategoryIdx = list[index].first;
                     });
                     //onCategoryButtonClicked(false);

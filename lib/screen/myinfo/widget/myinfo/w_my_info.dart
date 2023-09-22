@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
+import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
+import 'package:grip/screen/myinfo/widget/like/w_my_like_content.dart';
 import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
+import 'package:grip/screen/myinfo/widget/review/vo/vo_wrote_review.dart';
+import 'package:grip/screen/myinfo/widget/review/widget/w_review_management.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -30,7 +34,10 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
         }, () {
           navigate(context, AlarmFragment.route, isRootNavigator: false);
         }),
-        buildMyInfoContainer(),
+        buildMyInfoContainer(() {
+          navigate(context, EditMyInfo.route,
+              isRootNavigator: false, arguments: {});
+        }),
         height20,
         buildReservation().pSymmetric(h: 20),
         height20,
@@ -38,9 +45,14 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
         height10,
         buildLabelContainer("쿠폰함", () {}),
         height10,
-        buildLabelContainer("내 정보 관리", () {}),
+        buildLabelContainer("리뷰관리", () {
+          navigate(context, ReviewManagement.route,
+              isRootNavigator: false, arguments: {});
+        }),
         height10,
-        buildLabelContainer("찜 목록", () {}),
+        buildLabelContainer("찜 목록", () {
+          navigate(context, MyLikeContent.route, isRootNavigator: false);
+        }),
       ],
     );
   }
@@ -64,7 +76,7 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
         ));
   }
 
-  Widget buildMyInfoContainer() {
+  Widget buildMyInfoContainer(VoidCallback callback) {
     return Column(
       children: [
         const Line(
@@ -100,7 +112,7 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
                   width: double.infinity,
                   alignment: Alignment.centerLeft,
                   child: TextButton(
-                      onPressed: () {},
+                      onPressed: callback,
                       style: TextButton.styleFrom(
                           padding: const EdgeInsets.all(5),
                           backgroundColor: AppColors.grey),
@@ -125,7 +137,6 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
   Widget buildReservation() {
     return Column(
       children: [
-
         Container(
           decoration: const BoxDecoration(
               color: AppColors.black,
@@ -144,7 +155,8 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
               ),
               IconButton(
                   onPressed: () {
-                    navigate(context, ReservationHistory.route, isRootNavigator: false);
+                    navigate(context, ReservationHistory.route,
+                        isRootNavigator: false);
                   },
                   icon: const Icon(
                     Icons.add_circle,

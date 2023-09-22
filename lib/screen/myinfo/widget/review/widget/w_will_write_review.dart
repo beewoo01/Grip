@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
+import 'package:grip/common/widget/w_loading.dart';
+import 'package:grip/main.dart';
+import 'package:grip/screen/category/content_detail.dart';
+import 'package:grip/screen/community/community_register.dart';
 import 'package:grip/screen/myinfo/widget/review/viewModel/vm_review.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -16,10 +20,13 @@ class WillWriteReview extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
         //future: viewModel.selectPossibleWriteReview(Singleton().getAccountIdx()),
-        future: viewModel.selectPossibleWriteReview(2),
+        future:
+            viewModel.selectPossibleWriteReview(Singleton().getAccountIdx()),
         builder: (builder, snapShot) {
-          print("WillWriteReview FutureBuilder");
-          print(snapShot.data?.length);
+          if (snapShot.connectionState == ConnectionState.waiting) {
+            return const LoadingWidget();
+          }
+
           return ListView.builder(
               itemCount: snapShot.data?.length ?? 0,
               itemBuilder: (BuildContext context, int position) {
@@ -48,9 +55,11 @@ class WillWriteReview extends StatelessWidget {
                                               BorderRadius.circular(5)),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
-                                        child: context.buildImage("${snapShot.data?[position].content_img_url}",
-                                            errorWidget: (context, url, error){return Container();}
-                                        ),
+                                        child: context.buildImage(
+                                            "${snapShot.data?[position].content_img_url}",
+                                            errorWidget: (context, url, error) {
+                                          return Container();
+                                        }),
                                       ),
                                     ),
                                     width10,
@@ -104,7 +113,16 @@ class WillWriteReview extends StatelessWidget {
                             SizedBox(
                               width: 50,
                               child: IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  navigate(context, ContentDetail.route,
+                                      isRootNavigator: false,
+                                      arguments: {
+                                        "path":
+                                            "마이페이지 > 리뷰관리 > ${snapShot.data?[position].content_title}",
+                                        "contentIdx":
+                                            "${snapShot.data?[position].content_idx}"
+                                      });
+                                },
                                 icon: const Icon(
                                   Icons.arrow_circle_right_rounded,
                                   color: AppColors.black,
@@ -115,7 +133,10 @@ class WillWriteReview extends StatelessWidget {
                         ),
                         height20,
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            navigate(context, CommunityResister.routeOnMyPage,
+                                isRootNavigator: false, arguments: {});
+                          },
                           child: Container(
                             width: 150,
                             height: 30,

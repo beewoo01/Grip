@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
+import 'package:grip/common/widget/w_loading.dart';
 import 'package:grip/screen/category/reservation.dart';
 import 'package:grip/screen/category/content_detail.dart';
 import 'package:provider/provider.dart';
@@ -90,14 +91,12 @@ class CategoryState extends State<CategoryStf> {
     return FutureBuilder(
         future: categoryViewModel.selectCategory(),
         builder: (context, snapShot) {
+          if (snapShot.connectionState == ConnectionState.waiting) {
+            return const LoadingWidget();
+          }
+
           if (snapShot.hasData) {
-            print('snapShot.hasData');
             return buildAppScaffold();
-          } else if (snapShot.hasError) {
-            print('snapShot.hasError');
-            return buildNoDataAppScaffold();
-          } else {
-            print('snapShot. else ');
           }
 
           return buildNoDataAppScaffold();
@@ -114,11 +113,8 @@ class CategoryState extends State<CategoryStf> {
         child: Column(
           children: [
             for (var i in map!.keys)
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: buildBox(
-                    i, map[i]!, true, categoryViewModel.subCategoryMap![i]!),
-              )
+              buildBox(i, map[i]!, true, categoryViewModel.subCategoryMap![i]!)
+                  .pSymmetric(v: 10)
           ],
         ),
       ),
@@ -132,22 +128,10 @@ class CategoryState extends State<CategoryStf> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox(1, '스냅촬영', true, []),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox(2, '영상촬영', false, []),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox(3, '모델', false, []),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: buildBox(4, '공간대여', false, []),
-            )
+            buildBox(1, '스냅촬영', true, []).pSymmetric(v: 10),
+            buildBox(2, '영상촬영', false, []).pSymmetric(v: 10),
+            buildBox(3, '모델', false, []).pSymmetric(v: 10),
+            buildBox(4, '공간대여', false, []).pSymmetric(v: 10)
           ],
         ),
       ),
@@ -198,8 +182,8 @@ class CategoryState extends State<CategoryStf> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for (int j = i * 3; j < (i * 3 + 3); j++) ... [
-                      if (j < list.length) ... [
+                    for (int j = i * 3; j < (i * 3 + 3); j++) ...[
+                      if (j < list.length) ...[
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.transparent,
@@ -225,33 +209,28 @@ class CategoryState extends State<CategoryStf> {
               ]
             ] else ...[
               for (int i = 0; i < (list.length / 3) + 1; i++) ...[
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 5, left: 20, right: 20, bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      for (int j = i * 3; j < (i * 3 + 3); j++) ...[
-                        if (j < list.length) ...[
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    width: 1, color: AppColors.white),
-                                color: Colors.transparent),
-                            child: list[j]
-                                .secend
-                                .text
-                                .color(AppColors.black)
-                                .make()
-                                .pSymmetric(h: 5),
-                          )
-                          //Text('This is not /3')
-                        ]
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    for (int j = i * 3; j < (i * 3 + 3); j++) ...[
+                      if (j < list.length) ...[
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border:
+                                  Border.all(width: 1, color: AppColors.transparent),
+                              color: Colors.transparent),
+                          child: list[j]
+                              .secend
+                              .text
+                              .color(AppColors.black)
+                              .make()
+                              .pSymmetric(h: 5),
+                        )
                       ]
-                    ],
-                  ),
-                ),
+                    ]
+                  ],
+                ).pOnly(top: 5, left: 20, right: 20, bottom: 10),
               ]
             ],
             height20,

@@ -36,4 +36,9 @@ class WroteReviewDto {
       review_createtime: json["review_createtime"],
     );
   }
+
+  @override
+  String toString() {
+    return "content_idx : $content_idx review_idx : $review_idx content_title : $content_title content_description : $content_description content_img_url : $content_img_url review_title : $review_title review_description : $review_description review_img_url : $review_img_url account_name : $account_name review_createtime : $review_createtime ";
+  }
 }

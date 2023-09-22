@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/util/util.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/color/AppColors.dart';
 
@@ -213,7 +214,7 @@ class FindAccountState extends State<FindAccount> {
   AppBar buildAppBar() {
     return AppBar(
       elevation: 0,
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.white,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(4.0),
         child: Divider(
@@ -224,11 +225,7 @@ class FindAccountState extends State<FindAccount> {
       ),
       leading: Container(
         alignment: Alignment.center,
-        child: const Text(
-          'GRIP',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.black),
-        ),
+        child: "GRIP".text.color(AppColors.black).bold.size(18).make()
       ),
       actions: [
         IconButton(

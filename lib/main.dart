@@ -82,13 +82,17 @@ class _NavBarHandlerState extends State<NavBarHandler>
     const Promotion(),
     const Home(),
     const CommunityMenu(),
-    const MyLikeContent()
-    //ReviewDetail()
-    //const ReviewManagement()
+    const MyInfo(),
+
+    //const MyLikeContent()
+    // ReviewDetail()
+    // const ReviewManagement()
+
     //const SignOut()
-    //const EditMyInfo()
+
+    // const EditMyInfo()
     //const Join()
-    //MyInfo(),
+
   ];
 
   final menuItemList = <MenuItem>[

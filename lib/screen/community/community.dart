@@ -9,10 +9,13 @@ import 'package:grip/model/review_model.dart';
 import 'package:grip/screen/community/community_register.dart';
 import 'package:grip/screen/community/community_viewmodel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:grip/screen/myinfo/widget/review/viewModel/vm_review.dart';
+import 'package:grip/screen/myinfo/widget/review/vo/vo_wrote_review.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/url/grip_url.dart';
 import '../../util/Singleton.dart';
+import '../myinfo/widget/review/widget/detail/w_review_detail.dart';
 
 class CommunityMenu extends StatelessWidget {
   const CommunityMenu({Key? key}) : super(key: key);
@@ -34,6 +37,12 @@ class CommunityMenu extends StatelessWidget {
               case CommunityResister.route:
                 print('case CommunityResister.route');
                 builder = (BuildContext _) => const CommunityResister();
+                break;
+
+              case ReviewDetail.route :
+                final viewModel = (settings.arguments as Map)['viewModel'];
+                final vo = (settings.arguments as Map)['vo'];
+                builder = (BuildContext _) => ReviewDetail(viewModel, vo);
                 break;
 
               default:
@@ -70,22 +79,6 @@ class CommunitySfw extends State<Community> {
     viewModel: viewModel,
   );
 
-  // 0 -> 사진리뷰, 1 -> 문의하기
-
-  @override
-  void initState() {
-    super.initState();
-    print('CommunitySfw initState');
-    getData();
-  }
-
-  void getData() async {
-    /*await viewModel.selectReview();
-    await viewModel.selectInquiry();*/
-
-    print("CommunitySfw getData ${viewModel.reviewList.length}");
-  }
-
   @override
   Widget build(BuildContext context) {
     print('_CommunitySfw build');
@@ -102,8 +95,6 @@ class CommunitySfw extends State<Community> {
   }
 
   Scaffold buildAppScaffold() {
-    print("buildAppScaffold");
-    print("buildAppScaffold reviewList.count ${viewModel.reviewList.count}");
     return Scaffold(
       appBar: buildAppBar(),
       body: Stack(
@@ -175,11 +166,14 @@ class CommunitySfw extends State<Community> {
                 flex: 3,
                 child: Row(
                   children: [
-                     Expanded(
-                      flex: 1,
-                      child: (Singleton().getAccountName() ?? "").text.size(13).bold.color(AppColors.black).make()
-
-                    ),
+                    Expanded(
+                        flex: 1,
+                        child: (Singleton().getAccountName() ?? "")
+                            .text
+                            .size(13)
+                            .bold
+                            .color(AppColors.black)
+                            .make()),
                     Expanded(
                       flex: 1,
                       child: IconButton(
@@ -396,10 +390,31 @@ class PhotoReviewWidget extends StatelessWidget {
         builder: (context, snapShot) {
           return ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: viewModel.reviewList?.length,
+              itemCount: snapShot.data?.length,
               itemBuilder: (BuildContext context, int position) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                return GestureDetector(
+                  onTap: () async {
+                    final reviewIdx = snapShot.data?[position].review_idx;
+                    if(reviewIdx == null) {
+                      return;
+                    }
+
+                    WroteReviewVO? wroteReviewVO = await viewModel.selectOneWroteReview(reviewIdx);
+
+                    if(wroteReviewVO == null) {
+                      return;
+                    }
+
+                    if(context.mounted) {
+                      navigate(context, ReviewDetail.route,
+                          isRootNavigator: false,
+                          arguments: {
+                            'vo': wroteReviewVO,
+                            'viewModel': ReviewViewModel()
+                          });
+                    }
+
+                  },
                   child: Column(
                     children: [
                       Row(
@@ -408,7 +423,7 @@ class PhotoReviewWidget extends StatelessWidget {
                             child: Container(
                               height: 100,
                               padding: const EdgeInsets.only(left: 5),
-                              child: buildContent(position),
+                              child: buildContent(snapShot.data![position]),
                             ),
                           ),
                           SizedBox(
@@ -424,27 +439,27 @@ class PhotoReviewWidget extends StatelessWidget {
                                     color: Colors.grey,
                                   ),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: context.buildImage("${viewModel
-                    .reviewList[position].review_img_url}")
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: context.buildImage(
+                                          "${snapShot.data?[position].review_img_url}")
 
-                                    /*buildCoverImage(viewModel
+                                      /*buildCoverImage(viewModel
                                         .reviewList?[position].review_img_url),*/
-                                  ),
+                                      ),
                                 ),
                               )),
                         ],
                       ),
                       buildDivider(1, 1)
                     ],
-                  ),
+                  ).pOnly(left: 10, right: 10, top: 10),
                 );
               });
         });
   }
 
-  Widget buildContent(int position) {
-    ReviewModel model = viewModel.reviewList[position];
+  Widget buildContent(ReviewModel model) {
+    //ReviewModel model = viewModel.reviewList[position];
     return Column(
       children: [
         buildListText("${model.category_name} * ${model.sub_category_name}", 10,
@@ -527,12 +542,11 @@ class InquiryListWidget extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: buildCoverImage(
-                                  //    viewModel.inquiryList![position].
+                                    //    viewModel.inquiryList![position].
                                     viewModel.inquiryList?[position]
                                         .inquiry_image_url),
                               ),
-                            ).pSymmetric(v: 8, h: 8)
-                          ),
+                            ).pSymmetric(v: 8, h: 8)),
                       ],
                     ),
                     buildDivider(1, 1)
@@ -562,8 +576,8 @@ class InquiryListWidget extends StatelessWidget {
       children: [
         buildListText(model.sources, 10, FontWeight.bold, 1),
         buildListText(model.inquiry_title, 14, FontWeight.bold, 1),
-        buildListText(
-            model.inquiry_description, 10, FontWeight.normal, 3).pOnly(top: 1)
+        buildListText(model.inquiry_description, 10, FontWeight.normal, 3)
+            .pOnly(top: 1)
       ],
     );
   }

@@ -8,21 +8,9 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../vo/vo_wrote_review.dart';
 
 class ReviewDetail extends StatelessWidget {
-  ReviewViewModel viewModel = ReviewViewModel();
-  WroteReviewVO vo = WroteReviewVO(
-      2,
-      1,
-      '1번 웨딩',
-      '1번 웨딩입니다.',
-      'weding/wedding1.png',
-      '웨딩 작가 리뷰1',
-      '웨딩 작가 리뷰1의 내용입니다.',
-      '200',
-      '테스터2',
-      '2023.08.25');
-
-  //ReviewDetail(this.vo, {super.key});
-  ReviewDetail({super.key});
+  ReviewViewModel viewModel;
+  WroteReviewVO vo;
+  ReviewDetail(this.viewModel, this.vo, {super.key});
 
   static const String route = '/reviewManagement/reviewDetail';
 

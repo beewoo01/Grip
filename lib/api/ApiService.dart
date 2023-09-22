@@ -30,7 +30,7 @@ import '../screen/myinfo/widget/review/dto/dto_remaining_review.dart';
 import 'package:grip/screen/myinfo/widget/review/dto/dto_wrote_review.dart';
 
 class ApiService {
-  String BASE_URL = GripUrl.localUrl2;
+  String BASE_URL = GripUrl.serverUrl;
 
   Future<int> login(String id, String pw) async {
     Uri uri = Uri.parse('${BASE_URL}login');
@@ -152,11 +152,8 @@ class ApiService {
     return null;
   }
 
-  Future<List<CategoryContentDTO>?> selectCategoryContent(
-      int subCategoryIdx, int accountIdx) async {
-    print("apiService selectCategoryContent ");
-    print("$subCategoryIdx}");
-    print("$accountIdx}");
+  Future<List<CategoryContentDTO>?> selectCategoryContent(int subCategoryIdx, int accountIdx) async {
+
     final param = {
       'sub_category_idx': subCategoryIdx.toString(),
       'account_idx': accountIdx.toString()
@@ -185,6 +182,17 @@ class ApiService {
       return responseJson.map((json) => ReviewModel.fromJson(json)).toList();
     }
 
+    return null;
+  }
+
+  Future<WroteReviewDto?> selectOneWroteReview(int reviewIdx) async {
+    Uri uri = Uri.parse("${BASE_URL}selectOneWroteReview").replace(queryParameters: {"reviewIdx" : reviewIdx.toString()});
+    final response = await http.get(uri);
+    if(response.statusCode == 200) {
+      Map<String, dynamic> map = json.decode(response.body);
+      WroteReviewDto result = WroteReviewDto.fromJson(map);
+      return result;
+    }
     return null;
   }
 
@@ -377,11 +385,15 @@ class ApiService {
   }
 
   Future<int> deleteLike(int likeIdx) async {
-    final param = {"likeIdx": likeIdx};
+    final param = {"likeIdx": likeIdx.toString()};
     Uri uri =
         Uri.parse('${BASE_URL}deleteLike').replace(queryParameters: param);
     final response = await http.post(uri, body: param);
+
+    print("apiService deleteLike");
     if (response.statusCode == 200) {
+      print("apiService deleteLike statusCode == 200");
+      print(response.body);
       return int.parse(response.body);
     }
 

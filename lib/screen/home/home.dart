@@ -18,6 +18,7 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../common/url/grip_url.dart';
 import '../../common/widget/w_separator_container.dart';
 import '../../common/widget/w_test.dart';
+import '../category/category_watch.dart';
 import 'widget/w_chip_horizontal_list.dart';
 
 class Home extends StatelessWidget {
@@ -36,18 +37,23 @@ class Home extends StatelessWidget {
               case '/':
                 builder = (BuildContext _) => const HomeSfw();
                 break;
-              /*case FeedDetail.route:
-            builder = (BuildContext _) {
-              final id = (settings.arguments as Map)['id'];
-              return FeedDetail(
-                feedId: id,
-              );
-            };
-            break;*/
-              /*case AlarmFragment.route :
-                builder = (BuildContext _) => const AlarmFragment();
+
+              case CategoryWatch.route:
+                builder = (BuildContext _) {
+                  final idx = (settings.arguments as Map)['idx'];
+                  final subIdx = (settings.arguments as Map)['subIdx'];
+                  final title = (settings.arguments as Map)['title'];
+                  final list = (settings.arguments as Map)['list'];
+
+                  return CategoryWatch(
+                    categoryIdx: idx,
+                    subCategoryIdx: subIdx,
+                    categoryName: title,
+                    categoryList: list,
+                  );
+                };
                 break;
-                */
+
               default:
                 builder = (BuildContext _) => const HomeSfw();
             }
@@ -67,18 +73,11 @@ class HomeSfw extends StatefulWidget {
 class _HomeSfw extends State<HomeSfw> {
   final viewModel = HomeViewModel();
 
-  final colorCodes = [400, 100, 300, 200, 100];
-  final categoryData = ['웨딩촬영', '바프촬영', '모델', '공간대여'];
+  //final categoryData = ['스냅촬영', '영상촬영', '모델', '공간대여'];
 
   @override
   void initState() {
     super.initState();
-    /*if (Singleton().getAccountIdx() == null) {
-      Singleton().setAccountIdx(2);
-    }*/
-
-    /*viewModel.selectPremiumModel(Singleton().getAccountIdx()!);
-    viewModel.selectEvent();*/
   }
 
   @override
@@ -232,7 +231,6 @@ class _HomeSfw extends State<HomeSfw> {
             buildPhotoReview().pSymmetric(h: 10),
             height10,
             buildFooter().pOnly(bottom: 60, left: 10, right: 10),
-
           ],
         ),
       ),
@@ -268,9 +266,13 @@ class _HomeSfw extends State<HomeSfw> {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 1,
-                      child: (Singleton().getAccountName() ?? "").text.size(13).bold.color(AppColors.black).make()
-                    ),
+                        flex: 1,
+                        child: (Singleton().getAccountName() ?? "")
+                            .text
+                            .size(13)
+                            .bold
+                            .color(AppColors.black)
+                            .make()),
                     Expanded(
                       flex: 1,
                       child: IconButton(
@@ -449,43 +451,79 @@ class _HomeSfw extends State<HomeSfw> {
   }
 
   Widget buildCategoryGrid() {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4, // 1개의 행에 항목을 3개씩
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1,
-      ),
-      itemCount: 4,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: [
-            Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.grey,
-                  borderRadius: BorderRadius.circular(10),
-                )),
-            const Padding(padding: EdgeInsets.only(top: 10)),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: AppColors.grey),
-                child: Padding(
-                    padding: const EdgeInsets.only(left: 5, right: 5),
-                    child: categoryData[index].text.make()),
-              ),
-            )
-          ],
-        );
-      },
-    );
+    return FutureBuilder(
+        future: viewModel.selectCategory(),
+        builder: (context, snapShot) {
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4, // 1개의 행에 항목을 3개씩
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1,
+            ),
+            itemCount: 4,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  print("GestureDetector");
+                  int idx = index + 1;
+                  int subIdx = 1;
+                  switch (idx) {
+                    case 1:
+                      subIdx = 1;
+                      break;
+
+                    case 2:
+                      subIdx = 5;
+                      break;
+
+                    case 3:
+                      subIdx = 9;
+                      break;
+
+                    case 4:
+                      subIdx = 13;
+                      break;
+                  }
+                  print("viewModel.subCategoryMap?[idx]?.first");
+                  print(viewModel.subCategoryMap?[idx]?.first);
+                  navigate(context, CategoryWatch.route,
+                      isRootNavigator: false,
+                      arguments: {
+                        'idx': index + 1,
+                        'subIdx': viewModel.subCategoryMap?[idx]?.first.first,
+                        'title': viewModel.categoryMap?[idx],
+                        'list': viewModel.subCategoryMap?[idx]
+                        //여기
+                      });
+                },
+                child: Column(
+                  children: [
+                    Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: AppColors.grey,
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                    height10,
+                    Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: AppColors.grey),
+                            child: viewModel.categoryMap?[index + 1]?.text
+                                .make()
+                                .pSymmetric(h: 5))
+                        .pSymmetric(h: 10)
+                  ],
+                ),
+              );
+            },
+          );
+        });
   }
 
   Widget buildCategory() {
@@ -497,17 +535,11 @@ class _HomeSfw extends State<HomeSfw> {
   }
 
   Widget buildPromotionBanner() {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          '프로모션 배너',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-        ),
-        Text(
-          '클릭하면 해당 프로모션의 상세페이지로 이동합니다.',
-          style: TextStyle(fontSize: 15),
-        ),
+        "프로모션 배너".text.size(25).bold.make(),
+        "클릭하면 해당 프로모션의 상세페이지로 이동합니다.".text.size(15).make(),
       ],
     );
   }
@@ -541,8 +573,6 @@ class _HomeSfw extends State<HomeSfw> {
   ListView buildContentList(List<WeddingVO>? list) {
     return ListView.separated(
       itemBuilder: (context, index) {
-        print("buildContentList");
-        print("${list?[index].content_img_url}");
         return Column(
           children: [
             ContainerImageWidget(250, 320, "${list?[index].content_img_url}"),
@@ -636,7 +666,7 @@ class _HomeSfw extends State<HomeSfw> {
                   ).pOnly(left: 10, right: 10, top: 0, bottom: 10);
                 },
                 separatorBuilder: (context, index) => separator10,
-                itemCount:  snapShot.data?.length ?? 0,
+                itemCount: snapShot.data?.length ?? 0,
                 //viewModel.reviewList.length,
                 scrollDirection: Axis.horizontal,
               );

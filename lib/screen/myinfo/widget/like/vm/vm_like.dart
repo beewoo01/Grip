@@ -5,10 +5,9 @@ import 'package:grip/screen/myinfo/widget/like/vo/vo_my_like_content.dart';
 class LikeContentViewModel {
   ApiService apiService = ApiService();
 
-  Future<List<MyLikeContentVO>> selectMyLike(
-      int categoryIdx, int accountIdx) async {
-    List<MyLikeContentDTO> list =
-        await apiService.selectMyLike(categoryIdx, accountIdx) ?? [];
+  Future<List<MyLikeContentVO>> selectMyLike(int categoryIdx, int accountIdx) async {
+    print("selectMyLike");
+    List<MyLikeContentDTO> list = await apiService.selectMyLike(categoryIdx, accountIdx) ?? [];
     List<MyLikeContentVO> result = [];
     for (var model in list) {
       result.add(MyLikeContentVO(model.content_idx, model.content_title,
@@ -20,6 +19,7 @@ class LikeContentViewModel {
 
 
   Future<int> deleteLike(int likeIdx) async {
+    print("viewModel deleteLike");
     int result = await apiService.deleteLike(likeIdx);
     return result;
   }

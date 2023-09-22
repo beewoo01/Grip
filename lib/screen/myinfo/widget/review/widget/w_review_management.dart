@@ -54,7 +54,6 @@ class _ReviewManagementState extends State<ReviewManagement> {
           height10,
 
           Expanded(
-            //child: WroteReview(viewModel),
             child: selectedPosition == 0 ? WillWriteReview(viewModel) : WroteReview(viewModel),
           ),
 

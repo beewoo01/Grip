@@ -20,6 +20,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.1.0-147.0.dev <4.0.0'
+  # sdk: ">=2.12.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -47,7 +48,7 @@ dependencies:
   ssh2: ^2.2.3
   cached_network_image: ^3.2.3
   velocity_x: ^4.1.1
-  # naver_map_plugin: ^0.9.6
+  # google_maps_flutter: ^2.5.0
 
 dev_dependencies:
   flutter_test:
@@ -72,13 +73,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/images/weding/
-    - assets/images/bodyprofile/
     - assets/images/model/
-    - assets/images/snap/
-    - assets/images/studio/
     - assets/images/writer/
-    - assets/images/movie/
 
   # To add assets to your application, add an assets section, like this:
 #   assets:

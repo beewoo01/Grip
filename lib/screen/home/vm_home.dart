@@ -1,5 +1,7 @@
 import 'package:grip/api/ApiService.dart';
+import 'package:grip/model/pair.dart';
 import 'package:grip/model/premium_model.dart';
+import 'package:grip/model/sub_category_model.dart';
 import 'package:grip/screen/home/dto/dto_picture_by_category.dart';
 import 'package:grip/screen/home/dto/dto_sub_category.dart';
 import 'package:grip/screen/home/vo/vo_event.dart';
@@ -12,6 +14,9 @@ import 'dto/dto_wedding.dart';
 
 class HomeViewModel {
   final ApiService apiService = ApiService();
+
+  Map<int, String>? categoryMap;
+  Map<int, List<Pair<int, String>>>? subCategoryMap;
 
   Future<List<PremiumModel>?> selectPremiumModel(int accountIdx) async {
     List<PremiumModel> list = await apiService.selectPremium(accountIdx) ?? [];
@@ -93,5 +98,28 @@ class HomeViewModel {
       res.add(WeddingVO(model.content_idx, model.content_title, model.content_img_url));
     }
     return res;
+  }
+
+
+  Future<void> selectCategory() async {
+    List<SubCategoryModel>? list = await apiService.selectCategory();
+    if (list != null) {
+      categoryMap = <int, String>{};
+      subCategoryMap = <int, List<Pair<int, String>>>{};
+
+      for (int i = 0; i < list.length; i++) {
+        categoryMap?[list[i].category_idx] = list[i].category_name;
+      }
+
+      for (var entry in categoryMap!.entries) {
+        subCategoryMap?[entry.key] = [];
+        for (int i = 0; i < list.length; i++) {
+          if (entry.key == list[i].category_idx) {
+            subCategoryMap![entry.key]!
+                .add(Pair(list[i].sub_category_idx, list[i].sub_category_name));
+          }
+        }
+      }
+    }
   }
 }

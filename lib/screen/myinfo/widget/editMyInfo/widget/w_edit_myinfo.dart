@@ -5,6 +5,8 @@ import 'package:grip/api/ApiService.dart';
 import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
+import 'package:grip/main.dart';
+import 'package:grip/screen/myinfo/widget/signout/w_sign_out.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -13,6 +15,8 @@ import '../../../../../util/number_formatter.dart';
 
 class EditMyInfo extends StatefulWidget {
   const EditMyInfo({super.key});
+
+  static const String route = '/edit';
 
   @override
   State<EditMyInfo> createState() => _EditMyInfoState();
@@ -179,7 +183,10 @@ class _EditMyInfoState extends State<EditMyInfo> {
             Align(
               alignment: Alignment.centerRight,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  navigate(context, SignOut.route,
+                      isRootNavigator: false, arguments: {});
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.white,
@@ -263,7 +270,7 @@ class _EditMyInfoState extends State<EditMyInfo> {
 
     //apiService.updateUserinfo(email, rBirth, phone, Singleton().getAccountIdx());
     int update =
-        await apiService.updateUserinfo(email.trim(), rBirth, rPhone, 1) ?? 0;
+        await apiService.updateUserinfo(email.trim(), rBirth, rPhone, Singleton().getAccountIdx()) ?? 0;
     switch (update) {
       case -1:
         showMessage("이미 등록된 이메일입니다.");

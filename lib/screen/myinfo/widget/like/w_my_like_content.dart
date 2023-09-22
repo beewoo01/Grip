@@ -4,10 +4,15 @@ import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/screen/myinfo/widget/like/vm/vm_like.dart';
+import 'package:grip/screen/myinfo/widget/like/vo/vo_my_like_content.dart';
+import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class MyLikeContent extends StatefulWidget {
   const MyLikeContent({super.key});
+
+
+  static const String route = '/myLikeContent';
 
   @override
   State<MyLikeContent> createState() => _MyLikeContentState();
@@ -91,7 +96,7 @@ class _MyLikeContentState extends State<MyLikeContent> {
             ],
           ),
           height20,
-          Expanded(child: buildListView(selectedPosition + 1))
+          Expanded(child: buildGridView(selectedPosition + 1))
         ],
       ),
     );
@@ -121,7 +126,9 @@ class _MyLikeContentState extends State<MyLikeContent> {
   AppBar buildAppbar() {
     return AppBar(
       leading: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context);
+        },
         icon: const Icon(
           Icons.arrow_back_ios_new,
           color: AppColors.black,
@@ -131,11 +138,11 @@ class _MyLikeContentState extends State<MyLikeContent> {
     );
   }
 
-  Widget buildListView(int categoryIdx) {
+  Widget buildGridView(int categoryIdx) {
     return FutureBuilder(
-        future: viewModel.selectMyLike(categoryIdx, 2),
+        future: viewModel.selectMyLike(categoryIdx, Singleton().getAccountIdx()),
         builder: (builder, snapShot) {
-          if(!snapShot.hasData) {
+          if(snapShot.connectionState == ConnectionState.waiting) {
             return const SizedBox(
               height: 200.0,
               width: 200.0,
@@ -144,10 +151,13 @@ class _MyLikeContentState extends State<MyLikeContent> {
               ),
             );
           }
+
+          print("buildGridView load");
+          List<MyLikeContentVO> list = snapShot.data ?? [];
           return GridView.builder(
-            itemCount: snapShot.data?.length ?? 0,
+            itemCount: list.length,
             itemBuilder: (BuildContext context, int position) {
-              bool stillLike = true;
+
               return Column(
                 children: [
                   Container(
@@ -164,23 +174,24 @@ class _MyLikeContentState extends State<MyLikeContent> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
                             child: context.buildImage(
-                                "${snapShot.data?[position].content_img_url}"),
+                                "${list[position].content_img_url}"),
                           ),
                         ),
                         Positioned(
                             top: 0,
                             right: 0,
                             child: IconButton(
-                              onPressed: () {
-                                int likeIdx = snapShot.data?[position].like_idx ?? 0;
+                              onPressed: () async {
+                                int likeIdx = list[position].like_idx;
 
 
                                 if (likeIdx > 0) {
-                                  //viewModel.deleteLike(likeIdx);
-
-                                  setState(() {
-                                    snapShot.data?.removeAt(position);
-                                  });
+                                  int delState = await viewModel.deleteLike(likeIdx);
+                                  if(delState > 0){
+                                    setState(() {
+                                      list.removeAt(position);
+                                    });
+                                  }
 
                                 }
 
@@ -194,7 +205,7 @@ class _MyLikeContentState extends State<MyLikeContent> {
                   height10,
                   SizedBox(
                     width: containerSize,
-                    child: "${snapShot.data?[position].content_title}"
+                    child: list[position].content_title
                         .text
                         .color(AppColors.black)
                         .size(8)
@@ -204,7 +215,7 @@ class _MyLikeContentState extends State<MyLikeContent> {
                   ),
                   SizedBox(
                     width: containerSize,
-                    child: "${snapShot.data?[position].content_description}"
+                    child: list[position].content_description
                         .text
                         .color(AppColors.black)
                         .size(10)
@@ -218,10 +229,11 @@ class _MyLikeContentState extends State<MyLikeContent> {
             },
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 1,
+                childAspectRatio: 4/5,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10),
           );
         });
   }
+
 }
