@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_loading.dart';
 import 'package:grip/screen/category/reservation.dart';
 import 'package:grip/screen/category/content_detail.dart';
-import 'package:provider/provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../model/pair.dart';
 import 'category_viewmodel.dart';
@@ -35,7 +33,6 @@ class Category extends StatelessWidget {
                   final subIdx = (settings.arguments as Map)['subIdx'];
                   final title = (settings.arguments as Map)['title'];
                   final list = (settings.arguments as Map)['list'];
-
                   return CategoryWatch(
                     categoryIdx: idx,
                     subCategoryIdx: subIdx,
@@ -49,7 +46,6 @@ class Category extends StatelessWidget {
                 builder = (BuildContext _) {
                   final root = (settings.arguments as Map)['root'];
                   final idx = (settings.arguments as Map)['content_idx'];
-                  print('SpaceRentalDetail.route root $root');
                   return ContentDetail(
                     path: '$root',
                     contentIdx: idx,
@@ -114,7 +110,9 @@ class CategoryState extends State<CategoryStf> {
           children: [
             for (var i in map!.keys)
               buildBox(i, map[i]!, true, categoryViewModel.subCategoryMap![i]!)
-                  .pSymmetric(v: 10)
+                  .pSymmetric(v: 10),
+
+            const Height(60)
           ],
         ),
       ),
@@ -131,7 +129,7 @@ class CategoryState extends State<CategoryStf> {
             buildBox(1, '스냅촬영', true, []).pSymmetric(v: 10),
             buildBox(2, '영상촬영', false, []).pSymmetric(v: 10),
             buildBox(3, '모델', false, []).pSymmetric(v: 10),
-            buildBox(4, '공간대여', false, []).pSymmetric(v: 10)
+            buildBox(4, '공간대여', false, []).pSymmetric(v: 10),
           ],
         ),
       ),
@@ -184,22 +182,35 @@ class CategoryState extends State<CategoryStf> {
                   children: [
                     for (int j = i * 3; j < (i * 3 + 3); j++) ...[
                       if (j < list.length) ...[
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              width: 1,
+                        GestureDetector(
+                          onTap: (){
+                            int subIdx = list[j].first;
+                            navigate(context, CategoryWatch.route,
+                                isRootNavigator: false,
+                                arguments: {
+                                  'idx': idx,
+                                  'subIdx': subIdx,
+                                  'title': title,
+                                  'list': list
+                                });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
                               color: Colors.transparent,
-                              //color: const Color.fromARGB(255, 235, 235, 235)
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.transparent,
+                                //color: const Color.fromARGB(255, 235, 235, 235)
+                              ),
                             ),
+                            child: list[j]
+                                .secend
+                                .text
+                                .color(AppColors.black)
+                                .make()
+                                .pSymmetric(h: 5),
                           ),
-                          child: list[j]
-                              .secend
-                              .text
-                              .color(AppColors.black)
-                              .make()
-                              .pSymmetric(h: 5),
                         )
                       ]
                     ]

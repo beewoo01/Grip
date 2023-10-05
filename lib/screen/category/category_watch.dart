@@ -15,14 +15,14 @@ import 'category_viewmodel.dart';
 
 class CategoryWatch extends StatefulWidget {
   final int categoryIdx;
-  final int subCategoryIdx;
+  int subCategoryIdx;
   final String categoryName;
   final List<Pair<int, String>> categoryList;
 
-  const CategoryWatch(
+  CategoryWatch(
       {Key? key,
       required this.categoryIdx,
-      required this.subCategoryIdx,
+      this.subCategoryIdx = 0,
       required this.categoryName,
       required this.categoryList})
       : super(key: key);
@@ -30,23 +30,33 @@ class CategoryWatch extends StatefulWidget {
   static const String route = '/category/watch/detail';
 
   @override
-  State createState() =>
-      CategoryWatchState(categoryIdx, subCategoryIdx, categoryName);
+  State createState() {
+    return CategoryWatchState();
+  }
 }
 
 class CategoryWatchState extends State<CategoryWatch> {
   CategoryViewModel viewModel = CategoryViewModel();
-  int categoryIdx;
-  int subCategoryIdx;
-  String categoryName;
-  int selectedPosition = 0;
+  late int selectedPosition = 0;
 
-  CategoryWatchState(this.categoryIdx, this.subCategoryIdx, this.categoryName);
+  CategoryWatchState();
 
   @override
   Widget build(BuildContext context) {
-    print('CategoryWatchState $subCategoryIdx');
-    return buildAppScaffold(categoryIdx);
+    for (int i = 0; i < widget.categoryList.length; i++) {
+      if (widget.categoryList[i].first == widget.subCategoryIdx) {
+        selectedPosition = i;
+        break;
+      }
+    }
+
+    return buildAppScaffold(widget.categoryIdx);
+  }
+
+  @override
+  void dispose() {
+    print("dispose");
+    super.dispose();
   }
 
   Scaffold buildNoDataAppScaffold(String massage) {
@@ -88,13 +98,13 @@ class CategoryWatchState extends State<CategoryWatch> {
           ),
           FutureBuilder(
               future: viewModel.selectContent(
-                  subCategoryIdx, Singleton().getAccountIdx()),
+                  widget.subCategoryIdx, Singleton().getAccountIdx()),
               builder: (builder, snapShot) {
                 return Container(
                   //child: isOdd ? buildCategoryGrid() : buildCategoryList(),
                   child: isOdd
-                      ? GridCategoryWidget(viewModel, categoryName)
-                      : CategoryListWidget(viewModel, categoryName),
+                      ? GridCategoryWidget(viewModel, widget.categoryName)
+                      : CategoryListWidget(viewModel, widget.categoryName),
                 );
               })
         ],
@@ -148,7 +158,7 @@ class CategoryWatchState extends State<CategoryWatch> {
                       selectedPosition = index;
                       viewModel.selectContent(
                           list[index].first, Singleton().getAccountIdx());
-                      subCategoryIdx = list[index].first;
+                      widget.subCategoryIdx = list[index].first;
                     });
                     //onCategoryButtonClicked(false);
                   },
