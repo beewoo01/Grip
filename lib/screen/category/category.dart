@@ -111,7 +111,6 @@ class CategoryState extends State<CategoryStf> {
             for (var i in map!.keys)
               buildBox(i, map[i]!, true, categoryViewModel.subCategoryMap![i]!)
                   .pSymmetric(v: 10),
-
             const Height(60)
           ],
         ),
@@ -155,12 +154,13 @@ class CategoryState extends State<CategoryStf> {
           color: AppColors.grey),
       child: Column(
         children: [
+          height20,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               title.text.bold.size(15).make(),
-              TextButton(
-                  onPressed: () {
+              GestureDetector(
+                  onTap: () {
                     navigate(context, CategoryWatch.route,
                         isRootNavigator: false,
                         arguments: {
@@ -173,79 +173,118 @@ class CategoryState extends State<CategoryStf> {
                   child: '전체보기'.text.color(AppColors.black).make())
             ],
           ).pSymmetric(v: 5, h: 20),
-          Column(children: [
-            if (list.length % 3 == 0) ...[
-              for (int i = 0; i < (list.length / 3); i++) ...[
-                height5,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    for (int j = i * 3; j < (i * 3 + 3); j++) ...[
-                      if (j < list.length) ...[
-                        GestureDetector(
-                          onTap: (){
-                            int subIdx = list[j].first;
-                            navigate(context, CategoryWatch.route,
-                                isRootNavigator: false,
-                                arguments: {
-                                  'idx': idx,
-                                  'subIdx': subIdx,
-                                  'title': title,
-                                  'list': list
-                                });
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.transparent,
-                                //color: const Color.fromARGB(255, 235, 235, 235)
-                              ),
-                            ),
-                            child: list[j]
-                                .secend
-                                .text
-                                .color(AppColors.black)
-                                .make()
-                                .pSymmetric(h: 5),
-                          ),
-                        )
-                      ]
-                    ]
-                  ],
-                ).pSymmetric(h: 20),
-                height10,
-              ]
-            ] else ...[
-              for (int i = 0; i < (list.length / 3) + 1; i++) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    for (int j = i * 3; j < (i * 3 + 3); j++) ...[
-                      if (j < list.length) ...[
-                        Container(
+          height10,
+          GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 3 / 1,
+              crossAxisSpacing: 3,
+              mainAxisSpacing: 3,
+            ),
+            itemBuilder: (BuildContext context, int index) => GestureDetector(
+              onTap: () {
+                int subIdx = list[index].first;
+                navigate(context, CategoryWatch.route,
+                    isRootNavigator: false,
+                    arguments: {
+                      'idx': idx,
+                      'subIdx': subIdx,
+                      'title': title,
+                      'list': list
+                    });
+              },
+              child: Container(
+                alignment: index == 0 || index == 3 ? Alignment.centerLeft : index == 1 || index == 4? Alignment.center :Alignment.centerRight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.transparent,
+                  ),
+                ),
+                child: list[index]
+                    .secend
+                    .text
+                    .color(AppColors.black)
+                    .make()
+                    .pSymmetric(h: 5),
+              ),
+            ),
+            itemCount: list.length,
+            shrinkWrap: true,
+          ).pSymmetric(h: 20),
+          height20
+          /*if (list.length % 3 == 0) ...[
+            for (int i = 0; i < (list.length / 3); i++) ...[
+              height5,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  for (int j = i * 3; j < (i * 3 + 3); j++) ...[
+                    if (j < list.length) ...[
+                      GestureDetector(
+                        onTap: (){
+                          int subIdx = list[j].first;
+                          navigate(context, CategoryWatch.route,
+                              isRootNavigator: false,
+                              arguments: {
+                                'idx': idx,
+                                'subIdx': subIdx,
+                                'title': title,
+                                'list': list
+                              });
+                        },
+                        child: Container(
+                          alignment: j == 0 || j == 3 ? Alignment.centerLeft : j == 1 || j == 4? Alignment.center :Alignment.centerRight,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border:
-                                  Border.all(width: 1, color: AppColors.transparent),
-                              color: Colors.transparent),
-                          child: list[j]
-                              .secend
-                              .text
+                            color: Colors.purple,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.transparent,
+                              //color: const Color.fromARGB(255, 235, 235, 235)
+                            ),
+                          ),
+                          child: list[j].secend.text
                               .color(AppColors.black)
                               .make()
                               .pSymmetric(h: 5),
-                        )
-                      ]
+                        ),
+                      )
                     ]
-                  ],
-                ).pOnly(top: 5, left: 20, right: 20, bottom: 10),
-              ]
-            ],
-            height20,
-          ]),
+                  ]
+                ],
+              ).pSymmetric(h: 20),
+              height10,
+            ]
+          ] else ...[
+            for (int i = 0; i < (list.length / 3) + 1; i++) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  for (int j = i * 3; j < (i * 3 + 3); j++) ...[
+                    if (j < list.length) ...[
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(width: 1, color: AppColors.transparent),
+                            color: Colors.transparent),
+                        child: list[j]
+                            .secend
+                            .text
+                            .color(AppColors.black)
+                            .make()
+                            .pSymmetric(h: 5),
+                      )
+                    ]
+                  ]
+                ],
+              ).pOnly(top: 5, left: 20, right: 20, bottom: 10),
+            ]
+          ],
+          height20,*/
         ],
       ),
     );

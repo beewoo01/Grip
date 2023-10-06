@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
+import 'package:grip/common/widget/w_circulator_progress.dart';
 import 'package:grip/common/widget/w_container_image.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 
@@ -117,7 +118,7 @@ class _HomeSfw extends State<HomeSfw> {
             const Padding(padding: EdgeInsets.only(top: 20)),
             SizedBox(
               width: double.infinity,
-              height: 100,
+              height: 120,
               child: buildCategoryGrid(),
             ),
             Container(
@@ -145,10 +146,24 @@ class _HomeSfw extends State<HomeSfw> {
                 const ContentTitleWidget("이달의 인기 스냅촬영"),
                 height5,
                 SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                  child: ChipHorizontalList(viewModel, 1),
-                ),
+                    width: double.infinity,
+                    height: 30,
+                    child: //ChipHorizontalList(viewModel, 1),
+                        ChipHorizontalList(
+                      viewModel,
+                      1,
+                      callback: (categoryIdx, subCategoryIdx, categoryName) {
+                        navigate(context, CategoryWatch.route,
+                            isRootNavigator: false,
+                            arguments: {
+                              'idx': categoryIdx,
+                              'subIdx': subCategoryIdx,
+                              'title': categoryName,
+                              'list': viewModel.subCategoryMap?[categoryIdx]
+                              //여기
+                            });
+                      },
+                    )),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -167,10 +182,24 @@ class _HomeSfw extends State<HomeSfw> {
                 const ContentTitleWidget("이달의 인기 영상촬영"),
                 height5,
                 SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                  child: ChipHorizontalList(viewModel, 1),
-                ),
+                    width: double.infinity,
+                    height: 30,
+                    child: //ChipHorizontalList(viewModel, 1),
+                        ChipHorizontalList(
+                      viewModel,
+                      1,
+                      callback: (categoryIdx, subCategoryIdx, categoryName) {
+                        navigate(context, CategoryWatch.route,
+                            isRootNavigator: false,
+                            arguments: {
+                              'idx': categoryIdx,
+                              'subIdx': subCategoryIdx,
+                              'title': categoryName,
+                              'list': viewModel.subCategoryMap?[categoryIdx]
+                              //여기
+                            });
+                      },
+                    )),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -189,10 +218,24 @@ class _HomeSfw extends State<HomeSfw> {
                 const ContentTitleWidget("우리가 찾는 모델"),
                 height5,
                 SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                  child: ChipHorizontalList(viewModel, 1),
-                ),
+                    width: double.infinity,
+                    height: 30,
+                    child: //ChipHorizontalList(viewModel, 1),
+                        ChipHorizontalList(
+                      viewModel,
+                      1,
+                      callback: (categoryIdx, subCategoryIdx, categoryName) {
+                        navigate(context, CategoryWatch.route,
+                            isRootNavigator: false,
+                            arguments: {
+                              'idx': categoryIdx,
+                              'subIdx': subCategoryIdx,
+                              'title': categoryName,
+                              'list': viewModel.subCategoryMap?[categoryIdx]
+                              //여기
+                            });
+                      },
+                    )),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -211,10 +254,24 @@ class _HomeSfw extends State<HomeSfw> {
                 const ContentTitleWidget("이달의 인기 공간"),
                 height5,
                 SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                  child: ChipHorizontalList(viewModel, 1),
-                ),
+                    width: double.infinity,
+                    height: 30,
+                    child: //ChipHorizontalList(viewModel, 1),
+                        ChipHorizontalList(
+                      viewModel,
+                      1,
+                      callback: (categoryIdx, subCategoryIdx, categoryName) {
+                        navigate(context, CategoryWatch.route,
+                            isRootNavigator: false,
+                            arguments: {
+                              'idx': categoryIdx,
+                              'subIdx': subCategoryIdx,
+                              'title': categoryName,
+                              'list': viewModel.subCategoryMap?[categoryIdx]
+                              //여기
+                            });
+                      },
+                    )),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -310,10 +367,10 @@ class _HomeSfw extends State<HomeSfw> {
                           return Container(
                               width: double.infinity,
                               height: 400,
-                              color: AppColors.black,
+                              color: AppColors.white,
                               child: context.buildImage(
-                                snapShot.data?[index].event_img_url ?? "",
-                              ));
+                                  snapShot.data?[index].event_img_url ?? "",
+                                  fit: BoxFit.contain));
                         }),
                   ),
                   Center(
@@ -369,13 +426,13 @@ class _HomeSfw extends State<HomeSfw> {
                                   imageUrl:
                                       "${GripUrl.imageUrl}${model.content_img_url}",
                                   placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
+                                      const CircularProgressWidget(),
                                   errorWidget: (context, url, error) =>
                                       Image.asset(
                                     'assets/images/noimage.png',
                                     fit: BoxFit.fill,
                                   ),
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.cover,
                                 )),
                             Positioned(
                               right: 5,
@@ -457,9 +514,8 @@ class _HomeSfw extends State<HomeSfw> {
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4, // 1개의 행에 항목을 3개씩
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
               childAspectRatio: 1,
+              crossAxisSpacing: 3
             ),
             itemCount: 4,
             physics: const NeverScrollableScrollPhysics(),
@@ -468,26 +524,6 @@ class _HomeSfw extends State<HomeSfw> {
                 onTap: () {
                   print("GestureDetector");
                   int idx = index + 1;
-                  int subIdx = 1;
-                  switch (idx) {
-                    case 1:
-                      subIdx = 1;
-                      break;
-
-                    case 2:
-                      subIdx = 5;
-                      break;
-
-                    case 3:
-                      subIdx = 9;
-                      break;
-
-                    case 4:
-                      subIdx = 13;
-                      break;
-                  }
-                  print("viewModel.subCategoryMap?[idx]?.first");
-                  print(viewModel.subCategoryMap?[idx]?.first);
                   navigate(context, CategoryWatch.route,
                       isRootNavigator: false,
                       arguments: {
@@ -500,13 +536,14 @@ class _HomeSfw extends State<HomeSfw> {
                 },
                 child: Column(
                   children: [
-                    Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: AppColors.grey,
-                          borderRadius: BorderRadius.circular(10),
-                        )),
+                    Expanded(
+                        child: Container(
+                          width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              color: AppColors.grey,
+                              borderRadius: BorderRadius.circular(12),
+                            ))),
                     height10,
                     Container(
                             width: double.infinity,
@@ -514,12 +551,11 @@ class _HomeSfw extends State<HomeSfw> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 color: AppColors.grey),
-                            child: viewModel.categoryMap?[index + 1]?.text
-                                .make()
+                            child: viewModel.categoryMap?[index + 1]?.text.size(15).make()
                                 .pSymmetric(h: 5))
                         .pSymmetric(h: 10)
                   ],
-                ),
+                )
               );
             },
           );
@@ -599,8 +635,22 @@ class _HomeSfw extends State<HomeSfw> {
           height: 30,
           child: FutureBuilder(
             future: viewModel.selectFindModel(),
-            builder: (builder, context) {
-              return ChipHorizontalList(viewModel, categoryIdx);
+            builder: (builder, snapShot) {
+              return ChipHorizontalList(
+                viewModel,
+                categoryIdx,
+                callback: (categoryIdx, subCategoryIdx, categoryName) {
+                  navigate(context, CategoryWatch.route,
+                      isRootNavigator: false,
+                      arguments: {
+                        'idx': categoryIdx,
+                        'subIdx': subCategoryIdx,
+                        'title': categoryName,
+                        'list': viewModel.subCategoryMap?[categoryIdx]
+                        //여기
+                      });
+                },
+              );
             },
           ),
         ),

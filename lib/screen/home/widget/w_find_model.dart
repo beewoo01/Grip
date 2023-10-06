@@ -25,7 +25,7 @@ class FindModelWidget extends StatelessWidget {
               width: width,
               height: double.infinity,
               child: context.buildImage(list[index].content_img_url,
-                  fit: BoxFit.fitHeight),
+                  fit: BoxFit.cover),
             ),
           ),
         );

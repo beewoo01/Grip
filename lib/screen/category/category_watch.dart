@@ -39,8 +39,6 @@ class CategoryWatchState extends State<CategoryWatch> {
   CategoryViewModel viewModel = CategoryViewModel();
   late int selectedPosition = 0;
 
-  CategoryWatchState();
-
   @override
   Widget build(BuildContext context) {
     for (int i = 0; i < widget.categoryList.length; i++) {
@@ -51,12 +49,6 @@ class CategoryWatchState extends State<CategoryWatch> {
     }
 
     return buildAppScaffold(widget.categoryIdx);
-  }
-
-  @override
-  void dispose() {
-    print("dispose");
-    super.dispose();
   }
 
   Scaffold buildNoDataAppScaffold(String massage) {
@@ -146,7 +138,6 @@ class CategoryWatchState extends State<CategoryWatch> {
   }
 
   Widget buildHorizontalCategory(List<Pair<int, String>> list) {
-    //Singleton().setAccountIdx(2);
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,

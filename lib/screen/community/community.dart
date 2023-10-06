@@ -423,7 +423,7 @@ class PhotoReviewWidget extends StatelessWidget {
                             child: Container(
                               height: 100,
                               padding: const EdgeInsets.only(left: 5),
-                              child: buildContent(snapShot.data![position]),
+                              child: buildContent(snapShot.data?[position]),
                             ),
                           ),
                           SizedBox(
@@ -458,14 +458,15 @@ class PhotoReviewWidget extends StatelessWidget {
         });
   }
 
-  Widget buildContent(ReviewModel model) {
+  Widget buildContent(ReviewModel? model) {
     //ReviewModel model = viewModel.reviewList[position];
+
     return Column(
       children: [
-        buildListText("${model.category_name} * ${model.sub_category_name}", 10,
+        buildListText("${model?.category_name} * ${model?.sub_category_name}", 10,
             FontWeight.bold, 1),
-        buildListText(model.review_title, 14, FontWeight.bold, 1),
-        buildListText(model.review_description, 10, FontWeight.normal, 3)
+        buildListText(model?.review_title ?? "", 14, FontWeight.bold, 1),
+        buildListText(model?.review_description ?? "", 10, FontWeight.normal, 3)
             .pOnly(top: 1)
       ],
     );

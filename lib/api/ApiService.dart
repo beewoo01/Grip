@@ -415,10 +415,15 @@ class ApiService {
   Future<List<WeddingDTO>?> selectWeddingPhoto() async {
     Uri uri = Uri.parse('${BASE_URL}selectWeddingPhoto');
     final response = await http.get(uri);
+
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       print('selectWeddingPhoto responseJson $responseJson');
       return responseJson.map((json) => WeddingDTO.fromJson(json)).toList();
+    } else {
+      print("response.statusCode is not 200");
+      print("response.statusCode is ${response.statusCode}");
+
     }
 
     return null;

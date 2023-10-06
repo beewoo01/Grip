@@ -50,11 +50,13 @@ class GridCategoryWidget extends StatelessWidget {
                           children: [
                             Expanded(
                                 flex: 8,
-                                child: Container(
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: double.infinity,
                                   child: context.buildImage(
                                       viewModel
                                           .contentList[index].content_img_url,
-                                      fit: BoxFit.fitHeight),
+                                      fit: BoxFit.cover),
                                 ).pOnly(left: 10, right: 10, top: 5)),
                             Expanded(
                                 flex: 2,

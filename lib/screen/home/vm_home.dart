@@ -45,7 +45,9 @@ class HomeViewModel {
     }
 
   Future<List<WeddingVO>> selectWeddingPhoto() async {
+    print("selectWeddingPhoto1");
     List<WeddingDTO> result = await apiService.selectWeddingPhoto() ?? [];
+    print("selectWeddingPhoto2");
     List<WeddingVO> res = [];
     for (var model in result) {
       res.add(WeddingVO(
@@ -86,8 +88,6 @@ class HomeViewModel {
 
     return res;
   }
-
-
 
   Future<List<WeddingVO>> selectFindModel() async {
 

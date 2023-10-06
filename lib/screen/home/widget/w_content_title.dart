@@ -30,8 +30,8 @@ class ContentTitleWidget extends StatelessWidget {
               title.text.size(18).bold.make(),
             ],
           ),
-          IconButton(
-              onPressed: () {}, icon: const Icon(Icons.add, color: AppColors.black,))
+          /*IconButton(
+              onPressed: () {}, icon: const Icon(Icons.add, color: AppColors.black,))*/
         ],
       ),
     );
