@@ -7,14 +7,18 @@ class ContainerImageWidget extends StatelessWidget {
   final double height;
   final String url;
   final BoxFit fit;
-  const ContainerImageWidget(this.width, this.height, this.url, {super.key, this.fit = BoxFit.cover});
+
+  const ContainerImageWidget(this.width, this.height, this.url,
+      {super.key, this.fit = BoxFit.cover});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       height: height,
-      child: context.buildImage(url, fit: fit, placeholder: (context, url) => const CircularProgressWidget()),
+      child: context.buildImage(url,
+          fit: fit,
+          placeholder: (context, url) => const CircularProgressWidget()),
     );
   }
 }

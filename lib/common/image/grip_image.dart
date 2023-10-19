@@ -10,11 +10,17 @@ extension ContextExtention on BuildContext {
   CachedNetworkImage buildImage(String url,
       {PlaceholderWidgetBuilder? placeholder,
       LoadingErrorWidgetBuilder? errorWidget,
-      fit = BoxFit.fill}) {
+      double width = double.infinity,
+      double height = double.infinity,
+      fit = BoxFit.fill,
+      isShowPlaceHolder = true}) {
     return CachedNetworkImage(
+      width: width,
+      height: height,
       imageUrl: "${GripUrl.imageUrl}$url",
       placeholder:
-          placeholder ?? (context, url) => const CircularProgressWidget(),
+          placeholder ?? (context, url) => isShowPlaceHolder ?
+          const CircularProgressWidget() : Container(),
       errorWidget: errorWidget ??
           (context, url, error) {
             print("error URL IS $url");

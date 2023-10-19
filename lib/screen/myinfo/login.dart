@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:grip/api/ApiService.dart';
+import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/widget/drawer/drawer.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
-import 'package:grip/screen/myinfo/vo/vo_account.dart';
+import 'package:grip/screen/myinfo/account_repository.dart';
+import 'package:grip/screen/myinfo/find_account.dart';
+import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/util/Singleton.dart';
-import 'package:grip/util/util.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../../common/color/AppColors.dart';
-import 'account_repository.dart';
-import 'find_account.dart';
-import 'join.dart';
+import 'vo/vo_account.dart';
 
 class Login extends StatefulWidget {
-  Login({required this.voidCallback, Key? key}) : super(key: key);
-  VoidCallback voidCallback;
+  static const String route = '/Login';
+  bool isCategoryRoot;
+
+  Login({super.key, this.isCategoryRoot = false});
 
   @override
-  State createState() {
-    return LoginState();
-  }
-
-  static const String route = '/myinfo/login';
+  State<Login> createState() => LoginState();
 }
 
 class LoginState extends State<Login> {
@@ -32,9 +28,9 @@ class LoginState extends State<Login> {
   TextEditingController pswController = TextEditingController();
   AccountRepository accountRepository = AccountRepository();
 
-
   @override
   Widget build(BuildContext context) {
+    print("LoginState build");
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: buildAppBar(),
@@ -80,6 +76,8 @@ class LoginState extends State<Login> {
             height20,
             OutlinedButton(
               onPressed: () {
+                emailController.text = "test1@test.com";
+                pswController.text = "1111";
                 String email = emailController.text.toString();
                 String psw = pswController.text.toString();
                 login(email, psw);
@@ -124,21 +122,26 @@ class LoginState extends State<Login> {
       AccountVO? accountVO =
           await accountRepository.getAccountInfo(email, password);
 
-      if(accountVO != null) {
+      if (accountVO != null) {
         setState(() {
           Singleton().setAccountIdx(accountVO.account_idx);
           Singleton().setAccountName(accountVO.account_name);
-          myInfoKey.currentState!.pop();
-          widget.voidCallback();
+          //myInfoKey.currentState!.pop();
+          //navigate(context, route)
+          if(widget.isCategoryRoot) {
+            Navigator.of(context).pop();
+          } else {
+            myInfoKey.currentState!.pushReplacementNamed("/");
+          }
+
+
+          //widget.voidCallback();
         });
-
-
 
         showToast("로그인을 성공했습니다.");
       } else {
         showToast("로그인에 실패하셨습니다.");
       }
-
     } else {
       showToast("로그인에 실패하셨습니다.");
     }
@@ -193,18 +196,33 @@ class LoginState extends State<Login> {
           color: AppColors.black,
         ),
       ),
-      leading: Container(
-          alignment: Alignment.center,
-          child: "GRIP".text.bold.black.size(15).make().pOnly(left: 10)),
-      actions: [
-        IconButton(
-          icon: SvgPicture.asset('assets/images/category.svg'),
-          onPressed: () {
-            //Navigator.pop(context);
-            //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
-          },
-        )
-      ],
+      title: Row(
+        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: 35,
+            child: Image.asset("assets/images/app_logo.png"),
+          ),
+          Expanded(child: Container()),
+          Visibility(
+            visible: !widget.isCategoryRoot,
+            child: SizedBox(
+                width: 50,
+                height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    navigate(context, DrawerWidget.route,
+                        isRootNavigator: false);
+                  },
+                  child: Image.asset(
+                    "assets/images/category_ic.png",
+                    fit: BoxFit.cover,
+                  ),
+                )),
+          )
+        ],
+      ),
+      automaticallyImplyLeading: false,
     );
   }
 }

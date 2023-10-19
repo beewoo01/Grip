@@ -24,7 +24,7 @@ class ContentTitleWidget extends StatelessWidget {
               SizedBox(
                 width: 25,
                 height: 25,
-                child: Image.asset('assets/images/noimage.png'),
+                child: Image.asset('assets/images/default_d.png'),
               ),
               width10,
               title.text.size(18).bold.make(),

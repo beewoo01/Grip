@@ -7,7 +7,7 @@ import 'package:grip/screen/category/content_detail.dart';
 import 'package:grip/screen/community/community_register.dart';
 import 'package:grip/screen/myinfo/find_account.dart';
 import 'package:grip/screen/myinfo/join.dart';
-import 'package:grip/screen/myinfo/login.dart';
+import 'package:grip/screen/myinfo/my_page.dart';
 import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
 import 'package:grip/screen/myinfo/widget/like/w_my_like_content.dart';
 import 'package:grip/screen/myinfo/widget/myinfo/w_my_info.dart';
@@ -18,6 +18,7 @@ import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'alarm/fragment/f_alarm.dart';
+import 'login.dart';
 import 'widget/myinfo/reservation/f_reservation_history.dart';
 import 'widget/review/vo/vo_wrote_review.dart';
 import 'widget/review/widget/detail/w_review_detail.dart';
@@ -52,16 +53,16 @@ class MyInfo extends StatelessWidget {
                 break;
 
 
-              case Login.route:
+              /*case Login.route:
                 builder = (BuildContext _) {
 
-                  return Login(voidCallback: () {
+                  return Login(*//*voidCallback: () {
                     print("Login.route Login.route Login.route");
                     myInfoKey.currentState!.pushReplacementNamed("/");
 
-                  },);
+                  },*//*);
                 };
-                break;
+                break;*/
 
               case Join.route:
                 builder = (BuildContext _) {
@@ -124,9 +125,9 @@ class MyInfo extends StatelessWidget {
 
 
               default:
-                builder = (BuildContext _) => Login(voidCallback: (){
+                builder = (BuildContext _) => Login(/*voidCallback: (){
 
-                },);
+                },*/);
             }
             return MaterialPageRoute(builder: builder, settings: settings);
           },
@@ -170,48 +171,9 @@ class MyInfoState extends State<MyInfoSfw> with WidgetsBindingObserver {
 
 
   Widget buildLoginWidget() {
-    return Column(
-      children: [
-        height30,
-        height10,
-        const Line(height: 2,).pSymmetric(h: 10),
-        height20,
-        Align(
-          child: Container(
-              width: 150,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.grey,
-                border: Border.all(width: 0, color: AppColors.grey),
-              ),
-              child: "마이페이지".text
-                  .color(AppColors.black)
-                  .bold
-                  .size(16)
-                  .make()
-                  .pSymmetric(v: 5, h: 10)
-          ),
-        ),
-        height20,
-        const Line(height: 2,).pSymmetric(h: 10),
+    return Login(/*voidCallback: () {
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buildTextButton('로그인', () {
-              navigate(context, Login.route, isRootNavigator: false, arguments: {});
-              //navigate(context, AlarmFragment.route, isRootNavigator: false, arguments: {});
-            }),
-
-            buildTextButton('회원가입', () {
-              navigate(context, Join.route,
-                  isRootNavigator: false, arguments: {});
-            }),
-          ],
-        ),
-      ],
-    );
+    },*/);
   }
 
   TextButton buildTextButton(String text, VoidCallback callback) {

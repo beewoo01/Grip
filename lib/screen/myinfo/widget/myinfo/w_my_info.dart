@@ -12,7 +12,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../../../main.dart';
 import '../../alarm/fragment/f_alarm.dart';
-import '../../login.dart';
+import '../../my_page.dart';
 
 class MyInfoWidget extends StatefulWidget {
   const MyInfoWidget({super.key});
@@ -62,12 +62,12 @@ class _MyInfoWidgetState extends State<MyInfoWidget> {
         alignment: Alignment.center,
         height: 50,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
+            /*IconButton(
               onPressed: backCallback,
               icon: const Icon(Icons.arrow_back_ios_new),
-            ),
+            ),*/
+            Expanded(child: Container()),
             IconButton(
               onPressed: alarmCallback,
               icon: const Icon(Icons.circle_notifications),

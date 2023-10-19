@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
+import 'package:grip/common/widget/drawer/drawer.dart';
 import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/inquiry_model.dart';
@@ -39,10 +40,15 @@ class CommunityMenu extends StatelessWidget {
                 builder = (BuildContext _) => const CommunityResister();
                 break;
 
-              case ReviewDetail.route :
+              case ReviewDetail.route:
                 final viewModel = (settings.arguments as Map)['viewModel'];
                 final vo = (settings.arguments as Map)['vo'];
                 builder = (BuildContext _) => ReviewDetail(viewModel, vo);
+                break;
+
+
+              case DrawerWidget.route :
+                builder = (BuildContext _) => const DrawerWidget();
                 break;
 
               default:
@@ -151,41 +157,46 @@ class CommunitySfw extends State<Community> {
           ),
         ),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
-                flex: 7,
-                child: Text(
-                  '커뮤니티',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.black),
-                )),
-            Expanded(
-                flex: 3,
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: (Singleton().getAccountName() ?? "")
-                            .text
-                            .size(13)
-                            .bold
-                            .color(AppColors.black)
-                            .make()),
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon: SvgPicture.asset('assets/images/category.svg'),
-                        onPressed: () {
-                          //Navigator.pop(context);
-                          //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
-                        },
-                      ),
-                    )
-                  ],
+            '커뮤니티'.text.size(15).bold.black.make(),
+            Expanded(child: Container()),
+            SizedBox(
+                width: 50,
+                height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    navigate(context, DrawerWidget.route,
+                        isRootNavigator: false);
+                  },
+                  child: Image.asset(
+                    "assets/images/category_ic.png",
+                    fit: BoxFit.cover,
+                  ),
                 ))
+            /*'커뮤니티'.text.size(15).bold.black.make(),
+            Expanded(child: Container()),
+            *//*(Singleton().getAccountName() ?? "")
+                .text
+                .size(13)
+                .bold
+                .color(AppColors.black)
+                .make(),*//*
+
+            SizedBox(
+              width: 50,
+              height: 50,
+              child: IconButton(
+                icon: Image.asset(
+                  "assets/images/category_ic.png",
+                  fit: BoxFit.cover,
+                ),
+                onPressed: () {
+                  navigate(context, DrawerWidget.route,
+                      isRootNavigator: false);
+                },
+              ),
+            )*/
+
           ],
         ));
   }
@@ -395,17 +406,18 @@ class PhotoReviewWidget extends StatelessWidget {
                 return GestureDetector(
                   onTap: () async {
                     final reviewIdx = snapShot.data?[position].review_idx;
-                    if(reviewIdx == null) {
+                    if (reviewIdx == null) {
                       return;
                     }
 
-                    WroteReviewVO? wroteReviewVO = await viewModel.selectOneWroteReview(reviewIdx);
+                    WroteReviewVO? wroteReviewVO =
+                        await viewModel.selectOneWroteReview(reviewIdx);
 
-                    if(wroteReviewVO == null) {
+                    if (wroteReviewVO == null) {
                       return;
                     }
 
-                    if(context.mounted) {
+                    if (context.mounted) {
                       navigate(context, ReviewDetail.route,
                           isRootNavigator: false,
                           arguments: {
@@ -413,7 +425,6 @@ class PhotoReviewWidget extends StatelessWidget {
                             'viewModel': ReviewViewModel()
                           });
                     }
-
                   },
                   child: Column(
                     children: [
@@ -463,8 +474,8 @@ class PhotoReviewWidget extends StatelessWidget {
 
     return Column(
       children: [
-        buildListText("${model?.category_name} * ${model?.sub_category_name}", 10,
-            FontWeight.bold, 1),
+        buildListText("${model?.category_name} * ${model?.sub_category_name}",
+            10, FontWeight.bold, 1),
         buildListText(model?.review_title ?? "", 14, FontWeight.bold, 1),
         buildListText(model?.review_description ?? "", 10, FontWeight.normal, 3)
             .pOnly(top: 1)

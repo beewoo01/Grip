@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/w_circulator_progress.dart';
@@ -8,18 +9,22 @@ import 'package:grip/common/widget/w_container_image.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 
 import 'package:grip/main.dart';
+import 'package:grip/common/widget/drawer/drawer.dart';
+import 'package:grip/screen/category/content_detail.dart';
 import 'package:grip/screen/home/vm_home.dart';
 import 'package:grip/screen/home/vo/vo_wedding.dart';
 import 'package:grip/screen/home/widget/w_content_title.dart';
 import 'package:grip/screen/home/widget/w_find_model.dart';
-import 'package:grip/screen/myinfo/alarm/fragment/f_alarm.dart';
+import 'package:grip/screen/myinfo/join.dart';
+import 'package:grip/screen/myinfo/login.dart';
+import 'package:grip/screen/myinfo/my_page.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../common/url/grip_url.dart';
 import '../../common/widget/w_separator_container.dart';
-import '../../common/widget/w_test.dart';
 import '../category/category_watch.dart';
+import 'widget/w_build_chip_horizontal_list.dart';
 import 'widget/w_chip_horizontal_list.dart';
 
 class Home extends StatelessWidget {
@@ -55,6 +60,32 @@ class Home extends StatelessWidget {
                 };
                 break;
 
+              case DrawerWidget.route:
+                builder = (BuildContext _) => const DrawerWidget();
+                break;
+
+              case Login.route:
+                builder = (BuildContext _) {
+                  final root = (settings.arguments as Map)['isCategoryRoot'];
+                  return Login(isCategoryRoot: root);
+                };
+                break;
+
+              case Join.route:
+                builder = (BuildContext _) => const Join();
+                break;
+
+              case ContentDetail.route :
+                builder = (BuildContext _) {
+                  final root = (settings.arguments as Map)['root'];
+                  final idx = (settings.arguments as Map)['content_idx'];
+                  return ContentDetail(
+                    path: '$root',
+                    contentIdx: idx,
+                  );
+                };
+                break;
+
               default:
                 builder = (BuildContext _) => const HomeSfw();
             }
@@ -74,16 +105,27 @@ class HomeSfw extends StatefulWidget {
 class _HomeSfw extends State<HomeSfw> {
   final viewModel = HomeViewModel();
 
-  //final categoryData = ['스냅촬영', '영상촬영', '모델', '공간대여'];
+  int currentPage = 0;
+  final PageController pageController = PageController(initialPage: 0);
 
   @override
   void initState() {
     super.initState();
+
+    Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (currentPage < viewModel.eventLength - 1) {
+        currentPage++;
+      } else {
+        currentPage = 0;
+      }
+
+      pageController.animateToPage(currentPage,
+          duration: const Duration(milliseconds: 350), curve: Curves.easeIn);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    print("HOME BUILD");
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: buildAppBar(),
@@ -99,13 +141,27 @@ class _HomeSfw extends State<HomeSfw> {
                 child: Column(
                   children: [
                     SizedBox(
-                        width: double.infinity,
-                        child: 'GRIP 프리미엄 Pro'
-                            .text
-                            .color(AppColors.white)
-                            .bold
-                            .size(18)
-                            .make()),
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Image.asset(
+                              "assets/images/premium_d.png",
+                            ).pSymmetric(h: 10),
+                          ),
+                          '프리미엄'
+                              .text
+                              .color(AppColors.white)
+                              .bold
+                              .size(18)
+                              .make()
+                              .pSymmetric(h: 10),
+
+                        ],
+                      ),
+                    ),
                     height10,
                     SizedBox(
                             width: double.infinity,
@@ -181,25 +237,7 @@ class _HomeSfw extends State<HomeSfw> {
               children: [
                 const ContentTitleWidget("이달의 인기 영상촬영"),
                 height5,
-                SizedBox(
-                    width: double.infinity,
-                    height: 30,
-                    child: //ChipHorizontalList(viewModel, 1),
-                        ChipHorizontalList(
-                      viewModel,
-                      1,
-                      callback: (categoryIdx, subCategoryIdx, categoryName) {
-                        navigate(context, CategoryWatch.route,
-                            isRootNavigator: false,
-                            arguments: {
-                              'idx': categoryIdx,
-                              'subIdx': subCategoryIdx,
-                              'title': categoryName,
-                              'list': viewModel.subCategoryMap?[categoryIdx]
-                              //여기
-                            });
-                      },
-                    )),
+                BuildChipHorizontalList(viewModel: viewModel, categoryIdx: 2),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -217,25 +255,7 @@ class _HomeSfw extends State<HomeSfw> {
               children: [
                 const ContentTitleWidget("우리가 찾는 모델"),
                 height5,
-                SizedBox(
-                    width: double.infinity,
-                    height: 30,
-                    child: //ChipHorizontalList(viewModel, 1),
-                        ChipHorizontalList(
-                      viewModel,
-                      1,
-                      callback: (categoryIdx, subCategoryIdx, categoryName) {
-                        navigate(context, CategoryWatch.route,
-                            isRootNavigator: false,
-                            arguments: {
-                              'idx': categoryIdx,
-                              'subIdx': subCategoryIdx,
-                              'title': categoryName,
-                              'list': viewModel.subCategoryMap?[categoryIdx]
-                              //여기
-                            });
-                      },
-                    )),
+                BuildChipHorizontalList(viewModel: viewModel, categoryIdx: 3),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -253,25 +273,7 @@ class _HomeSfw extends State<HomeSfw> {
               children: [
                 const ContentTitleWidget("이달의 인기 공간"),
                 height5,
-                SizedBox(
-                    width: double.infinity,
-                    height: 30,
-                    child: //ChipHorizontalList(viewModel, 1),
-                        ChipHorizontalList(
-                      viewModel,
-                      1,
-                      callback: (categoryIdx, subCategoryIdx, categoryName) {
-                        navigate(context, CategoryWatch.route,
-                            isRootNavigator: false,
-                            arguments: {
-                              'idx': categoryIdx,
-                              'subIdx': subCategoryIdx,
-                              'title': categoryName,
-                              'list': viewModel.subCategoryMap?[categoryIdx]
-                              //여기
-                            });
-                      },
-                    )),
+                BuildChipHorizontalList(viewModel: viewModel, categoryIdx: 4),
                 height20,
                 SizedBox(
                     width: double.infinity,
@@ -307,40 +309,25 @@ class _HomeSfw extends State<HomeSfw> {
           ),
         ),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
-                flex: 7,
-                child: Text(
-                  'GRIP',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.black),
-                )),
-            Expanded(
-                flex: 3,
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: (Singleton().getAccountName() ?? "")
-                            .text
-                            .size(13)
-                            .bold
-                            .color(AppColors.black)
-                            .make()),
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon: SvgPicture.asset('assets/images/category.svg'),
-                        onPressed: () {
-                          //Navigator.pop(context);
-                          //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
-                        },
-                      ),
-                    )
-                  ],
+            SizedBox(
+              height: 35,
+              child: Image.asset("assets/images/app_logo.png"),
+            ),
+            Expanded(child: Container()),
+            SizedBox(
+                width: 50,
+                height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    navigate(context, DrawerWidget.route,
+                        isRootNavigator: false);
+                  },
+                  child: Image.asset(
+                    "assets/images/category_ic.png",
+                    fit: BoxFit.cover,
+                  ),
                 ))
           ],
         ));
@@ -360,9 +347,8 @@ class _HomeSfw extends State<HomeSfw> {
                     width: double.infinity,
                     height: 400,
                     child: PageView.builder(
-                        controller: PageController(initialPage: 0),
+                        controller: pageController,
                         itemCount: snapShot.data?.length ?? 0,
-                        //viewModel.eventList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Container(
                               width: double.infinity,
@@ -370,7 +356,9 @@ class _HomeSfw extends State<HomeSfw> {
                               color: AppColors.white,
                               child: context.buildImage(
                                   snapShot.data?[index].event_img_url ?? "",
-                                  fit: BoxFit.contain));
+                                  fit: BoxFit.contain,
+                                isShowPlaceHolder: false
+                              ));
                         }),
                   ),
                   Center(
@@ -513,50 +501,50 @@ class _HomeSfw extends State<HomeSfw> {
         builder: (context, snapShot) {
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4, // 1개의 행에 항목을 3개씩
-              childAspectRatio: 1,
-              crossAxisSpacing: 3
-            ),
+                crossAxisCount: 4, // 1개의 행에 항목을 3개씩
+                childAspectRatio: 1,
+                crossAxisSpacing: 3),
             itemCount: 4,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () {
-                  print("GestureDetector");
-                  int idx = index + 1;
-                  navigate(context, CategoryWatch.route,
-                      isRootNavigator: false,
-                      arguments: {
-                        'idx': index + 1,
-                        'subIdx': viewModel.subCategoryMap?[idx]?.first.first,
-                        'title': viewModel.categoryMap?[idx],
-                        'list': viewModel.subCategoryMap?[idx]
-                        //여기
-                      });
-                },
-                child: Column(
-                  children: [
-                    Expanded(
-                        child: Container(
-                          width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              color: AppColors.grey,
-                              borderRadius: BorderRadius.circular(12),
-                            ))),
-                    height10,
-                    Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: AppColors.grey),
-                            child: viewModel.categoryMap?[index + 1]?.text.size(15).make()
-                                .pSymmetric(h: 5))
-                        .pSymmetric(h: 10)
-                  ],
-                )
-              );
+                  onTap: () {
+                    print("GestureDetector");
+                    int idx = index + 1;
+                    navigate(context, CategoryWatch.route,
+                        isRootNavigator: false,
+                        arguments: {
+                          'idx': index + 1,
+                          'subIdx': viewModel.subCategoryMap?[idx]?.first.first,
+                          'title': viewModel.categoryMap?[idx],
+                          'list': viewModel.subCategoryMap?[idx]
+                          //여기
+                        });
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                color: AppColors.grey,
+                                borderRadius: BorderRadius.circular(12),
+                              ))),
+                      height10,
+                      Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: AppColors.grey),
+                              child: viewModel.categoryMap?[index + 1]?.text
+                                  .size(15)
+                                  .make()
+                                  .pSymmetric(h: 5))
+                          .pSymmetric(h: 10)
+                    ],
+                  ));
             },
           );
         });
@@ -609,11 +597,18 @@ class _HomeSfw extends State<HomeSfw> {
   ListView buildContentList(List<WeddingVO>? list) {
     return ListView.separated(
       itemBuilder: (context, index) {
-        return Column(
-          children: [
-            ContainerImageWidget(250, 320, "${list?[index].content_img_url}"),
-            "${list?[index].content_title}".text.make()
-          ],
+        return GestureDetector(
+          onTap: () {
+            navigate(context, ContentDetail.route, isRootNavigator: false, arguments: {
+              'root' : list?[index].content_title ?? "", 'content_idx' : list?[index].content_idx ?? 0
+            });
+          },
+          child: Column(
+            children: [
+              ContainerImageWidget(250, 320, "${list?[index].content_img_url}"),
+              "${list?[index].content_title}".text.make()
+            ],
+          ),
         );
       },
       separatorBuilder: (context, index) => separator10,
@@ -731,12 +726,17 @@ class _HomeSfw extends State<HomeSfw> {
     return Container(
       width: double.infinity,
       height: 150,
-      color: AppColors.grey,
-      child: const Center(
-        child: Text(
-          'footer',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 25,
+            child: Image.asset("assets/images/app_logo_footer.png"),
+          ).pSymmetric(h: 20),
+          height20,
+          "footer".text.bold.color(AppColors.grey).size(25).make(),
+        ],
       ),
     );
   }

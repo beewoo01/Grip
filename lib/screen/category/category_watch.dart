@@ -93,7 +93,6 @@ class CategoryWatchState extends State<CategoryWatch> {
                   widget.subCategoryIdx, Singleton().getAccountIdx()),
               builder: (builder, snapShot) {
                 return Container(
-                  //child: isOdd ? buildCategoryGrid() : buildCategoryList(),
                   child: isOdd
                       ? GridCategoryWidget(viewModel, widget.categoryName)
                       : CategoryListWidget(viewModel, widget.categoryName),

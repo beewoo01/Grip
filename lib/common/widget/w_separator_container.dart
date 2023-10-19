@@ -15,8 +15,8 @@ class SeparatorContainer extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      height: 10,
-      width: 10,
+      height: width,
+      width: height,
       color: color ?? AppColors.white,
     );
   }

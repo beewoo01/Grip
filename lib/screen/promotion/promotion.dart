@@ -6,6 +6,7 @@ import 'package:grip/screen/promotion/promotion_detail.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../common/widget/drawer/drawer.dart';
 import '../../util/Singleton.dart';
 
 class Promotion extends StatelessWidget {
@@ -30,6 +31,11 @@ class Promotion extends StatelessWidget {
                   final index = (settings.arguments as Map)['index'];
                   return PromotionDetail(index: index);
                 };
+                break;
+
+              case DrawerWidget.route:
+                builder = (BuildContext _) => const DrawerWidget();
+
                 break;
 
               default:
@@ -77,7 +83,7 @@ class PromotionState extends State<PromotionSfw> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: Image.asset(
-                          'assets/images/writer/작가$index.jpg',
+                          'assets/images/noimage.png',
                           fit: BoxFit.fill,
                         ),
                       )
@@ -184,7 +190,7 @@ class PromotionState extends State<PromotionSfw> {
                     height: 150,
                     color: Colors.red,
                     child: Image.asset(
-                      'assets/images/writer/작가$position.jpg',
+                      'assets/images/noimage.jpg',
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -213,7 +219,7 @@ class PromotionState extends State<PromotionSfw> {
           width: double.infinity,
           height: 200,
           child: Image.asset(
-            'assets/images/writer/작가$index.jpg',
+            'assets/images/noimage.png',
             fit: BoxFit.fill,
           ),
         ),
@@ -284,36 +290,25 @@ class PromotionState extends State<PromotionSfw> {
           ),
         ),
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Expanded(
-                flex: 7,
-                child: Text(
-                  '프로모션',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.black),
-                )),
-            Expanded(
-                flex: 3,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: (Singleton().getAccountName() ?? "").text.size(13).bold.color(AppColors.black).make()
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        icon: SvgPicture.asset('assets/images/category.svg'),
-                        onPressed: () {
-                          //Navigator.pop(context);
-                          //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
-                        },
-                      ),
-                    )
-                  ],
+            SizedBox(
+              height: 35,
+              child: Image.asset("assets/images/app_logo.png"),
+            ),
+            Expanded(child: Container()),
+            SizedBox(
+                width: 50,
+                height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    navigate(context, DrawerWidget.route,
+                        isRootNavigator: false);
+                  },
+                  child: Image.asset(
+                    "assets/images/category_ic.png",
+                    fit: BoxFit.cover,
+                  ),
                 ))
           ],
         ));

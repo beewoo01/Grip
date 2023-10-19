@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,11 +10,13 @@ import 'package:grip/screen/community/community.dart';
 import 'package:grip/screen/home/home.dart';
 import 'package:grip/screen/myinfo/account_repository.dart';
 import 'package:grip/screen/myinfo/join.dart';
+import 'package:grip/screen/myinfo/my_page.dart';
 import 'package:grip/screen/myinfo/myinfo.dart';
 import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
 import 'package:grip/screen/myinfo/widget/like/w_my_like_content.dart';
 import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
 import 'package:grip/screen/myinfo/widget/review/widget/detail/w_review_detail.dart';
+
 //import 'package:grip/screen/myinfo/widget/review/w_review_management.dart';
 import 'package:grip/screen/myinfo/widget/review/widget/w_review_management.dart';
 import 'package:grip/screen/myinfo/widget/signout/w_sign_out.dart';
@@ -64,11 +67,28 @@ final categoryKey = GlobalKey<NavigatorState>();
 final promotionKey = GlobalKey<NavigatorState>();
 final communityKey = GlobalKey<NavigatorState>();
 final myInfoKey = GlobalKey<NavigatorState>();
-final NavbarNotifier _navbarNotifier = NavbarNotifier();
+NavbarNotifier _navbarNotifier = NavbarNotifier();
+
+void setNotify(int index) {
+  //_navbarNotifier.index = index;
+  valueChanged!(index);
+}
+
+ValueChanged<int>? valueChanged = (value) => {
+      if (_navbarNotifier.index == value)
+        {_navbarNotifier.popAllRoutes(value)}
+      else
+        {_navbarNotifier.index = value}
+    };
 
 class NavBarHandler extends StatefulWidget {
   const NavBarHandler({Key? key}) : super(key: key);
   static const String route = '/';
+  static const int CATEGORY = 0;
+  static const int PROMOTION = 1;
+  static const int HOME = 2;
+  static const int COMMUNITY = 3;
+  static const int MY_PAGE = 4;
 
   @override
   State<StatefulWidget> createState() => _NavBarHandlerState();
@@ -82,28 +102,18 @@ class _NavBarHandlerState extends State<NavBarHandler>
     const Promotion(),
     const Home(),
     const CommunityMenu(),
-    const MyInfo(),
-
-    //const MyLikeContent()
-    // ReviewDetail()
-    // const ReviewManagement()
-
-    //const SignOut()
-
-    // const EditMyInfo()
-    //const Join()
-
+    const MyPage()
   ];
 
   final menuItemList = <MenuItem>[
     MenuItem(
-        SvgPicture.asset('assets/images/category.svg'), TabItem.CATEGORY.tap),
+        Image.asset("assets/images/category_ic.png"), TabItem.CATEGORY.tap),
     MenuItem(
-        SvgPicture.asset('assets/images/promotion.svg'), TabItem.PROMOTION.tap),
-    MenuItem(SvgPicture.asset('assets/images/home.svg'), TabItem.HOME.tap),
+        Image.asset("assets/images/promotion_ic.png"), TabItem.PROMOTION.tap),
+    MenuItem(Image.asset("assets/images/home_ic.png"), TabItem.HOME.tap),
     MenuItem(
-        SvgPicture.asset('assets/images/community.svg'), TabItem.COMMUNITY.tap),
-    MenuItem(SvgPicture.asset('assets/images/myinfo.svg'), TabItem.MyINFO.tap),
+        Image.asset("assets/images/community_ic.png"), TabItem.COMMUNITY.tap),
+    MenuItem(Image.asset("assets/images/myinfo_ic.png"), TabItem.MyINFO.tap),
   ];
 
   @override
@@ -116,7 +126,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
 
   @override
   Widget build(BuildContext context) {
-    _navbarNotifier.index = 2;
+    _navbarNotifier.index = NavBarHandler.HOME;
     return WillPopScope(
         onWillPop: () async {
           final bool isExitingApp = await _navbarNotifier.onBackButtonPressed();
@@ -158,13 +168,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
                                   label: menuItem.text,
                                 ))
                             .toList(),
-                        onTap: (index) {
-                          if (_navbarNotifier.index == index) {
-                            _navbarNotifier.popAllRoutes(index);
-                          } else {
-                            _navbarNotifier.index = index;
-                          }
-                        },
+                        onTap: valueChanged,
                         unselectedItemColor: AppColors.black,
                         selectedItemColor: Colors.blue,
                         currentIndex: _navbarNotifier.index,
@@ -179,7 +183,7 @@ class _NavBarHandlerState extends State<NavBarHandler>
   }
 }
 
-class NavbarNotifier extends ChangeNotifier {
+final class NavbarNotifier extends ChangeNotifier {
   int _index = 0;
 
   int get index => _index;

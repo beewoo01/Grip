@@ -1,5 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:grip/common/image/grip_image.dart';
+import 'package:grip/common/url/grip_url.dart';
+import 'package:grip/common/widget/w_circulator_progress.dart';
+import 'package:grip/main.dart';
+import 'package:grip/screen/category/content_detail.dart';
 
 import 'package:grip/screen/home/vo/vo_wedding.dart';
 
@@ -19,14 +24,17 @@ class FindModelWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             print(list[index].content_img_url);
+            print("변경됨");
+            navigate(context, ContentDetail.route, isRootNavigator: false, arguments: {
+              'root' : list[index].content_title, 'content_idx' : list[index].content_idx
+            });
           },
           child: Center(
             child: SizedBox(
-              width: width,
-              height: double.infinity,
-              child: context.buildImage(list[index].content_img_url,
-                  fit: BoxFit.cover),
-            ),
+                width: width,
+                height: double.infinity,
+                child: context.buildImage(list[index].content_img_url, fit: BoxFit.cover),
+                ),
           ),
         );
       },

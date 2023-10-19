@@ -26,7 +26,6 @@ class Height extends StatelessWidget {
   }
 }
 
-
 class Width extends StatelessWidget {
   final double width;
   const Width(

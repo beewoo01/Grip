@@ -17,6 +17,7 @@ class HomeViewModel {
 
   Map<int, String>? categoryMap;
   Map<int, List<Pair<int, String>>>? subCategoryMap;
+  int eventLength = 0;
 
   Future<List<PremiumModel>?> selectPremiumModel(int accountIdx) async {
     List<PremiumModel> list = await apiService.selectPremium(accountIdx) ?? [];
@@ -36,6 +37,7 @@ class HomeViewModel {
 
   Future<List<Event>> selectEvent() async {
     List<Event> list = await apiService.selectEvent() ?? [];
+    eventLength = list.length;
     return list;
   }
 

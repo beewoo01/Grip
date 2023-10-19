@@ -82,10 +82,11 @@ class _NewerCategoryState extends State<NewerCategory> {
   CategoryViewModel viewModel = CategoryViewModel();
   double containerHeight = 300;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: AppColors.black,
       body: SingleChildScrollView(
         child: Column(
           children: [buildCategoryAppbar()],
@@ -174,25 +175,5 @@ class _NewerCategoryState extends State<NewerCategory> {
         ],
       ),
     );
-  }
-}
-
-class SubCategoryListWidget extends StatelessWidget {
-  CategoryViewModel viewModel;
-
-  SubCategoryListWidget(this.viewModel, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: viewModel.selectCategory(),
-        builder: (builder, snapShot) {
-          return ListView.builder(
-              itemBuilder: (BuildContext context, int position) {
-            return Row(
-              children: [],
-            );
-          });
-        });
   }
 }

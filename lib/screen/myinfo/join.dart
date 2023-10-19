@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grip/api/ApiService.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/widget/drawer/drawer.dart';
 import 'package:grip/main.dart';
 import 'package:grip/util/util.dart';
 import 'package:provider/provider.dart';
@@ -439,25 +440,30 @@ class JoinState extends State<Join> {
           color: AppColors.black,
         ),
       ),
-      leading: Container(
-        alignment: Alignment.center,
-        child: const Text(
-          'GRIP',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: AppColors.black),
+        title: Row(
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 35,
+              child: Image.asset("assets/images/app_logo.png"),
+            ),
+            Expanded(child: Container()),
+            SizedBox(
+                width: 50,
+                height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    navigate(context, DrawerWidget.route,
+                        isRootNavigator: false);
+                  },
+                  child: Image.asset(
+                    "assets/images/category_ic.png",
+                    fit: BoxFit.cover,
+                  ),
+                ))
+          ],
         ),
-      ),
-      actions: [
-        IconButton(
-          icon: SvgPicture.asset('assets/images/category.svg'),
-          onPressed: () {
-            //Navigator.pop(context);
-            //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
-          },
-        )
-      ],
+      automaticallyImplyLeading: false,
     );
   }
 

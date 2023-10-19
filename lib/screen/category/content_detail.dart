@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
+import 'package:grip/common/widget/drawer/drawer.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/content_detail_model.dart';
 import 'package:grip/util/util.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../community/community_viewmodel.dart';
 import 'reservation.dart';
@@ -23,10 +26,7 @@ class ContentDetail extends StatefulWidget {
 }
 
 class ContentDetailState extends State<ContentDetail> {
-
   final PageController _pageController = PageController(initialPage: 0);
-  final PageController _pageController2 =
-      PageController(viewportFraction: 0.5, keepPage: true);
   int pageViewLength = 2;
   List pages = [];
   int selectedPagePosition = 0;
@@ -56,17 +56,13 @@ class ContentDetailState extends State<ContentDetail> {
             return const SizedBox(
               height: 200.0,
               width: 200.0,
-              child: Center(
-                  child: CircularProgressIndicator()
-              ),
+              child: Center(child: CircularProgressIndicator()),
             );
           } else {
             return const SizedBox(
               height: 200.0,
               width: 200.0,
-              child: Center(
-                  child: CircularProgressIndicator()
-              ),
+              child: Center(child: CircularProgressIndicator()),
             );
             //buildNoDataAppScaffold('조회된 데이터가 없습니다.');
           }
@@ -74,7 +70,8 @@ class ContentDetailState extends State<ContentDetail> {
   }
 
   Widget buildNoDataAppScaffold(String massage) {
-    return const SizedBox(width: 50, height: 50, child: CircularProgressIndicator());
+    return const SizedBox(
+        width: 50, height: 50, child: CircularProgressIndicator());
   }
 
   Scaffold buildScaffold(BuildContext context) {
@@ -86,277 +83,197 @@ class ContentDetailState extends State<ContentDetail> {
             children: [
               SizedBox(
                 width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 12, bottom: 12, left: 10),
-                  child: Text(
-                    "${widget.path}",
-                    style: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
+                  child: "${widget.path}"
+                      .text
+                      .size(13)
+                      .bold
+                      .align(TextAlign.left)
+                      .make()
+                      .pOnly(left: 10, top: 12, bottom: 12)),
+
               buildDivider(),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: buildPageView(context),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: SizedBox(
-                  height: 80,
-                  child: ListView.builder(
-                    physics: const PageScrollPhysics(), // PageScrollPhysics 사용
-                    scrollDirection: Axis.horizontal,
-                    itemCount: viewModel.contentImageList.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            _pageController.jumpToPage(index);
-                          },
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                            child: Container(
-                                width: 80,
-                                height: 80,
-                                alignment: Alignment.center,
-                                child: context.buildImage(viewModel.contentImageList[index].content_img_url, fit: BoxFit.cover))
-                                //Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}')),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 30,
-                ),
-                child: Container(
-                  width: double.infinity,
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            '${viewModel.contentDetailModel?.content_title}',
-                            style: const TextStyle(
-                                color: AppColors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, top: 5),
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            children: [
-                              const Icon(Icons.location_pin, color: AppColors.darkGrey,),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: Text(
-                                  '${viewModel.contentDetailModel?.content_address}',
-                                  textAlign: TextAlign.left,
-                                  style: const TextStyle(
-                                      color: AppColors.black, fontSize: 15),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                              color: AppColors.grey,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                                '${viewModel.contentDetailModel?.content_description}'),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Container(
-                          width: 100,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.black, width: 1.0),
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Icon(Icons.favorite),),
-                              Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Text('찜하기'),)
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: buildDivider(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 10),
-                        child: SizedBox(
-                          width: 150,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              navigate(context, Reservation.route,
-                                  isRootNavigator: false,
-                                  arguments: {'content_idx': widget.contentIdx});
-                            },
-                            style: OutlinedButton.styleFrom(
-                                minimumSize: const Size(double.infinity, 50),
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                ),
-                                side: const BorderSide(
-                                    color: AppColors.black, width: 0.8)),
-                            child: const Text(
-                              '예약하기',
-                              style:
-                                  TextStyle(color: AppColors.black, fontSize: 20),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: buildDivider(),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Center(
-                          child: Text(
-                            '브랜드 소개글',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Center(
+              height20,
+              buildPageView(context),
+              height20,
+              SizedBox(
+                height: 80,
+                child: ListView.builder(
+                  physics: const PageScrollPhysics(), // PageScrollPhysics 사용
+                  scrollDirection: Axis.horizontal,
+                  itemCount: viewModel.contentImageList.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        _pageController.jumpToPage(index);
+                      },
+                      child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
                           child: Container(
-                            width: 1,
-                            height: 100,
-                            color: AppColors.black,
+                              width: 80,
+                              height: 80,
+                              alignment: Alignment.center,
+                              child: context.buildImage(
+                                  viewModel
+                                      .contentImageList[index].content_img_url,
+                                  fit: BoxFit.cover))
+                          //Image.network('https://picsum.photos/${viewModel.contentImageList[index].content_img_url}')),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Center(
-                          child: Text(
-                            '${viewModel.contentDetailModel?.content_description}',
-                            //'브랜드 소개에 관한\n내용을 작성해 주세요',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 15),
+                    ).pSymmetric(h: 10);
+                  },
+                ),
+              ),
+              height30,
+              Container(
+                width: double.infinity,
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  children: [
+                    '${viewModel.contentDetailModel?.content_title}'
+                        .text
+                        .color(AppColors.black)
+                        .bold
+                        .size(20)
+                        .align(TextAlign.left)
+                        .make()
+                        .pOnly(left: 10),
+                    height5,
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_pin,
+                            color: AppColors.darkGrey,
                           ),
-                        ),
+                          '${viewModel.contentDetailModel?.content_address}'
+                              .text
+                              .color(AppColors.black)
+                              .align(TextAlign.left)
+                              .size(15)
+                              .make()
+                              .pOnly(left: 5)
+                        ],
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 20, left: 10, right: 10),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.black,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(16),
-                                      topRight: Radius.circular(16),
-                                    )),
-                                child: const Padding(
-                                  padding: EdgeInsets.only(left: 20, top: 10),
-                                  child: Text(
-                                    '촬영 상품 설명',
-                                    style: TextStyle(
-                                        color: AppColors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              buildProductDescription(),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 30),
-                                child: buildDivider(),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.only(top: 20),
-                                child: Text(
-                                  '오시는 길',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Container(
+                    ).pOnly(left: 10),
+                    Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                          color: AppColors.grey,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child:
+                            '${viewModel.contentDetailModel?.content_description}'
+                                .text
+                                .make(),
+                      ),
+                    ).p(10),
+                    height20,
+                    Container(
+                      width: 100,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.black, width: 1.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.favorite).pSymmetric(h: 2),
+                          "찜하기".text.black.make().pSymmetric(h: 2),
+                        ],
+                      ),
+                    ),
+                    buildDivider().pSymmetric(h: 10, v: 10),
+                    SizedBox(
+                      width: 150,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          navigate(context, Reservation.route,
+                              isRootNavigator: false,
+                              arguments: {'content_idx': widget.contentIdx});
+                        },
+                        style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12)),
+                            ),
+                            side: const BorderSide(
+                                color: AppColors.black, width: 0.8)),
+                        child: '예약하기'.text.black.size(20).make(),
+                      ),
+                    ).pSymmetric(h: 10, v: 10),
+                    buildDivider().pSymmetric(h: 10, v: 10),
+                    height20,
+                    Center(child: '브랜드 소개글'.text.bold.size(20).make()),
+                    height20,
+                    Center(
+                      child: Container(
+                        width: 1,
+                        height: 100,
+                        color: AppColors.black,
+                      ),
+                    ),
+                    '${viewModel.contentDetailModel?.content_description}'
+                        .text
+                        .center
+                        .size(15)
+                        .make()
+                        .pOnly(top: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          Container(
+                              width: double.infinity,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                  color: AppColors.black,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16),
+                                    topRight: Radius.circular(16),
+                                  )),
+                              child: '촬영 상품 설명'
+                                  .text
+                                  .color(Colors.white)
+                                  .size(15)
+                                  .bold
+                                  .make()
+                                  .pOnly(left: 20, top: 10)),
+                          buildProductDescription(),
+                          height30,
+                          buildDivider().pSymmetric(h: 10),
+                          height20,
+                          "오시는 길".text.bold.color(Colors.black).size(18).make(),
+                          Container(
                                   decoration: BoxDecoration(
                                     color: AppColors.grey,
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   padding: const EdgeInsets.only(
                                       left: 10, right: 10, top: 5, bottom: 5),
-                                  child: Text(
-                                    '${viewModel.contentDetailModel?.content_address}',
-                                    //'00시 00구 00동 0000',
-                                    style: const TextStyle(
-                                        fontSize: 13, color: AppColors.black),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 20),
-                                child: Container(
-                                  width: 250,
-                                  height: 250,
-                                  color: AppColors.grey,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 20),
-                                child: buildDivider(),
-                              )
-                            ],
-                          ),
-                        ),
+                                  child:
+                                      '${viewModel.contentDetailModel?.content_address}'
+                                          .text
+                                          .size(13)
+                                          .color(Colors.black)
+                                          .make())
+                              .pOnly(top: 20),
+                          height20,
+                          Container(
+                            width: 250,
+                            height: 250,
+                            color: AppColors.grey,
+                          ).pOnly(top: 20),
+                          buildDivider().pSymmetric(h: 10)
+                        ],
                       ),
-                      /*Padding(
-                          padding: const EdgeInsets.only(
-                              top: 20, left: 10, bottom: 10, right: 10),
-                          child: buildInquiry()),*/
-                      const Padding(padding: EdgeInsets.only(bottom: 100))
-                    ],
-                  ),
+                    ).pOnly(top: 20, left: 10, right: 10),
+                    const Padding(padding: EdgeInsets.only(bottom: 100))
+                  ],
                 ),
               )
             ],
@@ -443,7 +360,9 @@ class ContentDetailState extends State<ContentDetail> {
         child: PageView.builder(
           itemCount: viewModel.contentImageList.length,
           itemBuilder: (_, index) {
-            return context.buildImage(viewModel.contentImageList[index].content_img_url, fit: BoxFit.cover);
+            return context.buildImage(
+                viewModel.contentImageList[index].content_img_url,
+                fit: BoxFit.cover);
           },
           controller: _pageController,
         ),
@@ -461,7 +380,9 @@ class ContentDetailState extends State<ContentDetail> {
           child: Text(
             '문의하기',
             style: TextStyle(
-                fontWeight: FontWeight.bold, color: AppColors.black, fontSize: 20),
+                fontWeight: FontWeight.bold,
+                color: AppColors.black,
+                fontSize: 20),
           ),
         ),
         SizedBox(
@@ -486,8 +407,7 @@ class ContentDetailState extends State<ContentDetail> {
             ) //Text('닉네임'),
             ),
         Expanded(
-          child: Container(
-          ),
+          child: Container(),
           //child: Text('공간 벽쪽에 있는 테이블 크기 문의 드립니다.'),
           flex: 8,
         ),
@@ -515,13 +435,26 @@ class ContentDetailState extends State<ContentDetail> {
           Navigator.pop(context);
         },
       ),
-      actions: [
-        SizedBox(
-          width: 30,
-          height: 30,
-          child: SvgPicture.asset('assets/images/category.svg'),
-        )
-      ],
+      title: Row(
+        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: Container()),
+          SizedBox(
+              width: 50,
+              height: 50,
+              child: GestureDetector(
+                onTap: () {
+                  navigate(context, DrawerWidget.route,
+                      isRootNavigator: false);
+                },
+                child: Image.asset(
+                  "assets/images/category_ic.png",
+                  fit: BoxFit.cover,
+                ),
+              ))
+        ],
+      ),
+      automaticallyImplyLeading: false,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(4.0),
         child: Divider(

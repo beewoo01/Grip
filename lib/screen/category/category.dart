@@ -12,6 +12,8 @@ import 'package:grip/main.dart';
 
 class Category extends StatelessWidget {
   const Category({super.key});
+  static const String route = '/';
+  static const String route2 = '/category';
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,9 @@ class Category extends StatelessWidget {
             WidgetBuilder builder;
             switch (settings.name) {
               case '/':
+
+
+              case route2 :
                 builder = (BuildContext _) => const CategoryStf();
                 break;
 
@@ -194,7 +199,8 @@ class CategoryState extends State<CategoryStf> {
                     });
               },
               child: Container(
-                alignment: index == 0 || index == 3 ? Alignment.centerLeft : index == 1 || index == 4? Alignment.center :Alignment.centerRight,
+                alignment: Alignment.center,
+                //index == 0 || index == 3 ? Alignment.centerLeft : index == 1 || index == 4? Alignment.center :Alignment.centerRight,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
