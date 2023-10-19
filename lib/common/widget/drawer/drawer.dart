@@ -23,7 +23,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("_DrawerWidgetState build");
     return Container(
       color: AppColors.white,
       child: SingleChildScrollView(
@@ -107,18 +106,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            if (Singleton().getAccountIdx() > 0) {
-                              setState(() {
-
-                              });
-                            } else {
-                              setNotify(NavBarHandler.MY_PAGE);
-                              //_navbarNotifier.index = 2;
-                              //homeKey
-
-                              //myInfoKey.currentState.overlay.context;
-                              //navigate(context, Login.route, isRootNavigator: false, arguments: {'isCategoryRoot' : true});
-                            }
+                            Navigator.of(context).pop();
+                            setNotify(NavBarHandler.MY_PAGE);
 
                           },
                           child: "로그인"
@@ -133,14 +122,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            if (Singleton().getAccountIdx() > 0) {
-                              setState(() {
-
-                              });
-                            } else {
-                              navigate(context, Join.route,
-                                  isRootNavigator: false);
-                            }
+                            Navigator.of(context).pop();
+                            navigate(context, Join.route, isRootNavigator: false);
 
                           },
                           child: "회원가입"
