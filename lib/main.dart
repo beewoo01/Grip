@@ -1,25 +1,15 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/screen/category/category.dart';
-import 'package:grip/screen/category/newer/f_category.dart';
+
 import 'package:grip/screen/community/community.dart';
 import 'package:grip/screen/home/home.dart';
 import 'package:grip/screen/myinfo/account_repository.dart';
-import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/screen/myinfo/my_page.dart';
-import 'package:grip/screen/myinfo/myinfo.dart';
-import 'package:grip/screen/myinfo/widget/editMyInfo/widget/w_edit_myinfo.dart';
-import 'package:grip/screen/myinfo/widget/like/w_my_like_content.dart';
-import 'package:grip/screen/myinfo/widget/myinfo/reservation/f_reservation_history.dart';
-import 'package:grip/screen/myinfo/widget/review/widget/detail/w_review_detail.dart';
 
 //import 'package:grip/screen/myinfo/widget/review/w_review_management.dart';
-import 'package:grip/screen/myinfo/widget/review/widget/w_review_management.dart';
-import 'package:grip/screen/myinfo/widget/signout/w_sign_out.dart';
 import 'package:grip/screen/promotion/promotion.dart';
 import 'package:grip/util/menu_item.dart';
 import 'package:grip/util/tap_item.dart';

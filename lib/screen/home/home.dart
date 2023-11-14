@@ -75,7 +75,7 @@ class Home extends StatelessWidget {
                 builder = (BuildContext _) => const Join();
                 break;
 
-              case ContentDetail.route :
+              case ContentDetail.route:
                 builder = (BuildContext _) {
                   final root = (settings.arguments as Map)['root'];
                   final idx = (settings.arguments as Map)['content_idx'];
@@ -158,7 +158,6 @@ class _HomeSfw extends State<HomeSfw> {
                               .size(18)
                               .make()
                               .pSymmetric(h: 10),
-
                         ],
                       ),
                     ),
@@ -223,7 +222,7 @@ class _HomeSfw extends State<HomeSfw> {
                 height20,
                 SizedBox(
                     width: double.infinity,
-                    height: 300,
+                    height: 320,
                     child: FutureBuilder(
                       future: viewModel.selectPicturesByCategory(1),
                       builder: (builder, snapShot) {
@@ -317,8 +316,8 @@ class _HomeSfw extends State<HomeSfw> {
             ),
             Expanded(child: Container()),
             SizedBox(
-                width: 50,
-                height: 50,
+                width: 30,
+                height: 30,
                 child: GestureDetector(
                   onTap: () {
                     navigate(context, DrawerWidget.route,
@@ -334,6 +333,8 @@ class _HomeSfw extends State<HomeSfw> {
   }
 
   Widget buildPageView() {
+    double width = double.infinity;
+    print("width ${width}");
     return FutureBuilder(
         future: viewModel.selectEvent(),
         builder: (builder, snapShot) {
@@ -341,6 +342,7 @@ class _HomeSfw extends State<HomeSfw> {
               width: double.infinity,
               height: 400,
               color: AppColors.grey,
+              //color: AppColors.grey,
               child: Stack(
                 children: [
                   SizedBox(
@@ -357,8 +359,7 @@ class _HomeSfw extends State<HomeSfw> {
                               child: context.buildImage(
                                   snapShot.data?[index].event_img_url ?? "",
                                   fit: BoxFit.contain,
-                                isShowPlaceHolder: false
-                              ));
+                                  isShowPlaceHolder: false));
                         }),
                   ),
                   Center(
@@ -395,91 +396,86 @@ class _HomeSfw extends State<HomeSfw> {
                 height: 250,
                 child: Column(
                   children: [
-                    Expanded(
-                      flex: 8,
-                      child: Container(
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: const BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10))),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)),
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    "${GripUrl.imageUrl}${model.content_img_url}",
+                                placeholder: (context, url) =>
+                                    const CircularProgressWidget(),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
+                                  'assets/images/noimage.png',
+                                  fit: BoxFit.fill,
+                                ),
+                                fit: BoxFit.cover,
+                              )),
+                          Positioned(
+                            right: 5,
+                            child: IconButton(
+                                onPressed: () {
+                                  ///TODO 좋아요 적용 해야함
+                                  if (model.like_idx > 0) {
+                                    print('');
+                                  } else {}
+                                  print('${model.like_idx}');
+                                },
+                                icon: model.like_idx == 0
+                                    ? const Icon(Icons.favorite_border_outlined)
+                                    : const Icon(Icons.favorite)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
                         width: double.infinity,
+                        height: 50,
                         decoration: const BoxDecoration(
                             color: AppColors.white,
                             borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10))),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10)),
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      "${GripUrl.imageUrl}${model.content_img_url}",
-                                  placeholder: (context, url) =>
-                                      const CircularProgressWidget(),
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                    'assets/images/noimage.png',
-                                    fit: BoxFit.fill,
-                                  ),
-                                  fit: BoxFit.cover,
-                                )),
-                            Positioned(
-                              right: 5,
-                              child: IconButton(
-                                  onPressed: () {
-                                    ///TODO 좋아요 적용 해야함
-                                    if (model.like_idx > 0) {
-                                      print('');
-                                    } else {}
-                                    print('${model.like_idx}');
-                                  },
-                                  icon: model.like_idx == 0
-                                      ? const Icon(
-                                          Icons.favorite_border_outlined)
-                                      : const Icon(Icons.favorite)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
+                                bottomLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10))),
+                        child: Container(
                           width: double.infinity,
-                          decoration: const BoxDecoration(
-                              color: AppColors.white,
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(10),
-                                  bottomRight: Radius.circular(10))),
-                          child: Container(
-                            width: double.infinity,
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.only(left: 10),
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      model.content_title,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.only(left: 10),
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    model.content_title,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      alignment: Alignment.topLeft,
-                                      child: Text(model.content_description)),
-                                )
-                              ],
-                            ),
-                          )),
-                    )
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    alignment: Alignment.topLeft,
+                                    child: Text(model.content_description)),
+                              )
+                            ],
+                          ),
+                        ))
                   ],
                 ),
               );
@@ -599,9 +595,12 @@ class _HomeSfw extends State<HomeSfw> {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            navigate(context, ContentDetail.route, isRootNavigator: false, arguments: {
-              'root' : list?[index].content_title ?? "", 'content_idx' : list?[index].content_idx ?? 0
-            });
+            navigate(context, ContentDetail.route,
+                isRootNavigator: false,
+                arguments: {
+                  'root': list?[index].content_title ?? "",
+                  'content_idx': list?[index].content_idx ?? 0
+                });
           },
           child: Column(
             children: [
