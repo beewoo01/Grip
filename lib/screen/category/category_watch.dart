@@ -124,7 +124,7 @@ class CategoryWatchState extends State<CategoryWatch> {
       actions: [
         IconButton(
             onPressed: () {},
-            icon: SvgPicture.asset('assets/images/category.svg')),
+            icon: Image.asset("assets/images/category_ic.png")),
       ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(4.0),

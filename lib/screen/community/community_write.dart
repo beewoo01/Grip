@@ -266,7 +266,7 @@ class CommunityWriteState extends State<CommunityWrite> {
           children: [
             Transform.scale(
               scale: 0.8,
-              child: SvgPicture.asset('assets/images/category.svg'),
+              child: Image.asset("assets/images/category_ic.png"),
             ),
             Text(
               '${photoList.length}/10',
