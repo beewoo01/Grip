@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/drawer/drawer.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/common/widget/w_line.dart';
 import 'package:grip/main.dart';
 import 'package:grip/model/inquiry_model.dart';
@@ -36,7 +37,6 @@ class CommunityMenu extends StatelessWidget {
                 break;
 
               case CommunityResister.route:
-                print('case CommunityResister.route');
                 builder = (BuildContext _) => const CommunityResister();
                 break;
 
@@ -46,8 +46,7 @@ class CommunityMenu extends StatelessWidget {
                 builder = (BuildContext _) => ReviewDetail(viewModel, vo);
                 break;
 
-
-              case DrawerWidget.route :
+              case DrawerWidget.route:
                 builder = (BuildContext _) => const DrawerWidget();
                 break;
 
@@ -87,7 +86,6 @@ class CommunitySfw extends State<Community> {
 
   @override
   Widget build(BuildContext context) {
-    print('_CommunitySfw build');
     return buildAppScaffold();
   }
 
@@ -146,59 +144,25 @@ class CommunitySfw extends State<Community> {
 
   AppBar buildAppBar() {
     return AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.white,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(4.0),
-          child: Divider(
-            thickness: 1,
-            height: 1,
-            color: AppColors.black,
-          ),
+      elevation: 0,
+      backgroundColor: AppColors.white,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(4.0),
+        child: Divider(
+          thickness: 0.5,
+          height: 0.5,
+          color: AppColors.black,
         ),
-        title: Row(
-          children: [
-            '커뮤니티'.text.size(15).bold.black.make(),
-            Expanded(child: Container()),
-            SizedBox(
-                width: 50,
-                height: 50,
-                child: GestureDetector(
-                  onTap: () {
-                    navigate(context, DrawerWidget.route,
-                        isRootNavigator: false);
-                  },
-                  child: Image.asset(
-                    "assets/images/category_ic.png",
-                    fit: BoxFit.cover,
-                  ),
-                ))
-            /*'커뮤니티'.text.size(15).bold.black.make(),
-            Expanded(child: Container()),
-            *//*(Singleton().getAccountName() ?? "")
-                .text
-                .size(13)
-                .bold
-                .color(AppColors.black)
-                .make(),*//*
-
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: IconButton(
-                icon: Image.asset(
-                  "assets/images/category_ic.png",
-                  fit: BoxFit.cover,
-                ),
-                onPressed: () {
-                  navigate(context, DrawerWidget.route,
-                      isRootNavigator: false);
-                },
-              ),
-            )*/
-
-          ],
-        ));
+      ),
+      title: '커뮤니티'.text.size(15).bold.black.make(),
+      actions: [
+        IconButton(
+            onPressed: () {
+              navigate(context, DrawerWidget.route, isRootNavigator: false);
+            },
+            icon: Image.asset("assets/images/category_ic.png"))
+      ],
+    );
   }
 
   Widget buildFloatingActionButton(BuildContext context) {
@@ -210,8 +174,6 @@ class CommunitySfw extends State<Community> {
             onPressed: () {
               navigate(context, CommunityResister.route,
                   isRootNavigator: false, arguments: {});
-              /*Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const CommunityResister()));*/
             },
             icon: const Icon(Icons.ac_unit)));
   }
@@ -221,19 +183,15 @@ class CommunitySfw extends State<Community> {
       children: [
         GestureDetector(
           onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: buildBottomCategoryItem(
-                AppColors.black, AppColors.white, AppColors.black, '카테고리'),
-          ),
+          child: buildBottomCategoryItem(
+                  AppColors.black, AppColors.white, AppColors.black, '카테고리')
+              .pOnly(right: 5),
         ),
         GestureDetector(
           onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.only(left: 5, right: 5),
-            child: buildBottomCategoryItem(
-                AppColors.black, AppColors.black, AppColors.white, '세부 카테고리'),
-          ),
+          child: buildBottomCategoryItem(
+                  AppColors.black, AppColors.black, AppColors.white, '세부 카테고리')
+              .pSymmetric(h: 5),
         )
       ],
     );
@@ -246,28 +204,20 @@ class CommunitySfw extends State<Community> {
           color: boxColor,
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(color: borderColor, width: 1)),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
-        child: Row(
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: textColor,
-                  fontWeight: FontWeight.normal),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Icon(
-                Icons.check_circle_outline,
-                size: 13.0,
-                color: textColor,
-              ),
-            )
-          ],
-        ),
-      ),
+      child: Row(
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+                fontSize: 12, color: textColor, fontWeight: FontWeight.normal),
+          ),
+          Icon(
+            Icons.check_circle_outline,
+            size: 13.0,
+            color: textColor,
+          ).pOnly(left: 3)
+        ],
+      ).pSymmetric(v: 2, h: 5),
     );
   }
 
@@ -289,7 +239,7 @@ class CommunitySfw extends State<Community> {
               onCategoryButtonClicked(true);
             },
             style: TextButton.styleFrom(backgroundColor: photoBackgroundColor),
-            child: Text('사진리뷰', style: TextStyle(color: photoTextColor)),
+            child: "사진리뷰".text.color(photoTextColor).make(),
           ),
           TextButton(
               onPressed: () {
@@ -297,10 +247,7 @@ class CommunitySfw extends State<Community> {
               },
               style: TextButton.styleFrom(
                   backgroundColor: questionBackgroundColor),
-              child: Text(
-                '문의하기',
-                style: TextStyle(color: questionTextColor),
-              ))
+              child: "문의하기".text.color(questionTextColor).make())
         ],
       ),
     );
@@ -323,44 +270,24 @@ class CommunitySfw extends State<Community> {
       onTap: () {},
       child: Column(
         children: [
-          Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: AppColors.grey,
-                ),
-                /*child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'assets/images/$path',
-                    fit: BoxFit.fill,
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: AppColors.grey,
+            ),
+          ).pSymmetric(h: 5),
+          height5,
+          Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: AppColors.grey,
                   ),
-                ),*/
-              )),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: AppColors.grey,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 5, right: 5, top: 3, bottom: 3),
-                  child: Text(
-                    name,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.black,
-                        fontWeight: FontWeight.normal),
-                  ),
-                )),
-          )
+                  child: name.text.size(12).black.make().pSymmetric(v: 3, h: 5))
+              .pSymmetric(h: 10)
         ],
       ),
     );
@@ -453,9 +380,6 @@ class PhotoReviewWidget extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),
                                       child: context.buildImage(
                                           "${snapShot.data?[position].review_img_url}")
-
-                                      /*buildCoverImage(viewModel
-                                        .reviewList?[position].review_img_url),*/
                                       ),
                                 ),
                               )),

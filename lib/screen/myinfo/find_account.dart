@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:grip/common/widget/w_default_appbar.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/util/util.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -17,129 +19,84 @@ class FindAccountState extends State<FindAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: DefaultAppBar().createAppbar(callback: () {}),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 20),
-              child: buildLoginTitle(),
-            ),
+            buildLoginTitle().pSymmetric(v: 20),
             buildDivider(),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 30, right: 30),
-              child: buildTextField('이름', ''),
-            ),
-            Padding(
-                padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: buildTextField('주민등록번호', ''),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                          '-',
-                          style: TextStyle(fontSize: 25),
+            height30,
+            buildTextField('이름', '').pSymmetric(h: 30),
+            height10,
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: buildTextField('주민등록번호', ''),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: "-".text.size(25).center.make(),
+                ),
+                Expanded(
+                  flex: 4,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          height: 22,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: HexColor.fromHex('#EBEBEB')),
+                          child: const TextField(
+                            textAlign: TextAlign.center,
+                            showCursor: false,
+                            decoration:
+                                InputDecoration(border: InputBorder.none),
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              height: 22,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                  color: HexColor.fromHex('#EBEBEB')),
-                              child: const TextField(
-                                textAlign: TextAlign.center,
-                                showCursor: false,
-                                decoration:
-                                    InputDecoration(border: InputBorder.none),
-                              ),
-                            ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: Text(
-                              '●',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: Text(
-                              '●',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: Text(
-                              '●',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: Text(
-                              '●',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: Text(
-                              '●',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                          const Expanded(
-                            flex: 1,
-                            child: Text(
-                              '●',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                )),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-              child: buildTextField('휴대전화번호', ''),
-            ),
-            Padding(
-                padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
-                child: buildJustTextField()),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
-              child: OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(150, 50),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    side: const BorderSide(color: AppColors.black, width: 0.8)),
-                child: const Text(
-                  '인증완료',
-                  style: TextStyle(color: AppColors.black, fontSize: 20),
-                ),
-              ),
-            ),
+                      buildDotWidget(),
+                      buildDotWidget(),
+                      buildDotWidget(),
+                      buildDotWidget(),
+                      buildDotWidget(),
+                      buildDotWidget(),
+                    ],
+                  ),
+                )
+              ],
+            ).pSymmetric(h: 30),
+            height10,
+            buildTextField('휴대전화번호', '').pSymmetric(h: 30),
+            height30,
+            buildJustTextField().pSymmetric(h: 30),
+            height20,
+            OutlinedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(150, 50),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  side: const BorderSide(color: AppColors.black, width: 0.8)),
+              child: "인증완료".text.black.size(20).make()
+
+            ).pSymmetric(h: 30),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildDotWidget() {
+    return const Expanded(
+      flex: 1,
+      child: Text(
+        '●',
+        style: TextStyle(fontSize: 30),
       ),
     );
   }
@@ -151,22 +108,19 @@ class FindAccountState extends State<FindAccount> {
       decoration: BoxDecoration(
           color: HexColor.fromHex('#EBEBEB'),
           borderRadius: BorderRadius.circular(12)),
-      child: const Padding(
-        padding: EdgeInsets.only(left: 5, right: 5),
-        child: TextField(
-          style: TextStyle(fontSize: 15),
-          decoration: InputDecoration(
-            hintText: '문자로 받은 인증번호를 입력하세요',
-            isDense: true,
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.black, width: 0.3),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.black, width: 0.3),
-            ),
+      child: const TextField(
+        style: TextStyle(fontSize: 15),
+        decoration: InputDecoration(
+          hintText: '문자로 받은 인증번호를 입력하세요',
+          isDense: true,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.black, width: 0.3),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: AppColors.black, width: 0.3),
           ),
         ),
-      ),
+      ).pSymmetric(h: 10),
     );
   }
 
@@ -211,41 +165,15 @@ class FindAccountState extends State<FindAccount> {
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: AppColors.white,
-      bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(4.0),
-        child: Divider(
-          thickness: 1,
-          height: 1,
-          color: AppColors.black,
-        ),
-      ),
-      leading: Container(
-        alignment: Alignment.center,
-        child: "GRIP".text.color(AppColors.black).bold.size(18).make()
-      ),
-      actions: [
-        IconButton(
-          icon: SvgPicture.asset('assets/images/category.svg'),
-          onPressed: () {
-            //Navigator.pop(context);
-            //Community Write에서 pop을 시키니 여기에서 pop한거와 동일하게 작동함
-          },
-        )
-      ],
-    );
-  }
-
   Widget buildLoginTitle() {
     return const Column(
       children: [
         Text(
           'FIND ID / PW',
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 25, color: AppColors.black),
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+              color: AppColors.black),
         ),
         Text(
           '아이디 / 비밀번호 찾기',

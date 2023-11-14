@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grip/api/ApiService.dart';
 import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/widget/drawer/drawer.dart';
+import 'package:grip/common/widget/w_default_appbar.dart';
 import 'package:grip/main.dart';
 import 'package:grip/util/util.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,10 @@ class JoinState extends State<Join> {
         makeIdentifyTextField('', 7, TextInputType.number, true);
 
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: DefaultAppBar().createAppbar(callback: (){
+        navigate(context, DrawerWidget.route,
+            isRootNavigator: false);
+      }),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -425,45 +429,6 @@ class JoinState extends State<Join> {
               child: textField)
         ],
       ),
-    );
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: AppColors.white,
-      bottom: const PreferredSize(
-        preferredSize: Size.fromHeight(4.0),
-        child: Divider(
-          thickness: 1,
-          height: 1,
-          color: AppColors.black,
-        ),
-      ),
-        title: Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              height: 35,
-              child: Image.asset("assets/images/app_logo.png"),
-            ),
-            Expanded(child: Container()),
-            SizedBox(
-                width: 50,
-                height: 50,
-                child: GestureDetector(
-                  onTap: () {
-                    navigate(context, DrawerWidget.route,
-                        isRootNavigator: false);
-                  },
-                  child: Image.asset(
-                    "assets/images/category_ic.png",
-                    fit: BoxFit.cover,
-                  ),
-                ))
-          ],
-        ),
-      automaticallyImplyLeading: false,
     );
   }
 

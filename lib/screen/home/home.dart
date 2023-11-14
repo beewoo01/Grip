@@ -6,6 +6,7 @@ import 'package:grip/common/color/AppColors.dart';
 import 'package:grip/common/image/grip_image.dart';
 import 'package:grip/common/widget/w_circulator_progress.dart';
 import 'package:grip/common/widget/w_container_image.dart';
+import 'package:grip/common/widget/w_default_appbar.dart';
 import 'package:grip/common/widget/w_height_and_width.dart';
 
 import 'package:grip/main.dart';
@@ -18,6 +19,9 @@ import 'package:grip/screen/home/widget/w_find_model.dart';
 import 'package:grip/screen/myinfo/join.dart';
 import 'package:grip/screen/myinfo/login.dart';
 import 'package:grip/screen/myinfo/my_page.dart';
+import 'package:grip/screen/myinfo/widget/review/viewModel/vm_review.dart';
+import 'package:grip/screen/myinfo/widget/review/vo/vo_wrote_review.dart';
+import 'package:grip/screen/myinfo/widget/review/widget/detail/w_review_detail.dart';
 import 'package:grip/util/Singleton.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -86,6 +90,13 @@ class Home extends StatelessWidget {
                 };
                 break;
 
+
+              case ReviewDetail.route:
+                final viewModel = (settings.arguments as Map)['viewModel'];
+                final vo = (settings.arguments as Map)['vo'];
+                builder = (BuildContext _) => ReviewDetail(viewModel, vo);
+                break;
+
               default:
                 builder = (BuildContext _) => const HomeSfw();
             }
@@ -128,7 +139,9 @@ class _HomeSfw extends State<HomeSfw> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: buildAppBar(),
+      appBar: DefaultAppBar().createAppbar(callback: () {
+        navigate(context, DrawerWidget.route, isRootNavigator: false);
+      }),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -203,8 +216,7 @@ class _HomeSfw extends State<HomeSfw> {
                 SizedBox(
                     width: double.infinity,
                     height: 30,
-                    child: //ChipHorizontalList(viewModel, 1),
-                        ChipHorizontalList(
+                    child: ChipHorizontalList(
                       viewModel,
                       1,
                       callback: (categoryIdx, subCategoryIdx, categoryName) {
@@ -295,46 +307,35 @@ class _HomeSfw extends State<HomeSfw> {
     );
   }
 
-  AppBar buildAppBar() {
+  /*AppBar buildAppBar() {
     return AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.white,
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(4.0),
-          child: Divider(
-            thickness: 1,
-            height: 1,
-            color: AppColors.black,
-          ),
+      elevation: 0,
+      backgroundColor: AppColors.white,
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(4.0),
+        child: Divider(
+          thickness: 1,
+          height: 1,
+          color: AppColors.black,
         ),
-        title: Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              height: 35,
-              child: Image.asset("assets/images/app_logo.png"),
-            ),
-            Expanded(child: Container()),
-            SizedBox(
-                width: 30,
-                height: 30,
-                child: GestureDetector(
-                  onTap: () {
-                    navigate(context, DrawerWidget.route,
-                        isRootNavigator: false);
-                  },
-                  child: Image.asset(
-                    "assets/images/category_ic.png",
-                    fit: BoxFit.cover,
-                  ),
-                ))
-          ],
-        ));
-  }
+      ),
+      title: SizedBox(
+        height: 30,
+        child: Image.asset("assets/images/app_logo.png"),
+      ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              navigate(context, DrawerWidget.route,
+                  isRootNavigator: false);
+            },
+            icon: Image.asset("assets/images/category_ic.png"))
+      ],
+
+    );
+  }*/
 
   Widget buildPageView() {
-    double width = double.infinity;
-    print("width ${width}");
     return FutureBuilder(
         future: viewModel.selectEvent(),
         builder: (builder, snapShot) {
@@ -676,38 +677,61 @@ class _HomeSfw extends State<HomeSfw> {
               return ListView.separated(
                 shrinkWrap: false,
                 itemBuilder: (context, index) {
-                  return Container(
-                    width: 150,
-                    height: 180,
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    decoration:
-                        const BoxDecoration(color: AppColors.white, boxShadow: [
-                      BoxShadow(
-                          color: AppColors.black,
-                          offset: Offset(1, 1),
-                          blurRadius: 0.1,
-                          spreadRadius: 0.1),
-                    ]),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(),
-                        ),
-                        Expanded(
-                            flex: 8,
-                            child: ContainerImageWidget(
-                                    double.infinity,
-                                    double.infinity,
-                                    "${snapShot.data?[index].review_img_url}")
-                                .pSymmetric(h: 5, v: 5)),
-                        Expanded(
-                          flex: 3,
-                          child: Container(),
-                        ),
-                      ],
-                    ),
-                  ).pOnly(left: 10, right: 10, top: 0, bottom: 10);
+                  return GestureDetector(
+                    onTap: () async {
+                      int? reviewIdx = snapShot.data?[index].review_idx;
+                      if (reviewIdx == null) {
+                        return;
+                      }
+                      WroteReviewVO? wroteReviewVO =
+                      await viewModel.selectOneWroteReview(reviewIdx);
+
+                      if (wroteReviewVO == null) {
+                        return;
+                      }
+
+                      if(context.mounted) {
+                        navigate(context, ReviewDetail.route,
+                            isRootNavigator: false,
+                            arguments: {
+                              'vo': wroteReviewVO,
+                              'viewModel': ReviewViewModel()
+                            });
+                      }
+                    },
+                    child: Container(
+                      width: 150,
+                      height: 180,
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration:
+                          const BoxDecoration(color: AppColors.white, boxShadow: [
+                        BoxShadow(
+                            color: AppColors.black,
+                            offset: Offset(1, 1),
+                            blurRadius: 0.1,
+                            spreadRadius: 0.1),
+                      ]),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(),
+                          ),
+                          Expanded(
+                              flex: 8,
+                              child: ContainerImageWidget(
+                                      double.infinity,
+                                      double.infinity,
+                                      "${snapShot.data?[index].review_img_url}")
+                                  .pSymmetric(h: 5, v: 5)),
+                          Expanded(
+                            flex: 3,
+                            child: Container(),
+                          ),
+                        ],
+                      ),
+                    ).pOnly(left: 10, right: 10, top: 0, bottom: 10),
+                  );
                 },
                 separatorBuilder: (context, index) => separator10,
                 itemCount: snapShot.data?.length ?? 0,

@@ -10,6 +10,7 @@ import '../../vo/vo_wrote_review.dart';
 class ReviewDetail extends StatelessWidget {
   ReviewViewModel viewModel;
   WroteReviewVO vo;
+
   ReviewDetail(this.viewModel, this.vo, {super.key});
 
   static const String route = '/reviewManagement/reviewDetail';
@@ -17,12 +18,18 @@ class ReviewDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios_new),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black,
+          ),
         ),
       ),
       body: Column(
@@ -43,7 +50,10 @@ class ReviewDetail extends StatelessWidget {
                 color: AppColors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(15))),
             child: Center(
-              child: vo.review_description.text.color(AppColors.black).make(),
+              child: vo.review_description.text
+                  .color(AppColors.black)
+                  .make()
+                  .pSymmetric(h: 15),
             ),
           ).pSymmetric(h: 10),
           height20,
@@ -51,6 +61,7 @@ class ReviewDetail extends StatelessWidget {
             child: buildReviewPhotoList(vo.review_idx),
           ),
           height20,
+          height30,
         ],
       ),
     );
@@ -137,20 +148,20 @@ class ReviewDetail extends StatelessWidget {
         future: viewModel.selectReviewImg(reviewIdx),
         builder: (builder, snapShot) {
           return ListView.builder(
-            itemCount: snapShot.data?.length ?? 0,
+              itemCount: snapShot.data?.length ?? 0,
               itemBuilder: (BuildContext context, int index) {
-            return Container(
-              width: double.infinity,
-              height: 200,
-              decoration: const BoxDecoration(
-                  color: AppColors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(15))),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: context.buildImage("${snapShot.data?[index]}"),
-              ),
-            ).pSymmetric(h: 10, v: 20);
-          });
+                return Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: const BoxDecoration(
+                      color: AppColors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: context.buildImage("${snapShot.data?[index]}"),
+                  ),
+                ).pSymmetric(h: 10, v: 20);
+              });
         });
   }
 }

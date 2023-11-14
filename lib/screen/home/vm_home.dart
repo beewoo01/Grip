@@ -8,6 +8,8 @@ import 'package:grip/screen/home/vo/vo_event.dart';
 import 'package:grip/screen/home/vo/vo_pictures_by_category.dart';
 import 'package:grip/screen/home/vo/vo_sub_category.dart';
 import 'package:grip/screen/home/vo/vo_wedding.dart';
+import 'package:grip/screen/myinfo/widget/review/dto/dto_wrote_review.dart';
+import 'package:grip/screen/myinfo/widget/review/vo/vo_wrote_review.dart';
 
 import '../../model/review_model.dart';
 import 'dto/dto_wedding.dart';
@@ -44,7 +46,27 @@ class HomeViewModel {
   Future<List<ReviewModel>> selectReview() async {
     List<ReviewModel> reviewList = await apiService.selectReview() ?? [];
     return reviewList;
+  }
+
+  Future<WroteReviewVO?> selectOneWroteReview(int reviewIdx) async {
+    WroteReviewDto? model = await apiService.selectOneWroteReview(reviewIdx);
+    if (model != null) {
+      return WroteReviewVO(
+        model.content_idx,
+        model.review_idx,
+        model.content_title,
+        model.content_description,
+        model.content_img_url,
+        model.review_title,
+        model.review_description,
+        model.review_img_url,
+        model.account_name,
+        model.review_createtime,
+      );
     }
+
+    return null;
+  }
 
   Future<List<WeddingVO>> selectWeddingPhoto() async {
     print("selectWeddingPhoto1");
@@ -61,30 +83,32 @@ class HomeViewModel {
   Future<List<WeddingVO>> selectHotSpace() async {
     List<WeddingDTO> result = await apiService.selectHotSpace() ?? [];
     List<WeddingVO> res = [];
-    for(var model in result) {
-      res.add(WeddingVO(model.content_idx, model.content_title, model.content_img_url));
+    for (var model in result) {
+      res.add(WeddingVO(
+          model.content_idx, model.content_title, model.content_img_url));
     }
 
     return res;
   }
-
 
   Future<List<WeddingVO>> selectPicturesByCategory(int categoryIdx) async {
     print("selectPicturesByCategory");
     List<WeddingDTO> result =
         await apiService.selectPicturesByCategory(categoryIdx) ?? [];
     List<WeddingVO> res = [];
-    for(var model in result) {
-      res.add(WeddingVO(model.content_idx, model.content_title, model.content_img_url));
+    for (var model in result) {
+      res.add(WeddingVO(
+          model.content_idx, model.content_title, model.content_img_url));
     }
     return res;
   }
 
   Future<List<SubCategoryVO>> selectSubCategory(int categoryIdx) async {
-    List<SubCategoryDTO> result = await apiService.selectSubCategory(categoryIdx) ?? [];
+    List<SubCategoryDTO> result =
+        await apiService.selectSubCategory(categoryIdx) ?? [];
     List<SubCategoryVO> res = [];
 
-    for(var model in result) {
+    for (var model in result) {
       res.add(SubCategoryVO(model.sub_category_idx, model.sub_category_name));
     }
 
@@ -92,16 +116,15 @@ class HomeViewModel {
   }
 
   Future<List<WeddingVO>> selectFindModel() async {
-
     List<WeddingDTO> result = await apiService.selectFindModel() ?? [];
     List<WeddingVO> res = [];
 
     for (var model in result) {
-      res.add(WeddingVO(model.content_idx, model.content_title, model.content_img_url));
+      res.add(WeddingVO(
+          model.content_idx, model.content_title, model.content_img_url));
     }
     return res;
   }
-
 
   Future<void> selectCategory() async {
     List<SubCategoryModel>? list = await apiService.selectCategory();

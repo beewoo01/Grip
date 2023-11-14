@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grip/common/color/AppColors.dart';
+import 'package:grip/common/widget/w_default_appbar.dart';
+import 'package:grip/common/widget/w_height_and_width.dart';
 import 'package:grip/main.dart';
 import 'package:grip/screen/promotion/promotion_detail.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -86,13 +88,7 @@ class PromotionState extends State<PromotionSfw> {
                           'assets/images/noimage.png',
                           fit: BoxFit.fill,
                         ),
-                      )
-
-                      /*Text(
-                    "Page $index",
-                    style: const TextStyle(color: Colors.indigo),
-                  )*/
-                      ),
+                      )),
                 ),
               ),
             ));
@@ -107,7 +103,9 @@ class PromotionState extends State<PromotionSfw> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
+      appBar: DefaultAppBar().createAppbar(callback: () {
+        navigate(context, DrawerWidget.route, isRootNavigator: false);
+      }),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -118,14 +116,12 @@ class PromotionState extends State<PromotionSfw> {
                   height: 200,
                   child: buildPageView(),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 15),
-                  child: Divider(
-                    thickness: 2,
-                    height: 1,
-                    color: Colors.grey,
-                  ),
-                ),
+                height10,
+                const Divider(
+                  thickness: 2,
+                  height: 1,
+                  color: Colors.grey,
+                ).pSymmetric(h: 10),
               ],
             ),
           ),

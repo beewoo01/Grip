@@ -200,28 +200,22 @@ class LoginState extends State<Login> {
         //mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: 35,
+            height: 30,
             child: Image.asset("assets/images/app_logo.png"),
           ),
-          Expanded(child: Container()),
-          Visibility(
-            visible: !widget.isCategoryRoot,
-            child: SizedBox(
-                width: 50,
-                height: 50,
-                child: GestureDetector(
-                  onTap: () {
-                    navigate(context, DrawerWidget.route,
-                        isRootNavigator: false);
-                  },
-                  child: Image.asset(
-                    "assets/images/category_ic.png",
-                    fit: BoxFit.cover,
-                  ),
-                )),
-          )
         ],
       ),
+      actions: [
+        Visibility(
+          visible: !widget.isCategoryRoot,
+          child: IconButton(
+              onPressed: (){
+                navigate(context, DrawerWidget.route,
+                    isRootNavigator: false);
+              },
+              icon: Image.asset("assets/images/category_ic.png"))
+        )
+      ],
       automaticallyImplyLeading: false,
     );
   }

@@ -435,25 +435,15 @@ class ContentDetailState extends State<ContentDetail> {
           Navigator.pop(context);
         },
       ),
-      title: Row(
-        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(child: Container()),
-          SizedBox(
-              width: 50,
-              height: 50,
-              child: GestureDetector(
-                onTap: () {
-                  navigate(context, DrawerWidget.route,
-                      isRootNavigator: false);
-                },
-                child: Image.asset(
-                  "assets/images/category_ic.png",
-                  fit: BoxFit.cover,
-                ),
-              ))
-        ],
-      ),
+      actions: [
+        IconButton(
+            onPressed: () {
+              navigate(context, DrawerWidget.route,
+                  isRootNavigator: false);
+            },
+            icon: Image.asset("assets/images/category_ic.png"))
+      ],
+
       automaticallyImplyLeading: false,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(4.0),

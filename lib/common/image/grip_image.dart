@@ -12,7 +12,7 @@ extension ContextExtention on BuildContext {
       LoadingErrorWidgetBuilder? errorWidget,
       double width = double.infinity,
       double height = double.infinity,
-      fit = BoxFit.fill,
+      fit = BoxFit.cover,
       isShowPlaceHolder = true}) {
     return CachedNetworkImage(
       width: width,
